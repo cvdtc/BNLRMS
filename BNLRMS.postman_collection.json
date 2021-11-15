@@ -1,0 +1,454 @@
+{
+	"info": {
+		"_postman_id": "d68dd312-52d7-41c2-b33b-ef30b55b87d0",
+		"name": "BNLRMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pengguna",
+			"item": [
+				{
+					"name": "List Pengguna",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoxLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQxOTE1LCJleHAiOjE2MzcwMjgzMTV9.hZKA9H79WH5KYKQ5QZDDnV7Mc3edKndQo-LTWsY-Dvo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9007/api/v1/pengguna",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"pengguna"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Pengguna",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoxLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQxOTE1LCJleHAiOjE2MzcwMjgzMTV9.hZKA9H79WH5KYKQ5QZDDnV7Mc3edKndQo-LTWsY-Dvo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nama\": \"Jiantara\",\n    \"username\": \"adminjiantara\",\n    \"password\": \"123qwerty\",\n    \"jabatan\": \"admin\",\n    \"notification_token\": \"\",\n    \"aktif\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9007/api/v1/pengguna",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"pengguna"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Pengguna",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoyLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQ0OTE2LCJleHAiOjE2MzcwMzEzMTZ9.Nkf1FFC5wluiiMHS3wCTllWVgLM50tFzvwEEeV-6BY4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nama\": \"Jiantara\",\n    \"username\": \"adminjiantara\",\n    \"password\": \"123qwerty\",\n    \"jabatan\": \"admin\",\n    \"notification_token\": \"\",\n    \"aktif\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9007/api/v1/pengguna/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"pengguna",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Permintaan",
+			"item": [
+				{
+					"name": "List Permintaan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoxLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQxOTE1LCJleHAiOjE2MzcwMjgzMTV9.hZKA9H79WH5KYKQ5QZDDnV7Mc3edKndQo-LTWsY-Dvo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9007/api/v1/permintaan",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"permintaan"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Permintaan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoxLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQxOTE1LCJleHAiOjE2MzcwMjgzMTV9.hZKA9H79WH5KYKQ5QZDDnV7Mc3edKndQo-LTWsY-Dvo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"keterangan\": \"cek merek Holland Bakery\",\n    \"kategori\": \"Merek\",\n    \"due_date\": \"2021-11-15\",\n    \"flag_selesai\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9007/api/v1/permintaan",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"permintaan"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Permintaan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoyLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQ0OTE2LCJleHAiOjE2MzcwMzEzMTZ9.Nkf1FFC5wluiiMHS3wCTllWVgLM50tFzvwEEeV-6BY4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"keterangan\": \"cek merek Holland Bakery (coba ubah)\",\n    \"kategori\": \"Merek\",\n    \"due_date\": \"2021-11-15\",\n    \"flag_selesai\": 0,\n    \"keterangan_selesai\": \"sudah selesai dikerjakan semua\",\n    \"tipeupdate\": \"selesai\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9007/api/v1/permintaan/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"permintaan",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Permintaan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoyLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQ0OTE2LCJleHAiOjE2MzcwMzEzMTZ9.Nkf1FFC5wluiiMHS3wCTllWVgLM50tFzvwEEeV-6BY4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9007/api/v1/permintaan/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"permintaan",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Progress",
+			"item": [
+				{
+					"name": "List Progress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoyLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQ0OTE2LCJleHAiOjE2MzcwMzEzMTZ9.Nkf1FFC5wluiiMHS3wCTllWVgLM50tFzvwEEeV-6BY4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9007/api/v1/progress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"progress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Progress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoyLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQ0OTE2LCJleHAiOjE2MzcwMzEzMTZ9.Nkf1FFC5wluiiMHS3wCTllWVgLM50tFzvwEEeV-6BY4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"keterangan\": \"Coba Add Progress 2\",\n    \"idpermintaan\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9007/api/v1/progress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"progress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Progress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoyLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQ0OTE2LCJleHAiOjE2MzcwMzEzMTZ9.Nkf1FFC5wluiiMHS3wCTllWVgLM50tFzvwEEeV-6BY4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"keterangan\": \"coba update progress selesai\",\n    \"flag_selesai\": 1,\n    \"next_idpengguna\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9007/api/v1/progress/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"progress",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Progress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHBlbmdndW5hIjoyLCJ0aXBlIjoibW9iaWxlIiwiaWF0IjoxNjM2OTQ0OTE2LCJleHAiOjE2MzcwMzEzMTZ9.Nkf1FFC5wluiiMHS3wCTllWVgLM50tFzvwEEeV-6BY4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9007/api/v1/progress/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9007",
+							"path": [
+								"api",
+								"v1",
+								"progress",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"adminjiantar\",\n    \"password\": \"123qwerty\",\n    \"tipe\": \"mobile\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9007/api/v1/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9007",
+					"path": [
+						"api",
+						"v1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

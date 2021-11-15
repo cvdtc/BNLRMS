@@ -25,7 +25,7 @@ const swaggerDOC = {
     definition:{
         openapi: "3.0.3",
         info: {
-            title: "Documentation page of api RMS BNL Paten",
+            title: "Documentation page of api RMS BNL Patent",
             version: "1.0.0",
             description: "This is documentation for RMS apps",
             contact: {
@@ -40,7 +40,7 @@ const swaggerDOC = {
             }
         ]
     },
-    apis: ["./controller/*.js"]
+    apis: ['./controllers/*.js']
 }
 const specs = swaggerJS(swaggerDOC)
 app.use('/secret-docs-api', docAuth({
