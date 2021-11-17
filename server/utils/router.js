@@ -55,5 +55,19 @@ router.delete('/progress/:idprogress', function (req, res) {
     RouteToProgress.deleteProgress(req, res)
 })
 
+// ! NOTE
+var RouteToNote = require('../controllers/note.controller')
+router.get('/note/:filter', function (req, res) {
+    RouteToNote.getAllNote(req, res)
+})
+router.post('/note', function (req, res) {
+    RouteToNote.addNote(req, res)
+})
+router.put('/note/:idnote', function (req, res) {
+    RouteToNote.ubahNote(req, res)
+})
+router.delete('/note/:idnote', function (req, res) {
+    RouteToNote.deleteNote(req, res)
+})
 
 module.exports = router

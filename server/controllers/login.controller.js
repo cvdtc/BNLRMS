@@ -33,27 +33,22 @@ const pool = mysql.createPool({
 /**
  * @swagger
  * /login:
- *  get:
+ *  post:
  *      summary: api untuk akses login kedalam aplikasi BNLRMS
  *      parameters:
- *          - name: username
- *            in: body
+ *          - in: body
+ *            name: Parameter
  *            schema:
- *              type: string
- *              description: >
- *                  parameter `username` dikirim di body, sesuai dengan username pengguna yang sudah terdaftar di database.
- *          - name: password
- *            in: body
- *            schema:
- *              type: string
- *              description: >
- *                  parameter `password` dikirim di body, sesuai dengan password username.
- *          - name: tipe
- *            in: body
- *            schema:
- *              type: string
- *              description: >
- *                  parameter `tipe` dikirim di body, parameter ini menyesuaikan platform yang dipakai, misal `mobile` atau `web`.
+ *              properties:
+ *                  username:
+ *                      type: string
+ *                      description: parameter `username` dikirim di body, sesuai dengan username pengguna yang sudah terdaftar di database.
+ *                  password:
+ *                      type: string
+ *                      description: parameter `password` dikirim di body, sesuai dengan password username.
+ *                  tipe:
+ *                      type: string
+ *                      description: parameter `tipe` dikirim di body, parameter ini menyesuaikan platform yang dipakai, misal `mobile` atau `web`.
  *      tags: [LOGIN]
  *      responses:
  *          200:
@@ -181,7 +176,7 @@ async function Login(req, res) {
 /**
  * @swagger
  * /newtoken:
- *  get:
+ *  post:
  *      summary: api untuk regenerate token
  *      tags: [NEWTOKEN]
  *      parameters:
