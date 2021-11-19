@@ -1,11 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_polygon/flutter_polygon.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.dart';
-import 'package:rmsmobile/pages/splashscreen/splashscreen.dart';
+import 'package:rmsmobile/pages/request/request.search.dart';
 import 'package:rmsmobile/utils/warna.dart';
-import 'package:rolling_nav_bar/indexed.dart';
 import 'package:rolling_nav_bar/rolling_nav_bar.dart';
 
 double scaledHeight(BuildContext context, double baseSize) {
@@ -37,7 +35,9 @@ class _BottomNavState extends State<BottomNav> {
 
   List<Widget> _currentPage = <Widget>[
     Dahsboard(),
-    SplashScreenPage(),
+    // RequestPage(),
+    RequestPageSearch()
+    // SplashScreenPage(),
   ];
 
   var iconText = <Widget>[

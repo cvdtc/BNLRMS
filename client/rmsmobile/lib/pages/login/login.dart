@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/TextFieldContainer.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:rmsmobile/widget/bottomnavigationbar.dart';
@@ -214,24 +215,21 @@ class _LoginscreenState extends State<Loginscreen> {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BottomNav()));
       } else {
-        // if login failed will be show message json from api url
-        if (_apiService.responseCode.messageApi ==
-            "Username atau Password salah") {
-          AlertDialog(
-            title: Text('Warning'),
-            content: Text("${_apiService.responseCode.messageApi}"),
-          );
-          // warningDialog(context, "${_apiService.responseCode.mMessage}",
-          //     title: "Warning!");
-        } else if (_apiService.responseCode.messageApi ==
-            "Username atau Password anda tidak ditemukan!") {
-          return AlertDialog(
-            title: Text('Warning'),
-            content: Text(
-                "${_apiService.responseCode.messageApi}"),
-          );
-        }
-      }
+        ReusableClasses().modalbottomWarning(
+              context,
+              'Login Gagal!',
+              '${_apiService.responseCode.messageApi} [error : ${isSuccess}]',
+              'f400',
+              'assets/images/sorry.png');
+        }return;
+    }).onError((error, stackTrace){
+      ReusableClasses().modalbottomWarning(
+            context,
+            'Koneksi Bermasalah!',
+            'Pastikan Koneksi anda stabil terlebih dahulu, apabila masih terkendala hubungi IT. ${error}',
+            'f500',
+            'assets/images/sorry.png');
     });
+    return;
   }
 }

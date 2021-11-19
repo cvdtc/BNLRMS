@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 class LoginModel {
-  var username, password, tipe;
-  LoginModel({this.username, this.password, this.tipe});
+  var username, password, tipe, nama;
+  LoginModel({this.username, this.password, this.tipe, this.nama});
 
   Map<String, dynamic> toJson() {
     return {"username": username, "password": password, "tipe": tipe};
@@ -10,7 +10,7 @@ class LoginModel {
 
   @override
   String toString() {
-    return 'LoginModel{username: $username, password: $password, tipe: $tipe}';
+    return 'LoginModel{username: $username, password: $password, tipe: $tipe, nama: $nama}';
   }
 }
 

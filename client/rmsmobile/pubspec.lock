@@ -112,7 +112,7 @@ packages:
     source: hosted
     version: "0.9.2"
   flutter_polygon:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_polygon
       url: "https://pub.dartlang.org"
@@ -156,13 +156,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.8"
-  indexed:
-    dependency: "direct main"
-    description:
-      name: indexed
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.6"
   intl:
     dependency: transitive
     description:
@@ -233,6 +226,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.4"
+  percent_indicator:
+    dependency: "direct main"
+    description:
+      name: percent_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.4.0"
   petitparser:
     dependency: transitive
     description:
