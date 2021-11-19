@@ -41,8 +41,7 @@ class ApiService {
 
   ///////////////////// MODEL ALL REQUEST : GET, PUT, POST, DEL ////////////////////////////////
 
-  Future<List<RequestModel>?> getListRequest(
-    String token) async {
+  Future<List<RequestModel>?> getListRequest(String token) async {
     var url = Uri.parse(baseUrl + 'permintaan');
     var response = await client.get(url, headers: {
       'content-type': 'application/json',
@@ -61,14 +60,15 @@ class ApiService {
   }
 
   // ! Add Data Request
-  Future<bool> addRequest(RequestModel data) async {
+  Future<bool> addRequest(String token, RequestModel data) async {
     var url = Uri.parse(baseUrl + 'permintaan');
     var response = await client.post(url,
         headers: {
           'content-type': 'application/json',
-          // 'Authorization': 'Bearer ${token}'
+          'Authorization': 'Bearer ${token}'
         },
         body: RequestModelToJson(data));
+    print("addrequest");
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
     if (response.statusCode == 200) {
@@ -77,7 +77,6 @@ class ApiService {
       return false;
     }
   }
-
 }
 
 ///////////////////// END MODEL ALL REQUEST : GET, PUT, POST, DEL ////////////////////////////////

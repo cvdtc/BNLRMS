@@ -19,7 +19,10 @@ class _LoginscreenState extends State<Loginscreen> {
   ApiService _apiService = ApiService();
   TextEditingController _controllerUsername = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
-  bool _fieldEmail= false, _obsecureText = true, _fieldPassword=false, isloading = false;
+  bool _fieldEmail = false,
+      _obsecureText = true,
+      _fieldPassword = false,
+      isloading = false;
   var emailaccountselection, token = '';
 
   void _toggle() {
@@ -142,10 +145,10 @@ class _LoginscreenState extends State<Loginscreen> {
         controller: _controllerUsername,
         decoration: InputDecoration(
           icon: Icon(
-            Icons.mail,
+            Icons.person,
             color: Colors.blue,
           ),
-          hintText: "Email",
+          hintText: "Username",
           fillColor: Colors.lightBlue,
           border: InputBorder.none,
           // errorText:
@@ -200,11 +203,8 @@ class _LoginscreenState extends State<Loginscreen> {
     String username = _controllerUsername.text.toString();
     String password = _controllerPassword.text.toString();
     // set model value for json
-    LoginModel pengguna = LoginModel(
-      username: username,
-      password: password,
-      tipe: 'mobile'
-          );
+    LoginModel pengguna =
+        LoginModel(username: username, password: password, tipe: 'mobile');
     //execute sending json to api url
     print("LOGIN? : " + pengguna.toString());
     _apiService.loginIn(pengguna).then((isSuccess) {
@@ -216,19 +216,20 @@ class _LoginscreenState extends State<Loginscreen> {
             context, MaterialPageRoute(builder: (context) => BottomNav()));
       } else {
         ReusableClasses().modalbottomWarning(
-              context,
-              'Login Gagal!',
-              '${_apiService.responseCode.messageApi} [error : ${isSuccess}]',
-              'f400',
-              'assets/images/sorry.png');
-        }return;
-    }).onError((error, stackTrace){
-      ReusableClasses().modalbottomWarning(
             context,
-            'Koneksi Bermasalah!',
-            'Pastikan Koneksi anda stabil terlebih dahulu, apabila masih terkendala hubungi IT. ${error}',
-            'f500',
+            'Login Gagal!',
+            '${_apiService.responseCode.messageApi} [error : ${isSuccess}]',
+            'f400',
             'assets/images/sorry.png');
+      }
+      return;
+    }).onError((error, stackTrace) {
+      ReusableClasses().modalbottomWarning(
+          context,
+          'Koneksi Bermasalah!',
+          'Pastikan Koneksi anda stabil terlebih dahulu, apabila masih terkendala hubungi IT. ${error}',
+          'f500',
+          'assets/images/sorry.png');
     });
     return;
   }

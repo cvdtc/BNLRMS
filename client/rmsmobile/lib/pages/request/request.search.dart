@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
-import 'package:rmsmobile/pages/request/request.bottom.dart';
-import 'package:rmsmobile/pages/request/request.model.dart';
+import 'package:rmsmobile/pages/request/bottom.dart';
+import 'package:rmsmobile/pages/request/request.network.dart';
 import 'package:rmsmobile/pages/request/request.tile.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class RequestPageSearch extends StatefulWidget {
   @override
@@ -30,7 +29,6 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       jabatan = sp.getString("jabatan");
     });
     fetchKomponen(token!).then((value) {
-      print("IN? " + token!);
       setState(() {
         _isLoading = false;
         _requests.addAll(value);
@@ -43,8 +41,6 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
   @override
   initState() {
     cekToken();
-    print(token);
-
     super.initState();
   }
 
@@ -53,7 +49,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.workspaces_outlined))
+          IconButton(onPressed: () {}, icon: Icon(Icons.workspaces_outlined))
         ],
         title: Text(
           'Daftar Permintaan',
@@ -64,7 +60,9 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          RequestBottom().modalAddSite(context,"tambah", token.toString(), "", "", "", "0");
+          ReusableClass().modalAddSite(context, 'ubah', token!, "", "", "", "");
+          // RequestBottom()
+          //     .modalAddRequest(context, "tambah", token!, "", "", "", "0");
         },
         backgroundColor: thirdcolor,
         label: Text(

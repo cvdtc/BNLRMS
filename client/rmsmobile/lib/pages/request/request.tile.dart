@@ -1,8 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
-import 'package:rmsmobile/pages/request/request.bottom.dart';
 
+import 'bottom.dart';
 
 class RequestTile extends StatelessWidget {
   late final RequestModel request;
@@ -16,12 +15,13 @@ class RequestTile extends StatelessWidget {
             elevation: 0.0,
             child: InkWell(
               onTap: () {
-                RequestBottom().modalActionItem(
+                ReusableClass().modalActionItem(
                     context,
                     token,
                     request.keterangan,
+                    request.due_date,
                     request.kategori,
-                    request.due_date,);
+                    request.idpermintaan.toString());
               },
               child: Padding(
                 padding:
@@ -33,8 +33,7 @@ class RequestTile extends StatelessWidget {
                     Row(
                       children: [
                         Text('Nama Req : ', style: TextStyle(fontSize: 18.0)),
-                        Text(
-                           request.nama_request,
+                        Text(request.nama_request,
                             style: TextStyle(fontSize: 18.0))
                       ],
                     ),
@@ -43,13 +42,15 @@ class RequestTile extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Text('Kategori : '+request.kategori, style: TextStyle(fontSize: 18.0)),
+                        Text('Kategori : ' + request.kategori,
+                            style: TextStyle(fontSize: 18.0)),
                       ],
                     ),
                     SizedBox(
                       height: 5,
                     ),
-                    Text('Keterangan : '+request.keterangan, style: TextStyle(fontSize: 18.0)),
+                    Text('Keterangan : ' + request.keterangan,
+                        style: TextStyle(fontSize: 18.0)),
                   ],
                 ),
               ),
