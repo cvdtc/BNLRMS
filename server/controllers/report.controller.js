@@ -90,6 +90,7 @@ async function getTimeline(req, res) {
                     } else {
                         var sqlquery = "SELECT * FROM pengguna"
                         database.query(sqlquery, (error, rows) => {
+                            database.release()
                             if (error) {
                                 return res.status(500).send({
                                     message: "Sorry, query has error!",

@@ -89,6 +89,7 @@ async function getAllPengguna(req, res) {
                     } else {
                         var sqlquery = "SELECT * FROM pengguna"
                         database.query(sqlquery, (error, rows) => {
+                            database.release()
                             if (error) {
                                 return res.status(500).send({
                                     message: "Sorry, query has error!",
@@ -240,6 +241,7 @@ async function addPengguna(req, res) {
                                         }
                                         var sqlquery = "INSERT INTO pengguna SET ?"
                                         database.query(sqlquery, datapengguna, (error, result) => {
+                                            database.release()
                                             if (error) {
                                                 database.rollback(function () {
                                                     database.release()
@@ -406,6 +408,7 @@ async function addPengguna(req, res) {
                                         }
                                         var sqlquery = "UPDATE pengguna SET ? WHERE idpengguna = ?"
                                         database.query(sqlquery, [datapengguna, idpengguna], (error, result) => {
+                                            database.release()
                                             if (error) {
                                                 database.rollback(function () {
                                                     database.release()

@@ -87,6 +87,7 @@ async function getAllProgress(req, res) {
                         } else {
                             var sqlquery = `SELECT pr.*, pe.keterangan as permintaan, pe.kategori, pe.due_date FROM permintaan pe, progress pr WHERE pr.idpermintaan=pe.idpermintaan AND pr.idpengguna=?`
                             database.query(sqlquery, [jwtresult.idpengguna], (error, rows) => {
+                                database.release()
                                 if (error) {
                                     return res.status(500).send({
                                         message: "Sorry, query has error!",
@@ -211,6 +212,7 @@ async function addProgress(req, res) {
                             }
                             var sqlquery = "INSERT INTO progress SET ?"
                             database.query(sqlquery, dataprogress, (error, result) => {
+                                database.release()
                                 if (error) {
                                     database.rollback(function () {
                                         database.release()
@@ -351,6 +353,7 @@ async function ubahProgress(req, res) {
                                 }
                                 var sqlquery = "UPDATE progress SET ? WHERE idprogress = ?"
                                 database.query(sqlquery, [updateprogress, idprogress], (error, result) => {
+                                    database.release()
                                     if (error) {
                                         database.rollback(function () {
                                             database.release()
@@ -462,6 +465,7 @@ async function deleteProgress(req, res) {
                         database.beginTransaction(function (error) {
                             var sqlquery = "DELETE FROM progress WHERE idprogress = ?"
                             database.query(sqlquery, [idprogress], (error, result) => {
+                                database.release()
                                 if (error) {
                                     database.rollback(function () {
                                         database.release()

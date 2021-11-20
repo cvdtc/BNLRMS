@@ -87,6 +87,7 @@ async function getAllPermintaan(req, res) {
                         } else {
                             var sqlquery = `SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna`
                             database.query(sqlquery, (error, rows) => {
+                                database.release()
                                 if (error) {
                                     return res.status(500).send({
                                         message: "Sorry, query has error!",
@@ -220,6 +221,7 @@ async function addPermintaan(req, res) {
                             }
                             var sqlquery = "INSERT INTO permintaan SET ?"
                             database.query(sqlquery, datapermintaan, (error, result) => {
+                                database.release()
                                 if (error) {
                                     database.rollback(function () {
                                         database.release()
@@ -383,6 +385,7 @@ async function ubahPermintaan(req, res) {
                                 }
                                 var sqlquery = "UPDATE permintaan SET ? WHERE idpermintaan = ?"
                                 database.query(sqlquery, [tipeupdate == 'selesai' ? selesaidatapermintaan : updatedatapermintaan, idpermintaan], (error, result) => {
+                                    database.release()
                                     if (error) {
                                         database.rollback(function () {
                                             database.release()
@@ -494,6 +497,7 @@ async function deletePermintaan(req, res) {
                         database.beginTransaction(function (error) {
                             var sqlquery = "DELETE FROM permintaan WHERE idpermintaan = ?"
                             database.query(sqlquery, [idpermintaan], (error, result) => {
+                                database.release()
                                 if (error) {
                                     database.rollback(function () {
                                         database.release()
