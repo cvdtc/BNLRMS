@@ -60,7 +60,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          ReusableClass().modalAddSite(context, 'ubah', token!, "", "", "", "");
+          ReusableClass().modalAddSite(context, 'tambah', token!, "", "", "", "", "","","");
           // RequestBottom()
           //     .modalAddRequest(context, "tambah", token!, "", "", "", "0");
         },

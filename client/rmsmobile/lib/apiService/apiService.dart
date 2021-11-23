@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/model/login/loginResult.model.dart';
+import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
+import 'package:rmsmobile/model/request/request.model.edit.dart';
 import 'package:rmsmobile/model/response/responsecode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -71,6 +73,49 @@ class ApiService {
     print("addrequest");
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
+    print('respon dari api add $responseCode + $responsemessage');
+    // if (response.statusCode == 201) {
+    if (responseCode.messageApi == 'Done!') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> ubahRequest(
+      String token, String idpermintaan, RequestModelEdit data) async {
+    var url = Uri.parse(baseUrl + 'permintaan' + '/' + idpermintaan);
+    print('hasilurl $url idpermintaannya $idpermintaan');
+    var response = await client.put(url,
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer ${token}'
+        },
+        body: RequestModelEditToJson(data));
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  ///////////////////// END MODEL ALL REQUEST : GET, PUT, POST, DEL ////////////////////////////////
+
+  // ! Add Data Request
+  Future<bool> addProgres(String token, ProgressModel data) async {
+    print("addprogress1");
+    var url = Uri.parse(baseUrl + 'progress');
+    var response = await client.post(url,
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer ${token}'
+        },
+        body: ProgressModelToJson(data));
+    print("addprogress");
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -78,5 +123,5 @@ class ApiService {
     }
   }
 }
+ 
 
-///////////////////// END MODEL ALL REQUEST : GET, PUT, POST, DEL ////////////////////////////////

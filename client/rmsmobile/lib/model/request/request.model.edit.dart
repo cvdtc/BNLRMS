@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-class RequestModel {
+class RequestModelEdit {
   var idpermintaan,
       keterangan,
       kategori,
@@ -12,7 +12,7 @@ class RequestModel {
       due_date,
       token, tipeupdate;
 
-  RequestModel(
+  RequestModelEdit(
       {this.idpermintaan,
       this.keterangan,
       this.kategori,
@@ -26,8 +26,8 @@ class RequestModel {
       this.tipeupdate
       });
 
-  factory RequestModel.fromJson(Map<dynamic, dynamic> map) {
-    return RequestModel(
+  factory RequestModelEdit.fromJson(Map<dynamic, dynamic> map) {
+    return RequestModelEdit(
         idpermintaan: map["idpermintaan"],
         keterangan: map["keterangan"],
         kategori: map["kategori"],
@@ -47,8 +47,8 @@ class RequestModel {
       "kategori": kategori,
       "due_date": due_date,
       "flag_selesai": flag_selesai,
-      // "keterangan_selesai": keterangan_selesai,
-      // "tipeupdate": tipeupdate
+      "keterangan_selesai": keterangan_selesai,
+      "tipeupdate": tipeupdate
     };
   }
 
@@ -58,13 +58,13 @@ class RequestModel {
   }
 }
 
-List<RequestModel> RequestModelFromJson(String dataJson) {
+List<RequestModelEdit> RequestModelEditFromJson(String dataJson) {
   final data = json.decode(dataJson);
-  return List<RequestModel>.from(
-      data["data"].map((item) => RequestModel.fromJson(item)));
+  return List<RequestModelEdit>.from(
+      data["data"].map((item) => RequestModelEdit.fromJson(item)));
 }
 
-String RequestModelToJson(RequestModel data) {
+String RequestModelEditToJson(RequestModelEdit data) {
   final jsonData = data.toJson();
   return json.encode(jsonData);
 }
