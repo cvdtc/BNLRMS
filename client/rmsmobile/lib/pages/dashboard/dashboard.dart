@@ -4,6 +4,7 @@ import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/permintaan.dart';
+import 'package:rmsmobile/pages/dashboard/dashboard.item.page/progres.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.widget/active.project.card.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -247,10 +248,10 @@ class _DahsboardState extends State<Dahsboard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               subheading('Permintaan'),
-                              GestureDetector(
-                                onTap: (){},
-                                child: Text('Selengkapnya >>>'),
-                              )
+                              // GestureDetector(
+                              //   onTap: (){},
+                              //   child: Text('Selengkapnya >>>'),
+                              // )
                             ],
                           ),
                           SizedBox(height: 10,),
@@ -272,14 +273,14 @@ class _DahsboardState extends State<Dahsboard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               subheading('Progres'),
-                              GestureDetector(
-                                onTap: (){},
-                                child: Text('Selengkapnya >>>'),
-                              )
+                              // GestureDetector(
+                              //   onTap: (){},
+                              //   child: Text('Selengkapnya >>>'),
+                              // )
                             ],
                           ),
                           SizedBox(height: 10,),
-                          
+                          ProgresList()
                         ],
                       ),
                     )

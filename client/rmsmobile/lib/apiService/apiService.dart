@@ -4,6 +4,7 @@ import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/model/login/loginResult.model.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
+import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
 import 'package:rmsmobile/model/response/responsecode.dart';
@@ -102,13 +103,15 @@ class ApiService {
   }
 
   Future<bool> hapusRequest(String token, String idpermintaan) async {
-    var url = Uri.parse(baseUrl + 'permintaan/' + idpermintaan);
+    var url = Uri.parse(baseUrl + 'permintaan/' + idpermintaan.toString());
     var response = await client.delete(url, headers: {
       'content-type': 'application/json',
       'Authorization': 'Bearer ${token}'
     });
+    print('url delete $url + "token $token" + idpermintaan $idpermintaan');
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
+    print('responapidelete $responsemessage + ${response.statusCode}');
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -136,6 +139,24 @@ class ApiService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<List<ProgressModel>?> getListProgres(String token) async {
+    var url = Uri.parse(baseUrl + 'progress');
+    var response = await client.get(url, headers: {
+      'content-type': 'application/json',
+      // ++ fyi : sending token with BEARER
+      'Authorization': 'Bearer ' + token
+    });
+    // ++ fyi : for getting response message from api
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+    print("Data Komponen : " + response.body);
+    if (response.statusCode == 200) {
+      return ProgressModelFromJson(response.body);
+    } else {
+      return null;
     }
   }
 

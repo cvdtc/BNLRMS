@@ -3,6 +3,7 @@ import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
+import 'package:rmsmobile/model/request/request.model.hapus.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
 class ReusableClass {
@@ -256,6 +257,15 @@ class ReusableClass {
             'f405',
             'assets/images/sorry.png');
       }
+    } else if (tipe == 'hapus'){
+      if (idpermintaan == "") {
+        _modalbottomSite(
+            context,
+            "Tidak Valid!",
+            "idpermintaan tidak valid",
+            'f405',
+            'assets/images/sorry.png');
+      }
     } else {
       if (keterangan == "" || duedate == "" || kategori == "") {
         _modalbottomSite(
@@ -359,10 +369,19 @@ class ReusableClass {
                                     keterangan_selesai,
                                     tipeupdate,
                                     idpermintaan);
-                                } 
-                                // else if (tipe == 'hapus'){
-                                // } 
-                                else {
+                                } else if (tipe == 'hapus'){
+                                  _actiontoapiHapusReq(
+                                    context, 
+                                    tipe, 
+                                    token, 
+                                    keterangan, 
+                                    kategori, 
+                                    duedate, 
+                                    flag_selesai, 
+                                    keterangan_selesai, 
+                                    tipeupdate, 
+                                    idpermintaan);
+                                } else {
                                   _actiontoapi(
                                     context,
                                     tipe,
@@ -599,6 +618,64 @@ class ReusableClass {
         print('ini tambah progres lho');
         _apiService.addProgres(token, dataprogress).then((isSuccess) {
           print('tambah progress $token, $dataprogress');
+          if (isSuccess) {
+            _modalbottomSite(
+                context,
+                "Berhasil!",
+                "${_apiService.responseCode.messageApi}",
+                "f200",
+                "assets/images/congratulations.png");
+          } else {
+            _modalbottomSite(
+                context,
+                "Gagal!",
+                "${_apiService.responseCode.messageApi}",
+                "f400",
+                "assets/images/sorry.png");
+          }
+          return;
+        });
+      } else {
+        _modalbottomSite(context, "Tidak Valid!", "Action anda tidak sesuai",
+            'f404', 'assets/images/sorry.png');
+      }
+    }
+  }
+
+  void _actiontoapiHapusReq(
+      context,
+      String tipe,
+      String token,
+      String keterangan,
+      String kategori,
+      String duedate,
+      String flag_selesai,
+      String keterangan_selesai,
+      String tipeupdate,
+      String idpermintaan) {
+    print('here? $tipe');
+    print("Will be Execute act to api " +
+        tipe +
+        token +
+        keterangan +
+        idpermintaan);
+    if (idpermintaan == "") {
+      print('mosok masuk sini?');
+      _modalbottomSite(
+          context,
+          "Tidak Valid!",
+          "idpermintaan tidak valid!",
+          'f405',
+          'assets/images/sorry.png');
+    } else {
+      print('heres?? $tipe ~ $idpermintaan');
+      // ProgressModelDel datahapus =
+      //     ProgressModelDel(idpermintaan: idpermintaan);
+
+      if (tipe == 'hapus') {
+        print('ini hapus lho');
+        _apiService.hapusRequest(token, idpermintaan).then((isSuccess) {
+          print('hapus req $token');
           if (isSuccess) {
             _modalbottomSite(
                 context,
