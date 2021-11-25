@@ -1,11 +1,25 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
-import 'package:rmsmobile/pages/progres/pengguna.combo.network.dart';
 import 'package:http/http.dart' as client;
+
+class Country {
+  final String countryCode;
+  final String countryName;
+
+  Country({required this.countryCode, required this.countryName});
+
+  factory Country.fromJson(Map<String, dynamic> json) {
+    return Country(
+      countryCode: json['idpengguna'],
+      countryName: json['nama'],
+    );
+  }
+}
 
 class ProgressTile extends StatefulWidget {
   late final ProgressModel progress;
@@ -19,31 +33,28 @@ class ProgressTile extends StatefulWidget {
 class _ProgressTileState extends State<ProgressTile> {
   ApiService _apiService = new ApiService();
   String? token, keterangan, kategori, duedate;
-  String  valpengguna = "Paten";
+  String valpengguna = "Paten";
   TextEditingController _tecKeterangan = TextEditingController(text: "");
   TextEditingController _controlleridpengguna = TextEditingController();
 
   List<PenggunaModel> _penggunaDisplay = <PenggunaModel>[];
-  void getcomboPengguna() async {
+
+  List? pnggunaList;
+  String? _mypengguna;
+  Future<String?> _pngguna() async {
     var url = Uri.parse(_apiService.baseUrl + 'pengguna');
-    var response =
+    final response =
         await client.get(url, headers: {"Authorization": "BEARER ${token}"});
-    // var listdata = json.decode(response.body);
-    Map<String, dynamic> map = json.decode(response.body);
-    List<dynamic> data = map['data'];
-    print('here we go ${data[0]['nama']} + ${data[0]}');
+    var dataz = json.decode(response.body);
     setState(() {
-      data = _penggunaDisplay;
-      print('dataz $data');
+      pnggunaList = dataz['data'];
     });
   }
 
   @override
   void initState() {
-    print('penggunadisplay $_penggunaDisplay');
+    _pngguna();
     _penggunaDisplay;
-    getcomboPengguna();
-    // cekPengguna();
     super.initState();
   }
 
@@ -55,118 +66,108 @@ class _ProgressTileState extends State<ProgressTile> {
             elevation: 0.0,
             child: InkWell(
               onTap: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Padding(
-                        padding: MediaQuery.of(context).viewInsets,
-                        child: Container(
-                          padding: EdgeInsets.all(15.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('DETAIL PROGRES',
-                                  style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Deskripsi : ' + widget.progress.keterangan,
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              Text('Kategori: ' + widget.progress.kategori,
-                                  style: TextStyle(fontSize: 16)),
-                              Text('Due Date: ' + widget.progress.due_date,
-                                  style: TextStyle(fontSize: 16)),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Divider(
-                                height: 5,
-                              ),
-                              TextFormField(
-                                  controller: _tecKeterangan,
-                                  textCapitalization:
-                                      TextCapitalization.characters,
-                                  decoration: InputDecoration(
-                                      icon: Icon(Icons.cabin_rounded),
-                                      labelText: 'Keterangan Progres',
-                                      hintText: 'Masukkan Deskripsi',
-                                      suffixIcon: Icon(Icons
-                                          .check_circle_outline_outlined))),
-                              SizedBox(
-                                height: 15.0,
-                              ),
-                              Row(
-                                children: [
-                                  Text('Pilih Kategori '),
-                                  SizedBox(
-                                    width: 10.0,
+                setState(() {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Padding(
+                          padding: MediaQuery.of(context).viewInsets,
+                          child: Container(
+                            padding: EdgeInsets.all(15.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('DETAIL PROGRES',
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold)),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  'Deskripsi : ' + widget.progress.keterangan,
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                Text('Kategori: ' + widget.progress.kategori,
+                                    style: TextStyle(fontSize: 16)),
+                                Text('Due Date: ' + widget.progress.due_date,
+                                    style: TextStyle(fontSize: 16)),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Divider(
+                                  height: 5,
+                                ),
+                                TextFormField(
+                                    controller: _tecKeterangan,
+                                    textCapitalization:
+                                        TextCapitalization.characters,
+                                    decoration: InputDecoration(
+                                        icon: Icon(Icons.cabin_rounded),
+                                        labelText: 'Keterangan Progres',
+                                        hintText: 'Masukkan Deskripsi',
+                                        suffixIcon: Icon(Icons
+                                            .check_circle_outline_outlined))),
+                                SizedBox(
+                                  height: 15.0,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      left: 15, right: 15, top: 5),
+                                  color: Colors.white,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      _buildKomboPengguna(
+                                          _mypengguna.toString())
+                                    ],
                                   ),
-                                  DropdownButton(
-                                    dropdownColor: Colors.white,
-                                    value: valpengguna,
-                                    icon: Icon(Icons.arrow_drop_down),
-                                    onChanged: (String? value) {
-                                      // setState(() {
-                                      valpengguna = value!;
-                                      print("Value Dropdown? " + value);
-                                      // });
+                                ),
+                                SizedBox(
+                                  height: 15.0,
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      print('heyyuuu $_mypengguna');
+                                      // Navigator.of(context).pop();
+                                      // modalAddSite(context, 'progres', token, keterangan, '',
+                                      //     '', '0', idpermintaan.toString(), '', 'data');
                                     },
-                                    items: _penggunaDisplay.map((e){
-                                      return DropdownMenuItem(
-                                        child: Text("${e.nama}"),
-                                        value: e.idpengguna.toString(),
-                                        );
-                                    }).toList()
-                                  )
-                                ],
-                              ),
-                              // _buildKomboPengguna(valpengguna.toString()),
-                              SizedBox(
-                                height: 15.0,
-                              ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    // Navigator.of(context).pop();
-                                    // modalAddSite(context, 'progres', token, keterangan, '',
-                                    //     '', '0', idpermintaan.toString(), '', 'data');
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      side: BorderSide(
-                                          width: 2, color: Colors.blue),
-                                      elevation: 0.0,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      primary: Colors.white),
-                                  child: Ink(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(18.0)),
-                                      child: Container(
-                                        width: 325,
-                                        height: 45,
-                                        alignment: Alignment.center,
-                                        child: Text('SELESAIKAN PROGRES',
-                                            style: TextStyle(
-                                              color: Colors.blue,
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold,
-                                            )),
-                                      ))),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ],
+                                    style: ElevatedButton.styleFrom(
+                                        side: BorderSide(
+                                            width: 2, color: Colors.blue),
+                                        elevation: 0.0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
+                                        primary: Colors.white),
+                                    child: Ink(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(18.0)),
+                                        child: Container(
+                                          width: 325,
+                                          height: 45,
+                                          alignment: Alignment.center,
+                                          child: Text('SELESAIKAN PROGRES',
+                                              style: TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                        ))),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    });
+                        );
+                      });
+                });
 
                 // ReusableClassProgress().modalActionItem(
                 //     context,
@@ -212,38 +213,35 @@ class _ProgressTileState extends State<ProgressTile> {
 
   Widget _buildKomboPengguna(String pengguna1) {
     _controlleridpengguna = TextEditingController(text: pengguna1);
-    return DropdownButtonFormField(
-      dropdownColor: Colors.white,
-      hint: Text('Pilih next user'),
-      value: valpengguna,
-      // icon: Icon(Icons.arrow_drop_down),
-      onChanged: (String? value) {
-        setState(() {
-          valpengguna = value!;
-        });
-      },
-      items: _penggunaDisplay.map((item) {
-        return DropdownMenuItem(
-          child: Text("${['nama']}"),
-          value: item.idpengguna.toString(),
-        );
-      }).toList(),
-    );
-    // return DropdownButtonFormField(
-    //   dropdownColor: Colors.white,
-    //   hint: Text("Pilih Next Progres"),
-    //   value: valpengguna,
-    //   items: _penggunaDisplay.map((item) {
-    //     return DropdownMenuItem(
-    //       child: Text("${item.nama}"),
-    //       value: item.idpengguna.toString(),
-    //     );
-    //   }).toList(),
-    //   onChanged: (String? newvalue) {
-    //     setState(() {
-    //       valpengguna = newvalue.toString();
-    //     });
-    //   },
-    // );
+    return Expanded(
+        child: DropdownButtonHideUnderline(
+      child: ButtonTheme(
+          alignedDropdown: true,
+          child: DropdownButton<String>(
+            value: _mypengguna,
+            iconSize: 30,
+            icon: Icon(Icons.arrow_drop_down),
+            style: TextStyle(
+              color: Colors.black54,
+              fontSize: 16,
+            ),
+            hint: Text('Pilih Pengguna Selanjutnya'),
+            onChanged: (String? value) {
+              setState(() {
+                _mypengguna = value;
+                print('penggunanya $_mypengguna');
+              });
+            },
+            items: pnggunaList?.map((item) {
+              return new DropdownMenuItem(
+                child: Text(
+                  '${item['nama']}',
+                  style: TextStyle(color: Colors.black),
+                ),
+                value: item['idpengguna'].toString(),
+              );
+            }).toList(),
+          )),
+    ));
   }
 }
