@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/model/login/loginResult.model.dart';
+import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
@@ -73,9 +74,8 @@ class ApiService {
     print("addrequest");
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
-    print('respon dari api add $responseCode + $responsemessage');
-    // if (response.statusCode == 201) {
-    if (responseCode.messageApi == 'Done!') {
+    print('respon dari api add ${response.statusCode}');
+    if (response.statusCode == 201) {
       return true;
     } else {
       return false;
@@ -101,10 +101,25 @@ class ApiService {
     }
   }
 
+  Future<bool> hapusRequest(String token, String idpermintaan) async {
+    var url = Uri.parse(baseUrl + 'permintaan/' + idpermintaan);
+    var response = await client.delete(url, headers: {
+      'content-type': 'application/json',
+      'Authorization': 'Bearer ${token}'
+    });
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   ///////////////////// END MODEL ALL REQUEST : GET, PUT, POST, DEL ////////////////////////////////
 
   // ! Add Data Request
-  Future<bool> addProgres(String token, ProgressModel data) async {
+  Future<bool> addProgres(String token, ProgressModelAdd data) async {
     print("addprogress1");
     var url = Uri.parse(baseUrl + 'progress');
     var response = await client.post(url,
@@ -112,14 +127,33 @@ class ApiService {
           'content-type': 'application/json',
           'Authorization': 'Bearer ${token}'
         },
-        body: ProgressModelToJson(data));
+        body: ProgressModelAddToJson(data));
     print("addprogress");
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
-    if (response.statusCode == 200) {
+    print('rescode progress ${response.statusCode}');
+    if (response.statusCode == 201) {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<List<PenggunaModel>?> getPengguna(String token) async {
+    var url = Uri.parse(baseUrl + 'pengguna');
+    var response = await client.get(url, headers: {
+      'content-type': 'application/json',
+      // ++ fyi : sending token with BEARER
+      'Authorization': 'Bearer ' + token
+    });
+    // ++ fyi : for getting response message from api
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+    print("Data pengguna : " + response.body);
+    if (response.statusCode == 200) {
+      return PenggunaModelFromJson(response.body);
+    } else {
+      return null;
     }
   }
 }

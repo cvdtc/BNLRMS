@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
-import 'package:rmsmobile/pages/request/bottom.dart';
+import 'package:rmsmobile/pages/request/request.bottom.dart';
+
 import 'package:rmsmobile/pages/request/request.network.dart';
 import 'package:rmsmobile/pages/request/request.tile.dart';
 import 'package:rmsmobile/utils/warna.dart';
@@ -61,8 +62,6 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           ReusableClass().modalAddSite(context, 'tambah', token!, "", "", "", "", "","","");
-          // RequestBottom()
-          //     .modalAddRequest(context, "tambah", token!, "", "", "", "0");
         },
         backgroundColor: thirdcolor,
         label: Text(

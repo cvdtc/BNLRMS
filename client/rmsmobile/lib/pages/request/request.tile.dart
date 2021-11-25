@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 
-import 'bottom.dart';
+import 'request.bottom.dart';
 
 class RequestTile extends StatelessWidget {
   late final RequestModel request;

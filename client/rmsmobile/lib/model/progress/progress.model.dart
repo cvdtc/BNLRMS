@@ -1,21 +1,20 @@
 import 'dart:convert';
 
-class ProgressModelAdd {
+class ProgressModel {
   var idprogress,
-  keterangan,
-  created,
-  edited,
-  flag_selesai,
-  next_idpengguna,
-  idpengguna,
-  idpermintaan,
-  permintaan,
-  kategori,
-  due_date;
+      keterangan,
+      created,
+      edited,
+      flag_selesai,
+      next_idpengguna,
+      idpengguna,
+      idpermintaan,
+      permintaan,
+      kategori,
+      due_date;
 
-  ProgressModelAdd(
-      {
-        this.idprogress,
+  ProgressModel(
+      {this.idprogress,
       this.keterangan,
       this.created,
       this.edited,
@@ -25,11 +24,10 @@ class ProgressModelAdd {
       this.idpermintaan,
       this.permintaan,
       this.kategori,
-      this.due_date
-      });
+      this.due_date});
 
-  factory ProgressModelAdd.fromJson(Map<dynamic, dynamic> map) {
-    return ProgressModelAdd(
+  factory ProgressModel.fromJson(Map<dynamic, dynamic> map) {
+    return ProgressModel(
         idprogress: map["idprogress"],
         keterangan: map["keterangan"],
         created: map["created"],
@@ -40,8 +38,7 @@ class ProgressModelAdd {
         idpermintaan: map["idpermintaan"],
         permintaan: map["permintaan"],
         kategori: map["kategori"],
-        due_date: map["due_date"]
-        );
+        due_date: map["due_date"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -53,17 +50,17 @@ class ProgressModelAdd {
 
   @override
   String toString() {
-    return 'keterangan: $keterangan, created: $created, edited:$edited, due_date: $due_date, flag_selesai: $flag_selesai, next_idpengguna: $next_idpengguna, permintaan: $permintaan, kategori: $kategori';
+    return 'idprogress: $idprogress, keterangan: $keterangan, created: $created, edited:$edited, flag_selesai: $flag_selesai, next_idpengguna: $next_idpengguna, due_date: $due_date, permintaan: $permintaan, kategori: $kategori';
   }
 }
 
-List<ProgressModelAdd> ProgressModelAddFromJson(String dataJson) {
+List<ProgressModel> ProgressModelFromJson(String dataJson) {
   final data = json.decode(dataJson);
-  return List<ProgressModelAdd>.from(
-      data["data"].map((item) => ProgressModelAdd.fromJson(item)));
+  return List<ProgressModel>.from(
+      data["data"].map((item) => ProgressModel.fromJson(item)));
 }
 
-String ProgressModelAddToJson(ProgressModelAdd data) {
+String ProgressModelToJson(ProgressModel data) {
   final jsonData = data.toJson();
   return json.encode(jsonData);
 }
