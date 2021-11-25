@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/model/login/loginResult.model.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
+import 'package:rmsmobile/model/progress/progress.edit.selesai.model.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
@@ -157,6 +158,25 @@ class ApiService {
       return ProgressModelFromJson(response.body);
     } else {
       return null;
+    }
+  }
+
+  Future<bool> ubahProgresJadiSelesai(
+      String token, String idprogress, ProgressModelEdit data) async {
+    var url = Uri.parse(baseUrl + 'progress' + '/' + idprogress);
+    print('hasilurl $url idprogress $idprogress');
+    var response = await client.put(url,
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer ${token}'
+        },
+        body: ProgressModelEditToJson(data));
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 

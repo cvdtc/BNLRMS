@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
+import 'package:rmsmobile/model/progress/progress.edit.selesai.model.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:http/http.dart' as client;
+import 'package:rmsmobile/utils/warna.dart';
 
 class Country {
   final String countryCode;
@@ -32,7 +34,13 @@ class ProgressTile extends StatefulWidget {
 
 class _ProgressTileState extends State<ProgressTile> {
   ApiService _apiService = new ApiService();
-  String? token, keterangan, kategori, duedate;
+  String? token,
+      keterangan,
+      kategori,
+      duedate,
+      next_idpengguna,
+      flag_selesai,
+      idprogress;
   String valpengguna = "Paten";
   TextEditingController _tecKeterangan = TextEditingController(text: "");
   TextEditingController _controlleridpengguna = TextEditingController();
@@ -53,6 +61,7 @@ class _ProgressTileState extends State<ProgressTile> {
 
   @override
   void initState() {
+    _mypengguna;
     _pngguna();
     _penggunaDisplay;
     super.initState();
@@ -69,6 +78,7 @@ class _ProgressTileState extends State<ProgressTile> {
                 setState(() {
                   showModalBottomSheet(
                       context: context,
+                      isScrollControlled: true,
                       builder: (BuildContext context) {
                         return Padding(
                           padding: MediaQuery.of(context).viewInsets,
@@ -132,9 +142,175 @@ class _ProgressTileState extends State<ProgressTile> {
                                 ElevatedButton(
                                     onPressed: () {
                                       print('heyyuuu $_mypengguna');
-                                      // Navigator.of(context).pop();
-                                      // modalAddSite(context, 'progres', token, keterangan, '',
-                                      //     '', '0', idpermintaan.toString(), '', 'data');
+                                      if (keterangan == "" ||
+                                          _mypengguna == null) {
+                                        _modalbottomSite(
+                                            context,
+                                            "Tidak Valid!",
+                                            "Pastikan semua kolom terisi dengan benar",
+                                            'f405',
+                                            'assets/images/sorry.png');
+                                      }
+                                      showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft:
+                                                      Radius.circular(15.0),
+                                                  topRight:
+                                                      Radius.circular(15.0))),
+                                          builder: (BuildContext context) {
+                                            return Padding(
+                                              padding: MediaQuery.of(context)
+                                                  .viewInsets,
+                                              child: Container(
+                                                padding: EdgeInsets.all(15.0),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                      'Konfirmasi Selesai',
+                                                      style: TextStyle(
+                                                          fontSize: 22,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Text(
+                                                        'Apakah anda yakin akan menyelesaikan tugas ini ? ',
+                                                        style: TextStyle(
+                                                            fontSize: 16)),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
+                                                              elevation: 0.0,
+                                                              primary:
+                                                                  Colors.red,
+                                                            ),
+                                                            child: Ink(
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              18)),
+                                                              child: Container(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                child: Text(
+                                                                  "Batal",
+                                                                ),
+                                                              ),
+                                                            )),
+                                                        SizedBox(
+                                                          width: 55,
+                                                        ),
+                                                        ElevatedButton(
+                                                            onPressed: () {
+                                                              ProgressModelEdit
+                                                                  modeledit =
+                                                                  ProgressModelEdit(
+                                                                      keterangan:
+                                                                          keterangan,
+                                                                      next_idpengguna:
+                                                                          _mypengguna,
+                                                                      flag_selesai:
+                                                                          '1');
+                                                              print(
+                                                                  'dataselesai $modeledit');
+                                                              _apiService
+                                                                  .ubahProgresJadiSelesai(
+                                                                      token
+                                                                          .toString(),
+                                                                      idprogress
+                                                                          .toString(),
+                                                                      modeledit)
+                                                                  .then(
+                                                                      (isSuccess) {
+                                                                if (isSuccess) {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  // _tecNama.clear();
+                                                                  // _tecKeterangan.clear();
+                                                                  _modalbottomSite(
+                                                                      context,
+                                                                      "Berhasil!",
+                                                                      "${_apiService.responseCode.messageApi}",
+                                                                      "f200",
+                                                                      "assets/images/congratulations.png");
+                                                                } else {
+                                                                  _modalbottomSite(
+                                                                      context,
+                                                                      "Gagal!",
+                                                                      "${_apiService.responseCode.messageApi}",
+                                                                      "f400",
+                                                                      "assets/images/sorry.png");
+                                                                }
+                                                                return;
+                                                              });
+                                                            },
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
+                                                              elevation: 0.0,
+                                                              primary:
+                                                                  Colors.white,
+                                                            ),
+                                                            child: Ink(
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              18)),
+                                                              child: Container(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                child: Text(
+                                                                  "Submit",
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          primarycolor),
+                                                                ),
+                                                              ),
+                                                            )),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          });
                                     },
                                     style: ElevatedButton.styleFrom(
                                         side: BorderSide(
@@ -212,9 +388,8 @@ class _ProgressTileState extends State<ProgressTile> {
   }
 
   Widget _buildKomboPengguna(String pengguna1) {
-    _controlleridpengguna = TextEditingController(text: pengguna1);
-    return Expanded(
-        child: DropdownButtonHideUnderline(
+    // _controlleridpengguna = TextEditingController(text: pengguna1);
+    return DropdownButtonHideUnderline(
       child: ButtonTheme(
           alignedDropdown: true,
           child: DropdownButton<String>(
@@ -242,6 +417,59 @@ class _ProgressTileState extends State<ProgressTile> {
               );
             }).toList(),
           )),
-    ));
+    );
+  }
+
+  _modalbottomSite(context, String title, String message, String kode,
+      String imagelocation) {
+    print('Yash im show');
+    // dynamic navigation;
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0))),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title.toUpperCase(),
+                      style: TextStyle(
+                          fontSize: 22.0, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "[ " + kode.toUpperCase() + " ]",
+                      style: TextStyle(fontSize: 11.0),
+                    )
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                Image.asset(
+                  imagelocation,
+                  height: 150,
+                  width: 250,
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  message.toString(),
+                  style: TextStyle(fontSize: 16.0),
+                ),
+                SizedBox(
+                  height: 10.0,
+                )
+              ],
+            ),
+          );
+        });
   }
 }
