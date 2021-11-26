@@ -347,7 +347,7 @@ async function ubahProgress(req, res) {
                                 let updateprogress = {
                                     keterangan: keterangan,
                                     flag_selesai: flag_selesai,
-                                    next_user: next_idpengguna, // * wiil be change to next_idpengguna if database successfull sync
+                                    next_idpengguna: next_idpengguna, // * wiil be change to next_idpengguna if database successfull sync
                                     edited: new Date().toISOString().replace('T', ' ').substring(0, 19),
                                     idpengguna: jwtresult.idpengguna
                                 }
