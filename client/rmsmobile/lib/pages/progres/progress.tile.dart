@@ -8,6 +8,7 @@ import 'package:rmsmobile/model/progress/progress.edit.selesai.model.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:http/http.dart' as client;
 import 'package:rmsmobile/utils/warna.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Country {
   final String countryCode;
@@ -34,16 +35,18 @@ class ProgressTile extends StatefulWidget {
 
 class _ProgressTileState extends State<ProgressTile> {
   ApiService _apiService = new ApiService();
-  String? token,
+  late SharedPreferences sp;
+  String? token = "",
       keterangan,
       kategori,
       duedate,
       next_idpengguna,
       flag_selesai,
-      idprogress;
+      idprogress = "",
+      username = "",
+      jabatan = "";
   String valpengguna = "Paten";
   TextEditingController _tecKeterangan = TextEditingController(text: "");
-  TextEditingController _controlleridpengguna = TextEditingController();
 
   List<PenggunaModel> _penggunaDisplay = <PenggunaModel>[];
 
@@ -59,8 +62,19 @@ class _ProgressTileState extends State<ProgressTile> {
     });
   }
 
+  cekToken() async {
+    sp = await SharedPreferences.getInstance();
+    setState(() {
+      token = sp.getString("access_token");
+      username = sp.getString("username");
+      jabatan = sp.getString("jabatan");
+    });
+  }
+
   @override
   void initState() {
+    idprogress = widget.progress.idprogress.toString();
+    cekToken();
     _mypengguna;
     _pngguna();
     _penggunaDisplay;
@@ -236,17 +250,20 @@ class _ProgressTileState extends State<ProgressTile> {
                                                         ),
                                                         ElevatedButton(
                                                             onPressed: () {
+                                                              print(
+                                                                  'keterangannya ${_tecKeterangan.text} $token');
                                                               ProgressModelEdit
                                                                   modeledit =
                                                                   ProgressModelEdit(
-                                                                      keterangan:
-                                                                          keterangan,
+                                                                      keterangan: _tecKeterangan
+                                                                          .text
+                                                                          .toString(),
                                                                       next_idpengguna:
                                                                           _mypengguna,
                                                                       flag_selesai:
                                                                           '1');
                                                               print(
-                                                                  'dataselesai $modeledit');
+                                                                  'dataselesai $modeledit idprogress $idprogress');
                                                               _apiService
                                                                   .ubahProgresJadiSelesai(
                                                                       token
@@ -360,27 +377,22 @@ class _ProgressTileState extends State<ProgressTile> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text('Permintaan : ', style: TextStyle(fontSize: 18.0)),
-                        Text(widget.progress.permintaan,
-                            style: TextStyle(fontSize: 18.0))
-                      ],
-                    ),
+                    Text('Permintaan : ${widget.progress.permintaan}',
+                        style: TextStyle(fontSize: 14.0)),
                     SizedBox(
                       height: 5,
                     ),
                     Row(
                       children: [
                         Text('Kategori : ' + widget.progress.kategori,
-                            style: TextStyle(fontSize: 18.0)),
+                            style: TextStyle(fontSize: 14.0)),
                       ],
                     ),
                     SizedBox(
                       height: 5,
                     ),
                     Text('Keterangan : ' + widget.progress.keterangan,
-                        style: TextStyle(fontSize: 18.0)),
+                        style: TextStyle(fontSize: 14.0)),
                   ],
                 ),
               ),
@@ -389,35 +401,38 @@ class _ProgressTileState extends State<ProgressTile> {
 
   Widget _buildKomboPengguna(String pengguna1) {
     // _controlleridpengguna = TextEditingController(text: pengguna1);
-    return DropdownButtonHideUnderline(
-      child: ButtonTheme(
-          alignedDropdown: true,
-          child: DropdownButton<String>(
-            value: _mypengguna,
-            iconSize: 30,
-            icon: Icon(Icons.arrow_drop_down),
-            style: TextStyle(
-              color: Colors.black54,
-              fontSize: 16,
-            ),
-            hint: Text('Pilih Pengguna Selanjutnya'),
-            onChanged: (String? value) {
-              setState(() {
-                _mypengguna = value;
-                print('penggunanya $_mypengguna');
-              });
-            },
-            items: pnggunaList?.map((item) {
-              return new DropdownMenuItem(
-                child: Text(
-                  '${item['nama']}',
-                  style: TextStyle(color: Colors.black),
-                ),
-                value: item['idpengguna'].toString(),
-              );
-            }).toList(),
-          )),
-    );
+    return StatefulBuilder(builder:
+        (BuildContext context, void Function(void Function()) setState) {
+      return DropdownButtonHideUnderline(
+        child: ButtonTheme(
+            alignedDropdown: true,
+            child: DropdownButton<String>(
+              value: _mypengguna,
+              iconSize: 30,
+              icon: Icon(Icons.arrow_drop_down),
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 16,
+              ),
+              hint: Text('Pilih Pengguna Selanjutnya'),
+              onChanged: (String? value) {
+                setState(() {
+                  _mypengguna = value;
+                  print('penggunanya $_mypengguna');
+                });
+              },
+              items: pnggunaList?.map((item) {
+                return new DropdownMenuItem(
+                  child: Text(
+                    '${item['nama']}',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  value: item['idpengguna'].toString(),
+                );
+              }).toList(),
+            )),
+      );
+    });
   }
 
   _modalbottomSite(context, String title, String message, String kode,

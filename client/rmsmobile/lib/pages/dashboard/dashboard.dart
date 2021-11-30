@@ -49,7 +49,7 @@ class _DahsboardState extends State<Dahsboard> {
   late SharedPreferences sp;
   String? token = "", username = "", jabatan = "", nama = "";
   var jml_masalah = "", jml_selesai = 0, belum_selesai = 0;
-  // List<DashboardModel> _dashboard = <DashboardModel>[];
+  List<DashboardModel> _dashboard = <DashboardModel>[];
 
   // * ceking token and getting dashboard value from api
   cekToken() async {
@@ -60,16 +60,16 @@ class _DahsboardState extends State<Dahsboard> {
       nama = sp.getString('nama');
       jabatan = sp.getString("jabatan");
     });
-    // _apiService.getDashboard(token!).then((value) {
-    //   // DashboardModel dashboardModel = DashboardModel();
-    //   print("Jumlah Masalah? " + value.toString());
-    //   setState(() {
-    //     _dashboard.addAll(value!);
-    //   });
-      // jml_masalah = value as String.toList();
+    _apiService.getDashboard(token!).then((value) {
+      // DashboardModel dashboardModel = DashboardModel();
+      print("Jumlah Masalah? " + value.toString());
+      setState(() {
+        _dashboard.addAll(value!);
+      });
+      // jml_masalah = value.toString();
       // jml_selesai = dashboardModel.jml_selesai;
       // belum_selesai = jml_masalah - jml_selesai;
-    // });
+    });
   }
 
   @override
@@ -188,7 +188,7 @@ class _DahsboardState extends State<Dahsboard> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      "90",
+                                      _dashboard.length > 0 ? _dashboard[0].belum_selesai.toString() : "",
                                       style: TextStyle(fontSize: 30),
                                     ),
                                     Text(
@@ -208,11 +208,11 @@ class _DahsboardState extends State<Dahsboard> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      "10",
+                                      _dashboard.length > 0 ? _dashboard[0].selesai.toString() : "",
                                       style: TextStyle(fontSize: 30),
                                     ),
                                     Text(
-                                      "     Progres     ",
+                                      "     Selesai     ",
                                       style: GoogleFonts.inter(
                                           fontSize: 14,
                                           color: Colors.blue[800],

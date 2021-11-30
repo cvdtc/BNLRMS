@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/utils/warna.dart';
+import 'package:rmsmobile/widget/bottomnavigationbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:rmsmobile/utils/warna.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -11,12 +13,29 @@ class SplashScreenPage extends StatefulWidget {
 }
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
+late SharedPreferences sp;
+  String? token = "", username = "", jabatan = "";
+  
+  cekToken() async {
+    sp = await SharedPreferences.getInstance();
+    setState(() {
+      token = sp.getString("access_token");
+      username = sp.getString("username");
+      jabatan = sp.getString("jabatan");
+    });
+    if (token == null) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Loginscreen()));
+    } else {
+      Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BottomNav()));
+    }
+  }
   @override
   void initState() {
     super.initState();
     Timer(Duration(seconds: 4), () {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
+      cekToken();
     });
   }
 

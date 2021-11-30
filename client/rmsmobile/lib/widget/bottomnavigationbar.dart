@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/pages/akun/akun.page.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.dart';
 import 'package:rmsmobile/pages/progres/progres.page.dart';
@@ -16,6 +17,7 @@ double scaledWidth(BuildContext context, double baseSize) {
   return baseSize * (MediaQuery.of(context).size.width / 375);
 }
 
+
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
 
@@ -24,6 +26,7 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
+  DateTime? backbuttonpressedtime;
   int _currentTab = 0;
   Color logoColor = Colors.red[600]!;
   PageStorageBucket bucket = PageStorageBucket();
@@ -51,50 +54,69 @@ class _BottomNavState extends State<BottomNav> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.grey[100],
-      ),
-      home: Builder(
-        builder: (BuildContext context) {
-          double largeIconHeight = MediaQuery.of(context).size.width;
-          double navBarHeight = scaledHeight(context, 85);
-          double topOffset = (MediaQuery.of(context).size.height -
-                  largeIconHeight -
-                  MediaQuery.of(context).viewInsets.top -
-                  (navBarHeight * 2)) /
-              2;
-          return Scaffold(
-            body: PageStorage(bucket: bucket, child: _currentPage[_currentTab]),
-            bottomNavigationBar: Container(
-              height: navBarHeight,
-              width: MediaQuery.of(context).size.width,
-              // Option 1: Recommended
-              child: RollingNavBar.iconData(
-                activeBadgeColors: <Color>[
-                  Colors.white,
-                ],
-                activeIndex: _currentTab,
-                animationCurve: Curves.linear,
-                animationType: AnimationType.roll,
-                baseAnimationSpeed: 200,
-                iconData: iconData,
-                iconColors: <Color>[Colors.grey[800]!],
-                iconText: iconText,
-                indicatorColors: <Color>[thirdcolor],
-                iconSize: 25,
-                indicatorRadius: scaledHeight(context, 30),
-                onTap: (value) {
-                  setState(() {
-                    _currentTab = value;
-                  });
-                },
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.grey[100],
+        ),
+        home: Builder(
+          builder: (BuildContext context) {
+            double largeIconHeight = MediaQuery.of(context).size.width;
+            double navBarHeight = scaledHeight(context, 85);
+            double topOffset = (MediaQuery.of(context).size.height -
+                    largeIconHeight -
+                    MediaQuery.of(context).viewInsets.top -
+                    (navBarHeight * 2)) /
+                2;
+            return Scaffold(
+              body: PageStorage(bucket: bucket, child: _currentPage[_currentTab]),
+              bottomNavigationBar: Container(
+                height: navBarHeight,
+                width: MediaQuery.of(context).size.width,
+                // Option 1: Recommended
+                child: RollingNavBar.iconData(
+                  activeBadgeColors: <Color>[
+                    Colors.white,
+                  ],
+                  activeIndex: _currentTab,
+                  animationCurve: Curves.linear,
+                  animationType: AnimationType.roll,
+                  baseAnimationSpeed: 200,
+                  iconData: iconData,
+                  iconColors: <Color>[Colors.grey[800]!],
+                  iconText: iconText,
+                  indicatorColors: <Color>[thirdcolor],
+                  iconSize: 25,
+                  indicatorRadius: scaledHeight(context, 30),
+                  onTap: (value) {
+                    setState(() {
+                      _currentTab = value;
+                    });
+                  },
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
+  }
+
+  Future<bool> _onBackPressed() async {
+    DateTime currenttime = DateTime.now();
+    bool backbutton = backbuttonpressedtime == null ||
+        currenttime.difference(backbuttonpressedtime!) > Duration(seconds: 3);
+
+    if (backbutton) {
+      backbuttonpressedtime = currenttime;
+      Fluttertoast.showToast(
+          msg: "Klik 2x untuk keluar aplikasi",
+          backgroundColor: Colors.black,
+          textColor: Colors.white);
+      return false;
+    }
+    return true;
   }
 }

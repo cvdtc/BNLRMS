@@ -49,7 +49,7 @@ class _ProgressPageState extends State<ProgressPage> {
       appBar: AppBar(
         title: Text(
           'Daftar Progres',
-          style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.bold),
+          style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         centerTitle: true,
         backgroundColor: thirdcolor,

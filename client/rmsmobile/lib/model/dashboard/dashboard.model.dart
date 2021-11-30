@@ -1,17 +1,17 @@
 import 'dart:convert';
 
 class DashboardModel {
-  var jml_masalah, jml_selesai;
+  var belum_selesai, selesai, jumlah;
 
-  DashboardModel({this.jml_masalah, this.jml_selesai});
+  DashboardModel({this.belum_selesai, this.selesai, this.jumlah});
   factory DashboardModel.fromJson(Map<dynamic, dynamic> map) {
     return DashboardModel(
-        jml_masalah: map["jml_masalah"], jml_selesai: map["jml_selesai"]);
+        belum_selesai: map["belum_selesai"], selesai: map["sudah_selesai"]);
   }
 
   @override
   String toString() {
-    return 'jml_masalah: $jml_masalah, jml_selesai: $jml_selesai';
+    return 'belum_selesai: $belum_selesai, selesai: $selesai';
   }
 }
 

@@ -89,27 +89,6 @@ class _LoginscreenState extends State<Loginscreen> {
               SizedBox(
                 height: 20,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      child: Text(
-                        'Lupa Password?',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 40,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
               Padding(
                 padding: const EdgeInsets.only(left: 25, right: 25),
                 child: ButtonTheme(

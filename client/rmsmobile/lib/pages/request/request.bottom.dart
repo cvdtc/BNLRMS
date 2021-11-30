@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
-import 'package:rmsmobile/model/request/request.model.hapus.dart';
+// import 'package:rmsmobile/model/request/request.model.hapus.dart';
+import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
 class ReusableClass {
   ApiService _apiService = new ApiService();
   TextEditingController _tecKeterangan = TextEditingController(text: "");
   TextEditingController _tecDueDate = TextEditingController(text: "");
-  String _dropdownValue = "Paten";
+  TextEditingController _tecKeteranganSelesai = TextEditingController(text: "");
+  String _dropdownValue = "Paten", tanggal = "";
+
+  DateTime selectedDate = DateTime.now();
+
+  bool isSelesai = false;
 
   // ++ BOTTOM MODAL INPUT FORM
   void modalAddSite(
@@ -84,9 +91,9 @@ class ReusableClass {
                                 _tecKeterangan.text.toString(),
                                 "",
                                 "",
-                                "0",
+                                tipeupdate == false ? '0' : '1',
                                 "",
-                                "",
+                                tipeupdate == false ? 'data' : 'selesai',
                                 idpermintaan.toString());
                           },
                           style: ElevatedButton.styleFrom(
@@ -119,118 +126,252 @@ class ReusableClass {
                     topLeft: Radius.circular(15.0),
                     topRight: Radius.circular(15.0))),
             builder: (BuildContext context) {
-              return Padding(
-                padding: MediaQuery.of(context).viewInsets,
-                child: Container(
-                  padding: EdgeInsets.all(15.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        tipe.toUpperCase(),
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10.0),
-                      TextFormField(
-                          controller: _tecKeterangan,
-                          textCapitalization: TextCapitalization.characters,
-                          decoration: InputDecoration(
-                              icon: Icon(Icons.cabin_rounded),
-                              labelText: 'Deskripsi Permintaan',
-                              hintText: 'Masukkan Deskripsi',
-                              suffixIcon:
-                                  Icon(Icons.check_circle_outline_outlined))),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              return StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.all(15.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Container(
-                              child: Row(
-                                children: [
-                                  Text('Pilih Kategori '),
-                                  SizedBox(
-                                    width: 10.0,
-                                  ),
-                                  DropdownButton(
-                                    dropdownColor: Colors.white,
-                                    value: _dropdownValue,
-                                    icon: Icon(Icons.arrow_drop_down),
-                                    onChanged: (String? value) {
-                                      // setState(() {
-                                      _dropdownValue = value!;
-                                      print("Value Dropdown? " + value);
-                                      // });
-                                    },
-                                    items: <String>[
-                                      'Paten',
-                                      'Merek',
-                                      'Desain Industri',
-                                      'Lainnya'
-                                    ].map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                      return DropdownMenuItem<String>(
-                                          value: value, child: Text(value));
-                                    }).toList(),
-                                  )
-                                ],
-                              ),
+                            Text(
+                              tipe.toUpperCase(),
+                              style: TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.bold),
                             ),
-                          ]),
-                      SizedBox(
-                        height: 10,
+                            SizedBox(height: 10.0),
+                            TextFormField(
+                                controller: _tecKeterangan,
+                                textCapitalization:
+                                    TextCapitalization.characters,
+                                decoration: InputDecoration(
+                                    icon: Icon(Icons.cabin_rounded),
+                                    labelText: 'Deskripsi Permintaan',
+                                    hintText: 'Masukkan Deskripsi',
+                                    suffixIcon: Icon(
+                                        Icons.check_circle_outline_outlined))),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.4,
+                                  child: TextFormField(
+                                      enabled: false,
+                                      controller: _tecDueDate,
+                                      textCapitalization:
+                                          TextCapitalization.words,
+                                      onSaved: (String? val) {
+                                        tanggal = val.toString();
+                                        print('jos?');
+                                      },
+                                      decoration: InputDecoration(
+                                          icon: Icon(Icons.note_outlined),
+                                          labelText: 'Pilih Tanggal',
+                                          hintText: 'Pilih Tanggal',
+                                          suffixIcon: Icon(Icons
+                                              .check_circle_outline_outlined))),
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      showDatePicker(
+                                          context: context,
+                                          initialDate: selectedDate,
+                                          firstDate: DateTime(2000),
+                                          lastDate: DateTime(2900),
+                                          builder: (context, picker) {
+                                            return Theme(
+                                                data: ThemeData.dark().copyWith(
+                                                    colorScheme:
+                                                        ColorScheme.dark(
+                                                            primary: Colors
+                                                                .deepOrange,
+                                                            onPrimary:
+                                                                Colors.white,
+                                                            surface:
+                                                                Colors.white70,
+                                                            onSurface:
+                                                                Colors.green),
+                                                    dialogBackgroundColor:
+                                                        Colors.white),
+                                                child: picker!);
+                                          }).then((value) {
+                                        if (value != null) {
+                                          selectedDate = value;
+                                          _tecDueDate.text =
+                                              DateFormat('yyyy-MM-dd')
+                                                  .format(selectedDate);
+                                          // _tecDueDate.text = value.toString();
+
+                                          print(
+                                              'tanggalnya dapet berapa ? ${_tecDueDate.text}');
+                                        }
+                                      });
+                                    },
+                                    child: Text('Tgl'))
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    child: Row(
+                                      children: [
+                                        Text('Pilih Kategori '),
+                                        SizedBox(
+                                          width: 10.0,
+                                        ),
+                                        StatefulBuilder(
+                                          builder: (BuildContext context,
+                                              void Function(void Function())
+                                                  setState) {
+                                            return DropdownButton(
+                                              dropdownColor: Colors.white,
+                                              value: _dropdownValue,
+                                              icon: Icon(Icons.arrow_drop_down),
+                                              onChanged: (String? value) {
+                                                // setState(() {
+                                                setState(() {
+                                                  _dropdownValue = value!;
+                                                });
+                                                print("Value Dropdown? " +
+                                                    value.toString());
+                                                // });
+                                              },
+                                              items: <String>[
+                                                'Paten',
+                                                'Merek',
+                                                'Desain Industri',
+                                                'Lainnya'
+                                              ].map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                                return DropdownMenuItem<String>(
+                                                    value: value,
+                                                    child: Text(value));
+                                              }).toList(),
+                                            );
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ]),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            tipe == 'ubah'
+                                ? StatefulBuilder(
+                                    builder: (BuildContext context,
+                                        void Function(void Function())
+                                            setState) {
+                                      return Container(
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text('Selesai Permintaan '),
+                                                Switch(
+                                                  onChanged: (bool value) {
+                                                    value == true
+                                                        ? 'selesai'
+                                                        : 'data';
+                                                    setState(() {
+                                                      isSelesai = value;
+                                                    });
+                                                    print(
+                                                        'telah diswitch $value + $isSelesai');
+                                                  },
+                                                  activeTrackColor: thirdcolor,
+                                                  activeColor: Colors.green,
+                                                  value: isSelesai,
+                                                ),
+                                                Text(
+                                                  isSelesai == true
+                                                      ? 'selesai'
+                                                      : 'data',
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            isSelesai == true
+                                                ? TextFormField(
+                                                    controller:
+                                                        _tecKeteranganSelesai,
+                                                    textCapitalization:
+                                                        TextCapitalization
+                                                            .words,
+                                                    decoration: InputDecoration(
+                                                        icon: Icon(Icons
+                                                            .note_outlined),
+                                                        labelText:
+                                                            'Keterangan Selesai',
+                                                        hintText:
+                                                            'Masukkan Keterangan Selesai',
+                                                        suffixIcon: Icon(Icons
+                                                            .check_circle_outline_outlined)))
+                                                : SizedBox(
+                                                    height: 0,
+                                                  ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : SizedBox(height: 0),
+                            SizedBox(
+                              height: 15.0,
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  print(
+                                      'showmodalbottomsheet2 $token, $tipe, ${_tecKeterangan.text.toString()}, ${_dropdownValue.toString()}, ${_tecDueDate.text.toString()}, $idpermintaan');
+                                  _modalKonfirmasi(
+                                      context,
+                                      token,
+                                      tipe,
+                                      _tecKeterangan.text.toString(),
+                                      _dropdownValue.toString(),
+                                      _tecDueDate.text.toString(),
+                                      isSelesai == true ? '1' : '0',
+                                      _tecKeteranganSelesai.text.toString(),
+                                      isSelesai == true ? 'selesai' : 'data',
+                                      idpermintaan);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    elevation: 0.0, primary: Colors.white),
+                                child: Ink(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(18.0)),
+                                    child: Container(
+                                      width: 325,
+                                      height: 45,
+                                      alignment: Alignment.center,
+                                      child: Text('S I M P A N',
+                                          style: TextStyle(
+                                            color: primarycolor,
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                    )))
+                          ],
+                        ),
                       ),
-                      TextFormField(
-                          controller: _tecDueDate,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                              icon: Icon(Icons.note_outlined),
-                              labelText: 'Due Date',
-                              hintText: 'Pilih Tanggal',
-                              suffixIcon:
-                                  Icon(Icons.check_circle_outline_outlined))),
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {
-                            print(
-                                'showmodalbottomsheet2 $token, $tipe, ${_tecKeterangan.text.toString()}, ${_dropdownValue.toString()}, ${_tecDueDate.text.toString()}, $idpermintaan');
-                            _modalKonfirmasi(
-                                context,
-                                token,
-                                tipe,
-                                _tecKeterangan.text.toString(),
-                                _dropdownValue.toString(),
-                                _tecDueDate.text.toString(),
-                                '0',
-                                keterangan_selesai,
-                                tipeupdate,
-                                idpermintaan);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              elevation: 0.0, primary: Colors.white),
-                          child: Ink(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(18.0)),
-                              child: Container(
-                                width: 325,
-                                height: 45,
-                                alignment: Alignment.center,
-                                child: Text('S I M P A N',
-                                    style: TextStyle(
-                                      color: primarycolor,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                              )))
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               );
             });
   }
@@ -248,7 +389,7 @@ class ReusableClass {
       String tipeupdate,
       String idpermintaan) {
     if (tipe == "progres") {
-      print('idper? $idpermintaan');
+      print('idper? $idpermintaan $tipeupdate');
       if (keterangan == "") {
         _modalbottomSite(
             context,
@@ -257,16 +398,13 @@ class ReusableClass {
             'f405',
             'assets/images/sorry.png');
       }
-    } else if (tipe == 'hapus'){
+    } else if (tipe == 'hapus') {
       if (idpermintaan == "") {
-        _modalbottomSite(
-            context,
-            "Tidak Valid!",
-            "idpermintaan tidak valid",
-            'f405',
-            'assets/images/sorry.png');
+        _modalbottomSite(context, "Tidak Valid!", "idpermintaan tidak valid",
+            'f405', 'assets/images/sorry.png');
       }
     } else {
+      print('tipeupdatenya?? $tipeupdate');
       if (keterangan == "" || duedate == "" || kategori == "") {
         _modalbottomSite(
             context,
@@ -357,66 +495,66 @@ class ReusableClass {
                                 duedate +
                                 flag_selesai +
                                 idpermintaan.toString());
-                                if (tipe == 'progres') {
-                                  _actiontoapiProgress(
-                                    context,
-                                    tipe,
-                                    token,
-                                    keterangan,
-                                    kategori,
-                                    duedate,
-                                    flag_selesai,
-                                    keterangan_selesai,
-                                    tipeupdate,
-                                    idpermintaan);
-                                } else if (tipe == 'hapus'){
-                                  _actiontoapiHapusReq(
-                                    context, 
-                                    tipe, 
-                                    token, 
-                                    keterangan, 
-                                    kategori, 
-                                    duedate, 
-                                    flag_selesai, 
-                                    keterangan_selesai, 
-                                    tipeupdate, 
-                                    idpermintaan);
-                                } else {
-                                  _actiontoapi(
-                                    context,
-                                    tipe,
-                                    token,
-                                    keterangan,
-                                    kategori,
-                                    duedate,
-                                    flag_selesai,
-                                    keterangan_selesai,
-                                    tipeupdate,
-                                    idpermintaan);
-                                }
+                            if (tipe == 'progres') {
+                              _actiontoapiProgress(
+                                  context,
+                                  tipe,
+                                  token,
+                                  keterangan,
+                                  kategori,
+                                  duedate,
+                                  flag_selesai,
+                                  keterangan_selesai,
+                                  tipeupdate,
+                                  idpermintaan);
+                            } else if (tipe == 'hapus') {
+                              _actiontoapiHapusReq(
+                                  context,
+                                  tipe,
+                                  token,
+                                  keterangan,
+                                  kategori,
+                                  duedate,
+                                  flag_selesai,
+                                  keterangan_selesai,
+                                  tipeupdate,
+                                  idpermintaan);
+                            } else {
+                              _actiontoapi(
+                                  context,
+                                  tipe,
+                                  token,
+                                  keterangan,
+                                  kategori,
+                                  duedate,
+                                  flag_selesai,
+                                  keterangan_selesai,
+                                  tipeupdate,
+                                  idpermintaan);
+                            }
                             // tipe == 'progres'
-                                // ? _actiontoapiProgress(
-                                //     context,
-                                //     tipe,
-                                //     token,
-                                //     keterangan,
-                                //     kategori,
-                                //     duedate,
-                                //     flag_selesai,
-                                //     keterangan_selesai,
-                                //     tipeupdate,
-                                //     idpermintaan)
-                                // : _actiontoapi(
-                                //     context,
-                                //     tipe,
-                                //     token,
-                                //     keterangan,
-                                //     kategori,
-                                //     duedate,
-                                //     flag_selesai,
-                                //     keterangan_selesai,
-                                //     tipeupdate,
-                                //     idpermintaan);
+                            // ? _actiontoapiProgress(
+                            //     context,
+                            //     tipe,
+                            //     token,
+                            //     keterangan,
+                            //     kategori,
+                            //     duedate,
+                            //     flag_selesai,
+                            //     keterangan_selesai,
+                            //     tipeupdate,
+                            //     idpermintaan)
+                            // : _actiontoapi(
+                            //     context,
+                            //     tipe,
+                            //     token,
+                            //     keterangan,
+                            //     kategori,
+                            //     duedate,
+                            //     flag_selesai,
+                            //     keterangan_selesai,
+                            //     tipeupdate,
+                            //     idpermintaan);
                             Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
@@ -508,7 +646,7 @@ class ReusableClass {
                 "f400",
                 "assets/images/sorry.png");
           }
-          return;
+          // return;
         });
       } else if (tipe == 'ubah') {
         print('ubah belum kamu buat');
@@ -661,12 +799,8 @@ class ReusableClass {
         idpermintaan);
     if (idpermintaan == "") {
       print('mosok masuk sini?');
-      _modalbottomSite(
-          context,
-          "Tidak Valid!",
-          "idpermintaan tidak valid!",
-          'f405',
-          'assets/images/sorry.png');
+      _modalbottomSite(context, "Tidak Valid!", "idpermintaan tidak valid!",
+          'f405', 'assets/images/sorry.png');
     } else {
       print('heres?? $tipe ~ $idpermintaan');
       // ProgressModelDel datahapus =
@@ -701,8 +835,15 @@ class ReusableClass {
   }
 
   // ++ BOTTOM MODAL ACTION ITEM
-  void modalActionItem(context, token, String keterangan, String duedate,
-      String kategori, String idpermintaan) {
+  void modalActionItem(
+      context,
+      token,
+      String keterangan,
+      String duedate,
+      String kategori,
+      String idpermintaan,
+      String tipeupdate,
+      int flag_selesai) {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -741,7 +882,7 @@ class ReusableClass {
                       onPressed: () {
                         Navigator.of(context).pop();
                         modalAddSite(context, 'progres', token, keterangan, '',
-                            '', '0', idpermintaan.toString(), '', 'data');
+                            '', '0', idpermintaan.toString(), '', tipeupdate);
                       },
                       style: ElevatedButton.styleFrom(
                           side: BorderSide(width: 2, color: Colors.blue),
@@ -768,9 +909,12 @@ class ReusableClass {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        // modalAddSite(
-                        //     context, 'ubah', token, nama, keterangan, idsite);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TimelinePage(
+                                      idpermintaan: idpermintaan,
+                                    )));
                       },
                       style: ElevatedButton.styleFrom(
                           side: BorderSide(width: 2, color: Colors.orange),
@@ -801,60 +945,73 @@ class ReusableClass {
                   SizedBox(
                     height: 20,
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        modalAddSite(context, 'ubah', token, keterangan,
-                            kategori, duedate, '', idpermintaan, '', 'data');
-                      },
-                      style: ElevatedButton.styleFrom(
-                          side: BorderSide(width: 2, color: Colors.green),
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          primary: Colors.white),
-                      child: Ink(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18.0)),
-                          child: Container(
-                            width: 325,
-                            height: 45,
-                            alignment: Alignment.center,
-                            child: Text('EDIT PERMINTAAN',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ))),
+                  flag_selesai == 0
+                      ? ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            modalAddSite(
+                                context,
+                                'ubah',
+                                token,
+                                keterangan,
+                                kategori,
+                                duedate,
+                                '',
+                                idpermintaan,
+                                '',
+                                tipeupdate);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              side: BorderSide(width: 2, color: Colors.green),
+                              elevation: 0.0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              primary: Colors.white),
+                          child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18.0)),
+                              child: Container(
+                                width: 325,
+                                height: 45,
+                                alignment: Alignment.center,
+                                child: Text('EDIT PERMINTAAN',
+                                    style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              )))
+                      : SizedBox(
+                          height: 0,
+                        ),
                   SizedBox(
                     height: 10,
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _modalKonfirmasi(context, token, 'hapus', '','','','','','',idpermintaan.toString());
-                      },
-                      style: ElevatedButton.styleFrom(
-                          side: BorderSide(width: 2, color: Colors.red),
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          primary: Colors.white),
-                      child: Ink(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18.0)),
-                          child: Container(
-                            width: 325,
-                            height: 45,
-                            alignment: Alignment.center,
-                            child: Text('HAPUS PERMINTAAN',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ))),
+                  // ElevatedButton(
+                  //     onPressed: () {
+                  //       Navigator.of(context).pop();
+                  //       _modalKonfirmasi(context, token, 'hapus', '','','','','','',idpermintaan.toString());
+                  //     },
+                  //     style: ElevatedButton.styleFrom(
+                  //         side: BorderSide(width: 2, color: Colors.red),
+                  //         elevation: 0.0,
+                  //         shape: RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(8)),
+                  //         primary: Colors.white),
+                  //     child: Ink(
+                  //         decoration: BoxDecoration(
+                  //             borderRadius: BorderRadius.circular(18.0)),
+                  //         child: Container(
+                  //           width: 325,
+                  //           height: 45,
+                  //           alignment: Alignment.center,
+                  //           child: Text('HAPUS PERMINTAAN',
+                  //               style: TextStyle(
+                  //                 color: Colors.red,
+                  //                 fontSize: 18.0,
+                  //                 fontWeight: FontWeight.bold,
+                  //               )),
+                  //         ))),
                 ],
               ),
             ),

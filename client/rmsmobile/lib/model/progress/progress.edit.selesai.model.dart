@@ -16,7 +16,6 @@ class ProgressModelEdit {
         keterangan: map["keterangan"],
         flag_selesai: map["flag_selesai"],
         next_idpengguna: map["next_idpengguna"],
-        idprogress: map["idprogress"]
         );
   }
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/model/login/loginResult.model.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
@@ -9,6 +10,7 @@ import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
 import 'package:rmsmobile/model/response/responsecode.dart';
+import 'package:rmsmobile/model/timeline/timeline.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
@@ -195,6 +197,45 @@ class ApiService {
       return PenggunaModelFromJson(response.body);
     } else {
       return null;
+    }
+  }
+
+  Future<List<TimelineModel>?> getListTimeline(
+      String token, String idpermintaan) async {
+    var url = Uri.parse(baseUrl + 'timeline/' + idpermintaan);
+    var response = await client.get(url, headers: {
+      'content-type': 'application/json',
+      // ++ fyi : sending token with BEARER
+      'Authorization': 'Bearer ' + token
+    });
+    // ++ fyi : for getting response message from api
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+    print("Data Site : " + response.body);
+    if (response.statusCode == 200) {
+      return timelineFromJson(response.body);
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<DashboardModel>?> getDashboard(String token) async {
+    var url = Uri.parse(baseUrl + 'dashboard');
+    var response = await client.get(url, headers: {
+      'content-type': 'application/json',
+      // ++ fyi : sending token with BEARER
+      'Authorization': 'Bearer ' + token
+    });
+    // ++ fyi : for getting response message from api
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+    print("Data Dashbaord : " + response.body);
+    if (response.statusCode == 200) {
+      return dashboardFromJson(response.body);
+      // return compute(parseDashboard, response.body);
+    } else {
+      return null;
+      // throw Exception(response.statusCode);
     }
   }
 }

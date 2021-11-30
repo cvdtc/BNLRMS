@@ -54,14 +54,16 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
         ],
         title: Text(
           'Daftar Permintaan',
-          style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.bold),
+          style: GoogleFonts.lato(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         centerTitle: true,
         backgroundColor: thirdcolor,
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          ReusableClass().modalAddSite(context, 'tambah', token!, "", "", "", "", "","","");
+          ReusableClass().modalAddSite(
+              context, 'tambah', token!, "", "", "", "", "", "", "");
         },
         backgroundColor: thirdcolor,
         label: Text(
@@ -76,11 +78,13 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
               if (!_isLoading) {
                 return index == 0
                     ? _searchBar()
-                    : RequestTile(
-                        request: this._requestDisplay[index - 1],
-                        token: token!,
-                      );
-                // : SiteTile(site: this._sitesDisplay[index - 1]);
+                    : StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                        return RequestTile(
+                          request: this._requestDisplay[index - 1],
+                          token: token!,
+                        );
+                      });
               } else {
                 return Center(
                   child: CircularProgressIndicator(),
@@ -117,7 +121,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
           fillColor: thirdcolor,
           border: OutlineInputBorder(),
           prefixIcon: Icon(Icons.search),
-          hintText: 'Cari Komponen',
+          hintText: 'Cari Permintaan',
         ),
       ),
     );
