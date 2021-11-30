@@ -70,7 +70,7 @@ const pool = mysql.createPool({
 
 async function getTimeline(req, res) {
     const token = req.headers.authorization
-    const token = req.params.idpermintaan
+    const idpermintaan = req.params.idpermintaan
     if (token != null) {     try {
         jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
             if (!jwtresult) {
@@ -88,8 +88,8 @@ async function getTimeline(req, res) {
                             data: null
                         })
                     } else {
-                        var sqlquery = "SELECT * FROM pengguna"
-                        database.query(sqlquery, (error, rows) => {
+                        var sqlquery = "SELECT 1 AS tipe, pe.keterangan, pe.kategori, pe.due_date, pe.created, pe.edited, pe.flag_selesai, pe.keterangan_selesai, pe.idpengguna_close_permintaan, '-' AS prg_keterangan, '-' AS prg_created, '-' AS prg_edited, '-' AS prg_flag_selesai FROM permintaan pe WHERE pe.idpermintaan=? UNION SELECT 2 AS tipe, '-' as keterangan, '-' as kategori, '-' as due_date, '-' as created, '-' as edited, '-' as flag_selesai, '-' as keterangan_selesai, '-' as idpengguna_close_permintaan, prg.keterangan AS prg_keterangan, prg.created AS prg_created, prg.edited AS prg_edited, prg.flag_selesai AS prg_flag_selesai FROM progress prg WHERE prg.idpermintaan=?;"
+                        database.query(sqlquery,[idpermintaan, idpermintaan], (error, rows) => {
                             database.release()
                             if (error) {
                                 return res.status(500).send({
@@ -129,4 +129,7 @@ async function getTimeline(req, res) {
             data: null
         })
     }
+}
+module.exports = {
+    getTimeline
 }

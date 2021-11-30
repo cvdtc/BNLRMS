@@ -6,11 +6,15 @@ const docAuth = require('express-basic-auth')
 const swaggerUI = require('swagger-ui-express')
 const swaggerJS = require('swagger-jsdoc')
 const path = require('path')
+// * ADDING FIREBASE CONFIGURATION
+var admin = require("firebase-admin");
+var serviceAccount = require("./utils/bnlrms-firebase-token.json");
 
-// var serviceaccount = require('../utils/cmmsgeprivatekey.json')
-// fcm.initializeApp({
-//     credential: fcm.credential.cert(serviceaccount)
-// })
+// * ADDING CREDENTIAL FIREBASE ACCOUNT
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
 
 // * setting up express or api to json type
 app.use(express.json())
