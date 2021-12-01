@@ -30,14 +30,12 @@ class _PermintaanListState extends State<PermintaanList> {
 
   @override
   initState() {
-    // TODO: implement initState
     super.initState();
     cekToken();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _apiService.client.close();
   }

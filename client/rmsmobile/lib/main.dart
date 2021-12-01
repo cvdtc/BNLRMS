@@ -8,6 +8,7 @@ import 'package:rmsmobile/pages/splashscreen/splashscreen.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
 class MyHttpOverrides extends HttpOverrides{
+  
   @override
   HttpClient createHttpClient(SecurityContext context){
     return super.createHttpClient(context)
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
-      title: 'CMMS GE',
+      title: 'RMS BNL',
       theme: ThemeData.light().copyWith(
           scaffoldBackgroundColor: backgroundcolor,
           textTheme: GoogleFonts.openSansTextTheme(Theme.of(context).textTheme)

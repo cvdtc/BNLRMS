@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
-import 'package:rmsmobile/model/request/request.model.dart';
+
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/permintaan.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/progres.dart';
-import 'package:rmsmobile/pages/dashboard/dashboard.widget/active.project.card.dart';
+
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'dashboard.widget/task.column.dart';
+
 
 class Dahsboard extends StatefulWidget {
   const Dahsboard({Key? key}) : super(key: key);
@@ -74,14 +74,12 @@ class _DahsboardState extends State<Dahsboard> {
 
   @override
   initState() {
-    // TODO: implement initState
     super.initState();
     cekToken();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _apiService.client.close();
   }

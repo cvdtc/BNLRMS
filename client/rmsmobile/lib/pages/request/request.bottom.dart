@@ -484,94 +484,97 @@ class ReusableClass {
                       SizedBox(
                         width: 55,
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            // Navigator.of(context).pop();
-                            print("Will be Execute up" +
-                                tipe +
-                                token +
-                                keterangan +
-                                kategori +
-                                duedate +
-                                flag_selesai +
-                                idpermintaan.toString());
-                            if (tipe == 'progres') {
-                              _actiontoapiProgress(
-                                  context,
-                                  tipe,
-                                  token,
-                                  keterangan,
-                                  kategori,
-                                  duedate,
-                                  flag_selesai,
-                                  keterangan_selesai,
-                                  tipeupdate,
-                                  idpermintaan);
-                            } else if (tipe == 'hapus') {
-                              _actiontoapiHapusReq(
-                                  context,
-                                  tipe,
-                                  token,
-                                  keterangan,
-                                  kategori,
-                                  duedate,
-                                  flag_selesai,
-                                  keterangan_selesai,
-                                  tipeupdate,
-                                  idpermintaan);
-                            } else {
-                              _actiontoapi(
-                                  context,
-                                  tipe,
-                                  token,
-                                  keterangan,
-                                  kategori,
-                                  duedate,
-                                  flag_selesai,
-                                  keterangan_selesai,
-                                  tipeupdate,
-                                  idpermintaan);
-                            }
-                            // tipe == 'progres'
-                            // ? _actiontoapiProgress(
-                            //     context,
-                            //     tipe,
-                            //     token,
-                            //     keterangan,
-                            //     kategori,
-                            //     duedate,
-                            //     flag_selesai,
-                            //     keterangan_selesai,
-                            //     tipeupdate,
-                            //     idpermintaan)
-                            // : _actiontoapi(
-                            //     context,
-                            //     tipe,
-                            //     token,
-                            //     keterangan,
-                            //     kategori,
-                            //     duedate,
-                            //     flag_selesai,
-                            //     keterangan_selesai,
-                            //     tipeupdate,
-                            //     idpermintaan);
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0.0,
-                            primary: Colors.white,
-                          ),
-                          child: Ink(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(18)),
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Submit",
-                                style: TextStyle(color: primarycolor),
-                              ),
+                      StatefulBuilder(builder:
+                          (BuildContext context, StateSetter setState) {
+                            return ElevatedButton(
+                            onPressed: () {
+                              // Navigator.of(context).pop();
+                              print("Will be Execute up" +
+                                  tipe +
+                                  token +
+                                  keterangan +
+                                  kategori +
+                                  duedate +
+                                  flag_selesai +
+                                  idpermintaan.toString());
+                              if (tipe == 'progres') {
+                                _actiontoapiProgress(
+                                    context,
+                                    tipe,
+                                    token,
+                                    keterangan,
+                                    kategori,
+                                    duedate,
+                                    flag_selesai,
+                                    keterangan_selesai,
+                                    tipeupdate,
+                                    idpermintaan);
+                              } else if (tipe == 'hapus') {
+                                _actiontoapiHapusReq(
+                                    context,
+                                    tipe,
+                                    token,
+                                    keterangan,
+                                    kategori,
+                                    duedate,
+                                    flag_selesai,
+                                    keterangan_selesai,
+                                    tipeupdate,
+                                    idpermintaan);
+                              } else {
+                                _actiontoapi(
+                                    context,
+                                    tipe,
+                                    token,
+                                    keterangan,
+                                    kategori,
+                                    duedate,
+                                    flag_selesai,
+                                    keterangan_selesai,
+                                    tipeupdate,
+                                    idpermintaan);
+                              }
+                              // tipe == 'progres'
+                              // ? _actiontoapiProgress(
+                              //     context,
+                              //     tipe,
+                              //     token,
+                              //     keterangan,
+                              //     kategori,
+                              //     duedate,
+                              //     flag_selesai,
+                              //     keterangan_selesai,
+                              //     tipeupdate,
+                              //     idpermintaan)
+                              // : _actiontoapi(
+                              //     context,
+                              //     tipe,
+                              //     token,
+                              //     keterangan,
+                              //     kategori,
+                              //     duedate,
+                              //     flag_selesai,
+                              //     keterangan_selesai,
+                              //     tipeupdate,
+                              //     idpermintaan);
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0.0,
+                              primary: Colors.white,
                             ),
-                          )),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18)),
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Submit",
+                                  style: TextStyle(color: primarycolor),
+                                ),
+                              ),
+                            ));
+                      })
                     ],
                   ),
                 ],
@@ -646,7 +649,7 @@ class ReusableClass {
                 "f400",
                 "assets/images/sorry.png");
           }
-          // return;
+          return;
         });
       } else if (tipe == 'ubah') {
         print('ubah belum kamu buat');
@@ -699,6 +702,7 @@ class ReusableClass {
         _apiService.addProgres(token, dataprogress).then((isSuccess) {
           print('tambah progress $token, $dataprogress');
           if (isSuccess) {
+            Navigator.of(context).pop();
             _modalbottomSite(
                 context,
                 "Berhasil!",
@@ -757,6 +761,7 @@ class ReusableClass {
         _apiService.addProgres(token, dataprogress).then((isSuccess) {
           print('tambah progress $token, $dataprogress');
           if (isSuccess) {
+            Navigator.of(context).pop();
             _modalbottomSite(
                 context,
                 "Berhasil!",
