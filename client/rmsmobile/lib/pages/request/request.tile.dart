@@ -1,5 +1,9 @@
+import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
+import 'package:rmsmobile/utils/selectListController.dart';
 // import 'package:rmsmobile/utils/warna.dart';
 
 import 'request.bottom.dart';
@@ -8,6 +12,31 @@ class RequestTile extends StatelessWidget {
   late final RequestModel request;
   final String token;
   RequestTile({required this.request, required this.token});
+
+  // var controllers = Get.put(SelectedListController());
+
+  // void openFilterDialog(context) async{
+  //   await FilterListDialog.display<String>(
+  //     context, 
+  //     listData: request.kategori,
+  //     selectedListData: controllers.getSelectedList(), 
+  //     headlineText: 'Pilih Kategori',
+  //     closeIconColor: Colors.grey,
+  //     applyButtonTextStyle: TextStyle(fontSize: 20),
+  //     choiceChipLabel: (item)=> item,
+  //     validateSelectedItem: (list, val)=>list!.contains(val),
+  //     onItemSearch: (list, text){
+  //       if (list!.any((element) => element.toLowerCase().contains(text.toLowerCase()))) {
+  //         return list.where((element) => element.toLowerCase().contains(text.toLowerCase())).toList();
+  //       } else {
+  //         return [];
+  //       }
+  //     },
+  //     onApplyButtonClick: (list){
+  //       controllers.setSelectedList(List<String>.from(list!));
+  //     });
+  // }
+
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(
