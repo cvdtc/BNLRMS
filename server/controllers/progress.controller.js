@@ -85,7 +85,7 @@ async function getAllProgress(req, res) {
                                 data: null
                             })
                         } else {
-                            var sqlquery = `SELECT pr.*, pe.keterangan as permintaan, pe.kategori, pe.due_date FROM permintaan pe, progress pr WHERE pr.idpermintaan=pe.idpermintaan AND pr.idpengguna=?`
+                            var sqlquery = `SELECT pr.*, pe.keterangan as permintaan, pe.kategori, pe.due_date FROM permintaan pe, progress pr WHERE pr.idpermintaan=pe.idpermintaan AND pr.idpengguna=? AND pr.flag_selesai=0`
                             database.query(sqlquery, [jwtresult.idpengguna], (error, rows) => {
                                 database.release()
                                 if (error) {
@@ -158,6 +158,12 @@ async function getAllProgress(req, res) {
  *                  idpermintaan:
  *                      type: int
  *                      description: untuk menentukan progress yang disimpan ini merupakan progress permintaan yang mana.
+ *                  idnextuser:
+ *                      type: int
+ *                      description: idnextuser digunakan untuk menyimpan idpengguna selanjutnya jika tipenya nextuser jika tipenya tambahprogress maka idnextuser dikirim 0
+ *                  tipe:
+ *                      type: string
+ *                      description: tipe menentukan idpengguna yang akan disimpan di database, tipe hanya ada tambahprogress dan nextuser jika tipe tambahprogress idyang disimpan idpengguna yang membuat progress tapi jika nextuser maka yang di simpan idpengguna user yang dituju
  *      responses:
  *          201:
  *              description: jika data berhasil di simpan
@@ -178,11 +184,14 @@ async function getAllProgress(req, res) {
 async function addProgress(req, res) {
     var keterangan = req.body.keterangan
     var idpermintaan = req.body.idpermintaan
+    var idnextuser = req.body.idnextuser
+    var tipe = req.body.tipe
     const token = req.headers.authorization
-    if (Object.keys(req.body).length != 2) {
+	console.log('ada yang mencoba menambah progress', keterangan, idpermintaan, token);
+    if (Object.keys(req.body).length != 4) {
         return res.status(405).send({
             message: "Sorry,  parameters not match",
-            error: jwtresult,
+            error: null,
             data: null
         })
     } else {
@@ -203,19 +212,35 @@ async function addProgress(req, res) {
                                 data: null
                             });
                         } else {
-                            let dataprogress = {
-                                keterangan: keterangan,
-                                flag_selesai: 0,
-                                idpermintaan: idpermintaan,
-                                created: new Date().toISOString().replace('T', ' ').substring(0, 19),
-                                idpengguna: jwtresult.idpengguna
+                            // add filter tipe add progress untuk menentukan idpengguna yang akan disimpan ke database add at []
+                            if(tipe == 'tambahprogress'){
+                                let dataprogress = {
+                                    keterangan: keterangan,
+                                    flag_selesai: 0,
+                                    idpermintaan: idpermintaan,
+                                    created: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                                    idpengguna: jwtresult.idpengguna
+                                }
+                            }else if(tipe == 'nextuser'){
+                                let dataprogress = {
+                                    keterangan: keterangan,
+                                    flag_selesai: 0,
+                                    idpermintaan: idpermintaan,
+                                    created: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                                    idpengguna: idnextuser
+                                }
+                            }else{
+                                return res.status(400).send({
+                                    message: "Sorry,  tipe anda masih kosong!",
+                                    error: null,
+                                    data: null
+                                });
                             }
                             var sqlquery = "INSERT INTO progress SET ?"
                             database.query(sqlquery, dataprogress, (error, result) => {
                                 database.release()
                                 if (error) {
                                     database.rollback(function () {
-                                        database.release()
                                         return res.status(407).send({
                                             message: "Sorry,  query has error!",
                                             error: error,
@@ -226,7 +251,6 @@ async function addProgress(req, res) {
                                     database.commit(function (errcommit) {
                                         if (errcommit) {
                                             database.rollback(function () {
-                                                database.release()
                                                 return res.status(407).send({
                                                     message: "Sorry,  fail to store!",
                                                     error: errcommit,
@@ -234,7 +258,6 @@ async function addProgress(req, res) {
                                                 })
                                             })
                                         } else {
-                                            database.release()
                                             return res.status(201).send({
                                                 message: "Done!,  Data has been stored!",
                                                 error: null,
@@ -356,7 +379,6 @@ async function ubahProgress(req, res) {
                                     database.release()
                                     if (error) {
                                         database.rollback(function () {
-                                            database.release()
                                             return res.status(407).send({
                                                 message: "Sorry,  query has error!",
                                                 error: error,
@@ -367,7 +389,6 @@ async function ubahProgress(req, res) {
                                         database.commit(function (errcommit) {
                                             if (errcommit) {
                                                 database.rollback(function () {
-                                                    database.release()
                                                     return res.status(407).send({
                                                         message: "Sorry,  fail to change data pengguna",
                                                         error: errcommit,
@@ -375,7 +396,6 @@ async function ubahProgress(req, res) {
                                                     })
                                                 })
                                             } else {
-                                                database.release()
                                                 return res.status(200).send({
                                                     message: "Done!, Data has changed!",
                                                     error: null,
@@ -468,7 +488,6 @@ async function deleteProgress(req, res) {
                                 database.release()
                                 if (error) {
                                     database.rollback(function () {
-                                        database.release()
                                         return res.status(407).send({
                                             message: "Sorry,  query has error!",
                                             error: error,
@@ -479,7 +498,6 @@ async function deleteProgress(req, res) {
                                     database.commit(function (errcommit) {
                                         if (errcommit) {
                                             database.rollback(function () {
-                                                database.release()
                                                 return res.status(407).send({
                                                     message: "Sorry,  fail to change data pengguna",
                                                     error: errcommit,
@@ -487,7 +505,6 @@ async function deleteProgress(req, res) {
                                                 })
                                             })
                                         } else {
-                                            database.release()
                                             return res.status(200).send({
                                                 message: "Done!,  Data has removed!",
                                                 error: null,

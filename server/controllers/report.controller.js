@@ -130,6 +130,100 @@ async function getTimeline(req, res) {
         })
     }
 }
+
+// * FUNCTION GET DASHBOARD
+
+/**
+ * @swagger
+ * /dashboard:
+ *  get:
+ *      summary: untuk menampilkan jumlah data permintaan selesau dan belum selesai, [header token]
+ *      tags: [REPORT]
+ *      parameters:
+ *          - name: token
+ *            in: header
+ *            schema:
+ *              type: string
+ *              description: >
+ *                  parameter `token` dikirim di header, token/access token digunakan untuk validasi keamanan API.
+ *      security:
+ *          - bearerAuth: []
+ *      responses:
+ *          200:
+ *              description: jika data berhasil di fetch
+ *          204:
+ *              description: jika data yang dicari tidak ada
+ *          400:
+ *              description: kendala koneksi pool database
+ *          401:
+ *              description: token tidak valid
+ *          500:
+ *              description: kesalahan pada query sql
+ */
+
+ async function getDashboard(req, res) {
+    const token = req.headers.authorization
+    if (token != null) {     try {
+        jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
+            if (!jwtresult) {
+                res.status(401).send(JSON.stringify({
+                    message: "Sorry, Your token has expired!",
+                    error: jwterror,
+                    data: null
+                }))
+            } else {
+                pool.getConnection(function (error, database) {
+                    if (error) {
+                        return res.status(400).send({
+                            message: "Sorry, your connection has refused!",
+                            error: error,
+                            data: null
+                        })
+                    } else {
+                        var sqlquery = "select (select count(idpermintaan) from permintaan where flag_selesai=0) as belum_selesai, (select count(idpermintaan) from permintaan where flag_selesai=1) as sudah_selesai, ((select count(idpermintaan) from permintaan where flag_selesai=0)-(select count(idpermintaan) from permintaan where flag_selesai=1)) as jumlah;"
+                        database.query(sqlquery, (error, rows) => {
+                            database.release()
+                            if (error) {
+                                return res.status(500).send({
+                                    message: "Sorry, query has error!",
+                                    error: error,
+                                    data: null
+                                });
+                            } else {
+                                if (rows.length <= 0) {
+                                    return res.status(204).send({
+                                        message: "Sorry, data empty!",
+                                        error: null,
+                                        data: rows
+                                    });
+                                } else {
+                                    return res.status(200).send({
+                                        message: "Done!, data has fetched!",
+                                        error: null,
+                                        data: rows
+                                    });
+                                }
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    } catch (error) {
+        return res.status(403).send({
+            message: "Forbidden.",
+            data: rows
+        });
+    } } else {
+        res.status(401).send({
+            message: "Sorry, Need Token Validation!",
+            error: null,
+            data: null
+        })
+    }
+}
+
 module.exports = {
-    getTimeline
+    getTimeline,
+    getDashboard
 }

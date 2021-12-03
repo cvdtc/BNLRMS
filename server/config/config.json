@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "root",
+    "password": "hanyaadminyangtau",
+    "database": "bnl_rms",
+    "host": "server.bnl.id",
+    "port": 8886,
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "hanyaadminyangtau",
+    "database": "bnl_rms",
+    "host": "server.bnl.id",
+    "port": 8886,
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "hanyaadminyangtau",
+    "database": "bnl_rms",
+    "host": "server.bnl.id",
+    "port": 8886,
+    "dialect": "mysql"
+  }
+}

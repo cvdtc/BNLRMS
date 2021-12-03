@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/pages/login/login.dart';
@@ -13,9 +14,10 @@ class SplashScreenPage extends StatefulWidget {
 }
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
-late SharedPreferences sp;
+  late SharedPreferences sp;
+  late FirebaseMessaging messaging;
   String? token = "", username = "", jabatan = "";
-  
+
   cekToken() async {
     sp = await SharedPreferences.getInstance();
     setState(() {
@@ -28,12 +30,23 @@ late SharedPreferences sp;
           context, MaterialPageRoute(builder: (context) => Loginscreen()));
     } else {
       Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BottomNav()));
+          context, MaterialPageRoute(builder: (context) => BottomNav()));
     }
   }
+
   @override
   void initState() {
     super.initState();
+    // * adding firebase configuration setup
+    messaging = FirebaseMessaging.instance;
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      print("message recieved");
+      print(event.notification!.body);
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
+    messaging.subscribeToTopic('RMSPERMINTAAN');
     Timer(Duration(seconds: 4), () {
       cekToken();
     });
@@ -66,10 +79,11 @@ late SharedPreferences sp;
                     height: 200,
                     width: 200,
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/bnllauncher.png',),fit: BoxFit.contain
-                      )
-                    ),
+                        image: DecorationImage(
+                            image: AssetImage(
+                              'assets/images/bnllauncher.png',
+                            ),
+                            fit: BoxFit.contain)),
                   ),
                   Text('BNL-RMS',
                       style: GoogleFonts.inter(

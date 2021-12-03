@@ -231,7 +231,6 @@ async function addNote(req, res) {
                                 database.release()
                                 if (error) {
                                     database.rollback(function () {
-                                        database.release()
                                         return res.status(407).send({
                                             message: "Sorry,  query has error!",
                                             error: error,
@@ -242,7 +241,6 @@ async function addNote(req, res) {
                                     database.commit(function (errcommit) {
                                         if (errcommit) {
                                             database.rollback(function () {
-                                                database.release()
                                                 return res.status(407).send({
                                                     message: "Sorry,  fail to store!",
                                                     error: errcommit,
@@ -250,7 +248,6 @@ async function addNote(req, res) {
                                                 })
                                             })
                                         } else {
-                                            database.release()
                                             return res.status(201).send({
                                                 message: "Done!,  Data has been stored!",
                                                 error: null,
@@ -366,7 +363,6 @@ async function ubahNote(req, res) {
                                     database.release()
                                     if (error) {
                                         database.rollback(function () {
-                                            database.release()
                                             return res.status(407).send({
                                                 message: "Sorry,  query has error!",
                                                 error: error,
@@ -377,7 +373,6 @@ async function ubahNote(req, res) {
                                         database.commit(function (errcommit) {
                                             if (errcommit) {
                                                 database.rollback(function () {
-                                                    database.release()
                                                     return res.status(407).send({
                                                         message: "Sorry,  fail to change data pengguna",
                                                         error: errcommit,
@@ -385,7 +380,6 @@ async function ubahNote(req, res) {
                                                     })
                                                 })
                                             } else {
-                                                database.release()
                                                 return res.status(200).send({
                                                     message: "Done!, Data has changed!",
                                                     error: null,
@@ -478,7 +472,6 @@ async function deleteNote(req, res) {
                                 database.release()
                                 if (error) {
                                     database.rollback(function () {
-                                        database.release()
                                         return res.status(407).send({
                                             message: "Sorry,  query has error!",
                                             error: error,
@@ -489,7 +482,6 @@ async function deleteNote(req, res) {
                                     database.commit(function (errcommit) {
                                         if (errcommit) {
                                             database.rollback(function () {
-                                                database.release()
                                                 return res.status(407).send({
                                                     message: "Sorry,  fail to change data",
                                                     error: errcommit,
@@ -497,7 +489,6 @@ async function deleteNote(req, res) {
                                                 })
                                             })
                                         } else {
-                                            database.release()
                                             return res.status(200).send({
                                                 message: "Done!,  Data has removed!",
                                                 error: null,

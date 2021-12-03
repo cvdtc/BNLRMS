@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1085154207385",
+    "project_id": "bnlrms",
+    "storage_bucket": "bnlrms.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085154207385:android:7ce3208f5e4c1e270a3a08",
+        "android_client_info": {
+          "package_name": "com.example.rmsmobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1085154207385-31gshvsc118ofig68jg5vbhn5ak1f0uv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB65BG9KK-VSIfQfnm1FgYdbHznlOco0nI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1085154207385-31gshvsc118ofig68jg5vbhn5ak1f0uv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

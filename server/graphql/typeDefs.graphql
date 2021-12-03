@@ -1,0 +1,8 @@
+type Query {
+    getNoteByIdPengguna(idpengguna: ID!): Note
+}
+
+type Note {
+    idpengguna: ID!
+    keterangan: String
+}

@@ -244,7 +244,6 @@ async function addPengguna(req, res) {
                                             database.release()
                                             if (error) {
                                                 database.rollback(function () {
-                                                    database.release()
                                                     return res.status(407).send({
                                                         message: "Sorry,  query has error!",
                                                         error: error,
@@ -255,7 +254,6 @@ async function addPengguna(req, res) {
                                                 database.commit(function (errcommit) {
                                                     if (errcommit) {
                                                         database.rollback(function () {
-                                                            database.release()
                                                             return res.status(407).send({
                                                                 message: "Sorry,  fail to store data pengguna",
                                                                 error: errcommit,
@@ -263,7 +261,6 @@ async function addPengguna(req, res) {
                                                             })
                                                         })
                                                     } else {
-                                                        database.release()
                                                         return res.status(200).send({
                                                             message: "Done!,  Data has been stored!",
                                                             error: null,
@@ -411,7 +408,6 @@ async function addPengguna(req, res) {
                                             database.release()
                                             if (error) {
                                                 database.rollback(function () {
-                                                    database.release()
                                                     return res.status(407).send({
                                                         message: "Sorry,  query has error!",
                                                         error: error,
@@ -422,7 +418,6 @@ async function addPengguna(req, res) {
                                                 database.commit(function (errcommit) {
                                                     if (errcommit) {
                                                         database.rollback(function () {
-                                                            database.release()
                                                             return res.status(407).send({
                                                                 message: "Sorry,  fail to change data pengguna",
                                                                 error: errcommit,
@@ -430,7 +425,6 @@ async function addPengguna(req, res) {
                                                             })
                                                         })
                                                     } else {
-                                                        database.release()
                                                         return res.status(200).send({
                                                             message: "Done!,  Data has changed!",
                                                             error: null,
