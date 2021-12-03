@@ -3,6 +3,7 @@ require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const mysql = require('mysql')
 var fcmadmin = require('../utils/firebaseconfiguration')
+
 /**
  * ! Pool setting up
  * * pool connection limit 10
@@ -67,6 +68,7 @@ const pool = mysql.createPool({
 
 async function getAllPermintaan(req, res) {
     const token = req.headers.authorization;
+    console.log('Akses Permintaan...')
     if (token != null) {
         try {
             jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
@@ -85,7 +87,7 @@ async function getAllPermintaan(req, res) {
                                 data: null
                             })
                         } else {
-                            var sqlquery = `SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna ORDER BY p.due_date`
+                            var sqlquery = `SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna ORDER BY p.flag_selesai ASC, p.due_date ASC`
                             database.query(sqlquery, (error, rows) => {
                                 database.release()
                                 if (error) {
@@ -190,7 +192,7 @@ async function addPermintaan(req, res) {
     if (Object.keys(req.body).length != 4) {
         return res.status(405).send({
             message: "Sorry,  parameters not match",
-            error: jwtresult,
+            error: null,
             data: null
         })
     } else {
@@ -247,6 +249,10 @@ async function addPermintaan(req, res) {
                                                     body: keterangan,
                                                     sound: 'default',
                                                     'click_action': 'FCM_PLUGIN_ACTIVITY'
+                                                },
+                                                data:{
+                                                    "judul": "Ada request Baru nih!",
+                                                    "isi": keterangan
                                                 }
                                             }
                                             fcmadmin.messaging().sendToTopic('RMSPERMINTAAN', notificationMessage)
@@ -256,7 +262,13 @@ async function addPermintaan(req, res) {
                                                     error: null,
                                                     data: response
                                                 })
-                                            }) 
+                                            }).catch(function (error) {
+                                                return res.status(201).send({
+                                                    message: "Done!,  Data has been stored!",
+                                                    error: error,
+                                                    data: null
+                                                })
+                                            })
                                         }
                                     })
                                 }
@@ -266,6 +278,7 @@ async function addPermintaan(req, res) {
                 }
             })
         } catch (error) {
+            console.log('FORBIDDEN PERMINTAAN')
             return res.status(403).send({
                 message: "forbiden!",
                 error: error,
