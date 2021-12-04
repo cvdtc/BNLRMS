@@ -17,6 +17,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   late SharedPreferences sp;
   late FirebaseMessaging messaging;
   String? token = "", username = "", jabatan = "";
+  bool subscribepermintaan = true;
+  bool subscribeprogress = true;
 
   cekToken() async {
     sp = await SharedPreferences.getInstance();
@@ -46,7 +48,18 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print('Message clicked!');
     });
-    messaging.subscribeToTopic('RMSPERMINTAAN');
+    // ++ SUBSCRIBE TOPIC RMS PERMINTAAN
+    if (subscribepermintaan) {
+      messaging.subscribeToTopic('RMSPERMINTAAN');
+    } else {
+      messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+    }
+    // ++ SUBSCRIBE TOPIC RMSPROGRESS
+    if (subscribeprogress) {
+      messaging.subscribeToTopic('RMSPROGRESS');
+    } else {
+      messaging.unsubscribeFromTopic('RMSPROGRESS');
+    }
     Timer(Duration(seconds: 4), () {
       cekToken();
     });

@@ -38,8 +38,9 @@ class ApiService {
       sp.setString("access_token", "${loginresult.access_token}");
       sp.setString("username", "${loginresult.username}");
       sp.setString("jabatan", "${loginresult.jabatan}");
-      // sp.setString("refresh_token", "${loginresult.refresh_token}");
       sp.setString("nama", "${loginresult.nama}");
+      sp.setBool("notif_permintaan", true);
+      sp.setBool("notif_progress", true);
       return true;
     } else {
       return false;
@@ -239,5 +240,3 @@ class ApiService {
     }
   }
 }
- 
-

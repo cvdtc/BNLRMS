@@ -223,7 +223,6 @@ async function addPermintaan(req, res) {
                             }
                             var sqlquery = "INSERT INTO permintaan SET ?"
                             database.query(sqlquery, datapermintaan, (error, result) => {
-                                database.release()
                                 if (error) {
                                     database.rollback(function () {
                                         return res.status(407).send({
@@ -243,30 +242,36 @@ async function addPermintaan(req, res) {
                                                 })
                                             })
                                         } else {
-                                            let notificationMessage = {
-                                                notification: {
-                                                    title: 'Ada Request Baru nih!',
-                                                    body: keterangan,
-                                                    sound: 'default',
-                                                    'click_action': 'FCM_PLUGIN_ACTIVITY'
-                                                },
-                                                data:{
-                                                    "judul": "Ada request Baru nih!",
-                                                    "isi": keterangan
+                                            var getnameuser = "SELECT nama FROM pengguna WHERE idpengguna = ?"
+                                            database.query(getnameuser, jwtresult.idpengguna, (error, result)=>{
+                                                database.release()
+                                                // * set firebase notification message 
+                                                let notificationMessage = {
+                                                    notification: {
+                                                        title: `Permintaan baru dari ${result[0].nama}`,
+                                                        body: keterangan,
+                                                        sound: 'default',
+                                                        'click_action': 'FCM_PLUGIN_ACTIVITY'
+                                                    },
+                                                    data:{
+                                                        "judul": `Permintaan baru dari ${result[0].nama}`,
+                                                        "isi": keterangan
+                                                    }
                                                 }
-                                            }
-                                            fcmadmin.messaging().sendToTopic('RMSPERMINTAAN', notificationMessage)
-                                            .then(function (response) {
-                                                return res.status(201).send({
-                                                    message: "Done!,  Data has been stored!",
-                                                    error: null,
-                                                    data: response
-                                                })
-                                            }).catch(function (error) {
-                                                return res.status(201).send({
-                                                    message: "Done!,  Data has been stored!",
-                                                    error: error,
-                                                    data: null
+                                                // * sending notification topic RMSPERMINTAAN
+                                                fcmadmin.messaging().sendToTopic('RMSPERMINTAAN', notificationMessage)
+                                                .then(function (response) {
+                                                    return res.status(201).send({
+                                                        message: "Done!,  Data has been stored!",
+                                                        error: null,
+                                                        data: response
+                                                    })
+                                                }).catch(function (error) {
+                                                    return res.status(201).send({
+                                                        message: "Done!,  Data has been stored!",
+                                                        error: error,
+                                                        data: null
+                                                    })
                                                 })
                                             })
                                         }

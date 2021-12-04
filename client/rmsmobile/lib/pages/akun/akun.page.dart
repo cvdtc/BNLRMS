@@ -14,6 +14,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/pages/login/login.dart';
+import 'package:rmsmobile/pages/setting/setting_notif.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -73,14 +74,14 @@ class _AkunPageState extends State<AkunPage> {
                   children: [Text("Admin BNL".toUpperCase()), Text("Admin")]),
             ],
           ),
-          _option(),
+          _option(context),
           Text('v.1.0.4 debuging')
         ],
       ),
     ));
   }
 
-  Widget _option() {
+  Widget _option(context) {
     return Card(
       color: Colors.red,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -89,6 +90,33 @@ class _AkunPageState extends State<AkunPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.only(
+                left: 1 - .0, right: 1 - .0, top: 5.0, bottom: 5.0),
+            alignment: Alignment.center,
+            width: double.infinity,
+            child: ListTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SettingNotifikasi()));
+              },
+              title: (Text(
+                'Setting Notifikasi',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              )),
+              leading: Icon(
+                Icons.exit_to_app_rounded,
+                color: Colors.black,
+                size: 22,
+              ),
+            ),
+          ),
           Container(
             padding: EdgeInsets.only(
                 left: 1 - .0, right: 1 - .0, top: 5.0, bottom: 5.0),

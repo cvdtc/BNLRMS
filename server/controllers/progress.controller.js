@@ -376,7 +376,7 @@ async function ubahProgress(req, res) {
                                 }
                                 var sqlquery = "UPDATE progress SET ? WHERE idprogress = ?"
                                 database.query(sqlquery, [updateprogress, idprogress], (error, result) => {
-                                    database.release()
+                                    // database.release()
                                     if (error) {
                                         database.rollback(function () {
                                             return res.status(407).send({
@@ -396,11 +396,46 @@ async function ubahProgress(req, res) {
                                                     })
                                                 })
                                             } else {
-                                                return res.status(200).send({
-                                                    message: "Done!, Data has changed!",
-                                                    error: null,
-                                                    data: null
-                                                })
+                                                if (flag_selesai == 1) {
+                                                    var getnameuser = "SELECT p.keterangan as permintaan, pr.keterangan as progress, pe.nama FROM permintaan p, progress pr, pengguna pe WHERE p.idpermintaan=pr.idpermintaan AND pr.idpengguna=pe.idpengguna AND pr.idprogress = ?"
+                                                    database.query(getnameuser, idprogress, (error, result) => {
+                                                        database.release()
+                                                        // * set firebase notification message 
+                                                        let notificationMessage = {
+                                                            notification: {
+                                                                title: `Update progress dari ${result[0].nama}`,
+                                                                body: `Ada progress baru untuk `+result[0].permintaan,
+                                                                sound: 'default',
+                                                                'click_action': 'FCM_PLUGIN_ACTIVITY'
+                                                            },
+                                                            data: {
+                                                                title: `Update progress dari ${result[0].nama}`,
+                                                                body: `Ada progress baru untuk `+result[0].permintaan,
+                                                            }
+                                                        }
+                                                        // * sending notification topic RMSPERMINTAAN
+                                                        fcmadmin.messaging().sendToTopic('RMSPROGRESS', notificationMessage)
+                                                            .then(function (response) {
+                                                                return res.status(201).send({
+                                                                    message: "Done!,  Data has been stored!",
+                                                                    error: null,
+                                                                    data: response
+                                                                })
+                                                            }).catch(function (error) {
+                                                                return res.status(201).send({
+                                                                    message: "Done!,  Data has been stored!",
+                                                                    error: error,
+                                                                    data: null
+                                                                })
+                                                            })
+                                                    })
+                                                } else {
+                                                    return res.status(200).send({
+                                                        message: "Done!, Data has changed!",
+                                                        error: null,
+                                                        data: null
+                                                    })
+                                                }
                                             }
                                         })
                                     }
@@ -420,7 +455,7 @@ async function ubahProgress(req, res) {
     }
 }
 
-// * FUNCTION CHANGE DATA PROGRESS
+// * FUNCTION DELETE DATA PROGRESS
 
 /**
  * @swagger
