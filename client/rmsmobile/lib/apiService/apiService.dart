@@ -4,6 +4,7 @@ import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/model/login/loginResult.model.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
+import 'package:rmsmobile/model/pengguna/pengguna.model.gantipassword.dart';
 import 'package:rmsmobile/model/progress/progress.edit.selesai.model.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
@@ -17,6 +18,7 @@ class ApiService {
   final String baseUrl = "http://server.bnl.id:9990/api/v1/";
   Client client = Client();
   ResponseCode responseCode = ResponseCode();
+
 
 //  LOGIN
   Future<bool> loginIn(LoginModel data) async {
@@ -36,6 +38,7 @@ class ApiService {
 //      Share Preference
       SharedPreferences sp = await SharedPreferences.getInstance();
       sp.setString("access_token", "${loginresult.access_token}");
+      sp.setString("refresh_token", "${loginresult.refresh_token}");
       sp.setString("username", "${loginresult.username}");
       sp.setString("jabatan", "${loginresult.jabatan}");
       sp.setString("nama", "${loginresult.nama}");
@@ -201,6 +204,25 @@ class ApiService {
     }
   }
 
+  Future<bool> ubahPassword(String token, ChangePassword data) async {
+    var url = Uri.parse(baseUrl + 'pengguna');
+    print('hasilurl change pass $url');
+    var response = await client.put(url,
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer ${token}'
+        },
+        body: ChangePasswordToJson(data));
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+    print("hasil respon dari api $responseCode ++ $responsemessage");
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<List<TimelineModel>?> getListTimeline(
       String token, String idpermintaan) async {
     var url = Uri.parse(baseUrl + 'timeline/' + idpermintaan);
@@ -231,6 +253,7 @@ class ApiService {
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
     print("Data Dashbaord : " + response.body);
+    print("pesan dari langit!"+ response.statusCode.toString());
     if (response.statusCode == 200) {
       return dashboardFromJson(response.body);
       // return compute(parseDashboard, response.body);

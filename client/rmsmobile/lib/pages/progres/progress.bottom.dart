@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
@@ -225,6 +226,7 @@ class ReusableClassProgress {
                                 flag_selesai +
                                 idpermintaan.toString());
                                 if (tipe == 'progres') {
+                                  Navigator.of(context).pop();
                                   _actiontoapiProgress(
                                     context,
                                     tipe,
@@ -240,6 +242,7 @@ class ReusableClassProgress {
                                 // else if (tipe == 'hapus'){
                                 // } 
                                 else {
+                                  Navigator.of(context).pop();
                                   _actiontoapi(
                                     context,
                                     tipe,
@@ -349,9 +352,9 @@ class ReusableClassProgress {
       print('model ?' + data.toString());
       if (tipe == 'tambah') {
         _apiService.addRequest(token, data).then((isSuccess) {
-          print('ini tambah ya $token + $data + $isSuccess');
+          print('ini tambah ya $token + $data + $isSuccess + ${_apiService.responseCode}');
           if (isSuccess) {
-            Navigator.of(context).pop();
+            // Navigator.of(context).pop();
             _modalbottomSite(
                 context,
                 "Berhasil!",
@@ -419,12 +422,17 @@ class ReusableClassProgress {
         _apiService.addProgres(token, dataprogress).then((isSuccess) {
           print('tambah progress $token, $dataprogress');
           if (isSuccess) {
-            _modalbottomSite(
-                context,
-                "Berhasil!",
-                "${_apiService.responseCode.messageApi}",
-                "f200",
-                "assets/images/congratulations.png");
+            Navigator.of(context).pop();
+            Fluttertoast.showToast(
+                msg: "Berhasil tambah data progres",
+                backgroundColor: Colors.black,
+                textColor: Colors.white);
+            // _modalbottomSite(
+            //     context,
+            //     "Berhasil!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f200",
+            //     "assets/images/congratulations.png");
           } else {
             _modalbottomSite(
                 context,
@@ -471,18 +479,22 @@ class ReusableClassProgress {
       print('heres?? $tipe ~ $idpermintaan');
       ProgressModelAdd dataprogress =
           ProgressModelAdd(keterangan: keterangan, idpermintaan: idpermintaan);
-
       if (tipe == 'progres') {
         print('ini tambah progres lho');
         _apiService.addProgres(token, dataprogress).then((isSuccess) {
           print('tambah progress $token, $dataprogress');
           if (isSuccess) {
-            _modalbottomSite(
-                context,
-                "Berhasil!",
-                "${_apiService.responseCode.messageApi}",
-                "f200",
-                "assets/images/congratulations.png");
+            Navigator.of(context).pop();
+            Fluttertoast.showToast(
+                msg: "Berhasil tambah data progres",
+                backgroundColor: Colors.black,
+                textColor: Colors.white);
+            // _modalbottomSite(
+            //     context,
+            //     "Berhasil!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f200",
+            //     "assets/images/congratulations.png");
           } else {
             _modalbottomSite(
                 context,

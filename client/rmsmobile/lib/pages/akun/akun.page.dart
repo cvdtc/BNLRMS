@@ -1,18 +1,8 @@
-// import 'package:flutter/material.dart';
-// class AkunPage extends StatefulWidget {
-//   @override
-//   _AkunPageState createState() => _AkunPageState();
-// }
-// class _AkunPageState extends State<AkunPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(
-//       child: Text('Akun page, under develpment. comming soon!'),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:rmsmobile/apiService/apiService.dart';
+import 'package:rmsmobile/model/pengguna/pengguna.model.gantipassword.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/setting/setting_notif.dart';
 import 'package:rmsmobile/utils/warna.dart';
@@ -25,7 +15,10 @@ class AkunPage extends StatefulWidget {
 
 class _AkunPageState extends State<AkunPage> {
   late SharedPreferences sp;
-  String? token = "", username = "", jabatan = "";
+  bool _obsecureText = true, _fieldPassword = false, _fieldPasswordretype = false;
+  String? token = "", username = "", jabatan = "", nama = "";
+  TextEditingController _textFieldControllerGantipass = TextEditingController();
+  TextEditingController _textFieldControllerGantipassretype = TextEditingController();
 
   // * ceking token and getting dashboard value from Shared Preferences
   cekToken() async {
@@ -33,7 +26,14 @@ class _AkunPageState extends State<AkunPage> {
     setState(() {
       token = sp.getString("access_token");
       username = sp.getString("username");
+      nama = sp.getString("nama");
       jabatan = sp.getString("jabatan");
+    });
+  }
+
+  void _toggle() {
+    setState(() {
+      _obsecureText = !_obsecureText;
     });
   }
 
@@ -71,7 +71,7 @@ class _AkunPageState extends State<AkunPage> {
               ),
               Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text("Admin BNL".toUpperCase()), Text("Admin")]),
+                  children: [Text(username.toString().toUpperCase()), Text(jabatan.toString())]),
             ],
           ),
           _option(context),
@@ -79,6 +79,115 @@ class _AkunPageState extends State<AkunPage> {
         ],
       ),
     ));
+  }
+
+  alertgantiPasword() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Ganti Password'),
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.close_rounded))
+              ],
+            ),
+            content: Container(
+              height: 130,
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _textFieldControllerGantipass,
+                    textInputAction: TextInputAction.go,
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      hintText: 'Ganti password disini !',
+                    ),
+                    onChanged: (value) {
+                      bool isFieldValid = value.trim().isNotEmpty;
+                      if (isFieldValid != _fieldPassword) {
+                        setState(() => _fieldPassword = isFieldValid);
+                      }
+                    },
+                  ),
+                  SizedBox(height: 10,),
+                  TextField(
+                    controller: _textFieldControllerGantipassretype,
+                    textInputAction: TextInputAction.go,
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      hintText: 'ulangi Password !',
+                    ),
+                    onChanged: (value) {
+                      bool isFieldValid = value.trim().isNotEmpty;
+                      if (isFieldValid != _fieldPassword) {
+                        setState(() => _fieldPassword = isFieldValid);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              Center(
+                child: ElevatedButton(
+                    onPressed: () {
+                      ChangePassword gantipass = ChangePassword(
+                          nama: nama,
+                          username: username,
+                          password:
+                              _textFieldControllerGantipass.text.toString(),
+                          jabatan: jabatan,
+                          notification_token: "",
+                          aktif: 1);
+                      print('data pass yang ke kirim $gantipass');
+                      if (_textFieldControllerGantipass.text.toString() == "" || _textFieldControllerGantipassretype.text.toString() == "") {
+                        Fluttertoast.showToast(
+                            msg: "Maaf, pastikan semua kolom terisi",
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white);
+                      } else if(_textFieldControllerGantipassretype.text.toString() != _textFieldControllerGantipass.text.toString()){
+                        Fluttertoast.showToast(
+                            msg: "Maaf, Kolom Password tidak sama dengan retype password",
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white);
+                      } else {
+                        // Fluttertoast.showToast(
+                        //     msg: "Tes masuk sini !",
+                        //     backgroundColor: Colors.black,
+                        //     textColor: Colors.white);
+                        ApiService().ubahPassword(token.toString(), gantipass).then((isSuccess) {
+                              print('masuk1 $isSuccess');
+                          if (isSuccess) {
+                            print('masuk2');
+                            Navigator.of(context).pop();
+                            Fluttertoast.showToast(
+                                msg: "Berhasil Ubah Password",
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white);
+                          } else {
+                            print('masuk3');
+                            Navigator.of(context).pop();
+                            Fluttertoast.showToast(
+                                msg: "Maaf, password gagal diubah",
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white);
+                          }
+                        });
+                      }
+                    },
+                    child: Text('Simpan')),
+              )
+            ],
+          );
+        });
   }
 
   Widget _option(context) {
@@ -90,6 +199,30 @@ class _AkunPageState extends State<AkunPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.only(
+                left: 1 - .0, right: 1 - .0, top: 5.0, bottom: 5.0),
+            alignment: Alignment.center,
+            width: double.infinity,
+            child: ListTile(
+              onTap: () {
+                alertgantiPasword();
+              },
+              title: (Text(
+                'Ganti Password',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              )),
+              leading: Icon(
+                Icons.exit_to_app_rounded,
+                color: Colors.black,
+                size: 22,
+              ),
+            ),
+          ),
           Container(
             color: Colors.white,
             padding: EdgeInsets.only(
@@ -236,7 +369,9 @@ class _AkunPageState extends State<AkunPage> {
 
   void exit() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.clear();
+    await preferences.remove(token.toString());
+    // preferences.clear();
+    // print('preference $preferences');
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Loginscreen()));
   }

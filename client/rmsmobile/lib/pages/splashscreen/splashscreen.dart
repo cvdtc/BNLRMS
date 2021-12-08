@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:rmsmobile/widget/bottomnavigationbar.dart';
@@ -16,21 +17,28 @@ class SplashScreenPage extends StatefulWidget {
 class _SplashScreenPageState extends State<SplashScreenPage> {
   late SharedPreferences sp;
   late FirebaseMessaging messaging;
+  ApiService _apiService = new ApiService();
   String? token = "", username = "", jabatan = "";
   bool subscribepermintaan = true;
   bool subscribeprogress = true;
 
   cekToken() async {
     sp = await SharedPreferences.getInstance();
+    // token = sp.getString("access_token");
+    // username = sp.getString("username");
+    // jabatan = sp.getString("jabatan");
     setState(() {
       token = sp.getString("access_token");
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
+    print('tokenyya $token ${_apiService.responseCode.messageApi}');
     if (token == null) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Loginscreen()));
     } else {
+      print(
+          'responsecode ${_apiService.responseCode.messageApi} ++ ${_apiService.responseCode} ++ ');
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BottomNav()));
     }
@@ -50,15 +58,19 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     });
     // ++ SUBSCRIBE TOPIC RMS PERMINTAAN
     if (subscribepermintaan) {
-      messaging.subscribeToTopic('RMSPERMINTAAN');
+      // messaging.subscribeToTopic('RMSPERMINTAAN');
+      messaging.subscribeToTopic('RMSPERMINTAANdebug');
     } else {
-      messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+      // messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+      messaging.unsubscribeFromTopic('RMSPERMINTAANdebug');
     }
     // ++ SUBSCRIBE TOPIC RMSPROGRESS
     if (subscribeprogress) {
-      messaging.subscribeToTopic('RMSPROGRESS');
+      // messaging.subscribeToTopic('RMSPROGRESS');
+      messaging.subscribeToTopic('RMSPROGRESSdebug');
     } else {
-      messaging.unsubscribeFromTopic('RMSPROGRESS');
+      // messaging.unsubscribeFromTopic('RMSPROGRESS');
+      messaging.unsubscribeFromTopic('RMSPROGRESSdebug');
     }
     Timer(Duration(seconds: 4), () {
       cekToken();

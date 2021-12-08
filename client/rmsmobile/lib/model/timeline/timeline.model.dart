@@ -1,16 +1,3 @@
-// "tipe": 1,
-//             "keterangan": "coba put 212",
-//             "kategori": "Paten",
-//             "due_date": "2019-12-15",
-//             "created": "2021-11-17 02:19:00",
-//             "edited": "2021-11-25 13:35:03",
-//             "flag_selesai": "0",
-//             "keterangan_selesai": "",
-//             "idpengguna_close_permintaan": null,
-//             "prg_keterangan": "-",
-//             "prg_created": "-",
-//             "prg_edited": "-",
-//             "prg_flag_selesai": "-"
 import 'dart:convert';
 
 class TimelineModel {
@@ -26,7 +13,9 @@ class TimelineModel {
       prg_keterangan,
       prg_created,
       prg_edited,
-      prg_flag_selesai;
+      prg_flag_selesai,
+      nama_request,
+      nama_progress;
 
   TimelineModel(
       {this.tipe,
@@ -41,7 +30,10 @@ class TimelineModel {
       this.prg_keterangan,
       this.prg_created,
       this.prg_edited,
-      this.prg_flag_selesai});
+      this.prg_flag_selesai,
+      this.nama_request,
+      this.nama_progress
+      });
 
   factory TimelineModel.fromJson(Map<String, dynamic> map) {
     return TimelineModel(
@@ -58,11 +50,13 @@ class TimelineModel {
       prg_created: map['prg_created'],
       prg_edited: map['prg_edited'],
       prg_flag_selesai: map['prg_flag_selesai'],
+      nama_request: map['nama_request'],
+      nama_progress: map['nama_progress'],
     );
   }
   @override
   String toString() {
-    return 'tipe: $tipe, keterangan: $keterangan, kategori: $kategori, due_date: $due_date, created: $created, edited: $edited, flag_selesai: $flag_selesai, keterangan_selesai: $keterangan_selesai, idpengguna_close_permintaan: $idpengguna_close_permintaan, prg_keterangan: $prg_keterangan, prg_created: $prg_created, prg_edited: $prg_edited, prg_flag_selesai: $prg_flag_selesai';
+    return 'tipe: $tipe, keterangan: $keterangan, kategori: $kategori, due_date: $due_date, created: $created, edited: $edited, flag_selesai: $flag_selesai, keterangan_selesai: $keterangan_selesai, idpengguna_close_permintaan: $idpengguna_close_permintaan, prg_keterangan: $prg_keterangan, prg_created: $prg_created, prg_edited: $prg_edited, prg_flag_selesai: $prg_flag_selesai, nama_request: $nama_request, nama_progress: $nama_progress';
   }
 }
 

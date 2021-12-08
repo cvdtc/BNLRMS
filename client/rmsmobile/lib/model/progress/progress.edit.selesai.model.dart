@@ -29,7 +29,7 @@ class ProgressModelEdit {
 
   @override
   String toString() {
-    return 'keterangan: $keterangan, flag_selesai: $flag_selesai, next_idpengguna: $next_idpengguna, idprogress: $idprogress';
+    return 'keterangan: $keterangan, flag_selesai: $flag_selesai, next_idpengguna: $next_idpengguna';
   }
 }
 

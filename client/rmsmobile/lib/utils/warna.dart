@@ -18,3 +18,5 @@ const Color kLightGreen = Color(0xFFD9E6DC);
 const Color kGreen = Color(0xFF309397);
 
 const Color kDarkBlue = Color(0xFF0D253F);
+const mBorderColor = Color(0xFFE8e8e8F3);
+const mFillColor = Color(0xFFFFFFFFF);

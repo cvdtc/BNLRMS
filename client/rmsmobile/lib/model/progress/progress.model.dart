@@ -11,7 +11,8 @@ class ProgressModel {
       idpermintaan,
       permintaan,
       kategori,
-      due_date;
+      due_date,
+      nama;
 
   ProgressModel(
       {this.idprogress,
@@ -24,7 +25,8 @@ class ProgressModel {
       this.idpermintaan,
       this.permintaan,
       this.kategori,
-      this.due_date});
+      this.due_date,
+      this.nama});
 
   factory ProgressModel.fromJson(Map<dynamic, dynamic> map) {
     return ProgressModel(
@@ -38,19 +40,22 @@ class ProgressModel {
         idpermintaan: map["idpermintaan"],
         permintaan: map["permintaan"],
         kategori: map["kategori"],
-        due_date: map["due_date"]);
+        due_date: map["due_date"],
+        nama: map["nama"]
+        );
   }
 
   Map<String, dynamic> toJson() {
     return {
       "keterangan": keterangan,
       "idpermintaan": idpermintaan,
+      // "tipe": tipe
     };
   }
 
   @override
   String toString() {
-    return 'idprogress: $idprogress, keterangan: $keterangan, created: $created, edited:$edited, flag_selesai: $flag_selesai, next_idpengguna: $next_idpengguna, due_date: $due_date, permintaan: $permintaan, kategori: $kategori';
+    return 'idprogress: $idprogress, keterangan: $keterangan, created: $created, edited:$edited, flag_selesai: $flag_selesai, next_idpengguna: $next_idpengguna, due_date: $due_date, permintaan: $permintaan, kategori: $kategori, nama: $nama';
   }
 }
 

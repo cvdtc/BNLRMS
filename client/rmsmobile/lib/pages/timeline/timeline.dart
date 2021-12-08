@@ -141,7 +141,10 @@ class _TimelinePageState extends State<TimelinePage> {
                         dataTimeline.prg_keterangan,
                         dataTimeline.prg_created,
                         dataTimeline.prg_edited,
-                        dataTimeline.prg_flag_selesai,)),
+                        dataTimeline.prg_flag_selesai,
+                        dataTimeline.nama_request,
+                        dataTimeline.nama_progress
+                        )),
               ));
         });
   }
@@ -159,7 +162,10 @@ class _TimelinePageState extends State<TimelinePage> {
       String prg_keterangan,
       String prg_created,
       String prg_edited,
-      String prg_flag_selesai) {
+      String prg_flag_selesai,
+      String nama_request,
+      String nama_progress
+      ) {
     double c_width = MediaQuery.of(context).size.width * 0.8;
     if (tipe == 1) {
       // * show data masalah
@@ -216,10 +222,16 @@ class _TimelinePageState extends State<TimelinePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text('Tanggal : '), Text(prg_created)],
+                children: [Text('Created : '), Text(prg_created)],
               ),
               Flexible(
                 child: Text('Keterangan : ' + prg_keterangan),
+              ),
+              Flexible(
+                child: Text('Edited : ' + edited),
+              ),
+              Flexible(
+                child: Text('User Prog : ' + nama_progress),
               ),
             ],
           ),

@@ -1,22 +1,22 @@
 import 'dart:convert';
 
 class LoginResult {
-  String access_token, username, jabatan, nama;
+  String access_token, refresh_token,username, jabatan, nama;
 
-  LoginResult({required this.access_token, required this.username, required this.jabatan, required this.nama });
+  LoginResult({required this.access_token, required this.refresh_token, required this.username, required this.jabatan, required this.nama });
   factory LoginResult.fromJson(Map<dynamic, dynamic> map) {
     return LoginResult(
         access_token: map["access_token"],
         username: map["username"],
         jabatan: map["jabatan"],
-        // refresh_token: map["refresh_token"],
+        refresh_token: map["refresh_token"],
         nama: map['nama']
         );
   }
 
   @override
   String toString() {
-    return 'LoginResult{access_token: $access_token, username: $username, jabatan: $jabatan, nama: $nama}';
+    return 'LoginResult{access_token: $access_token, refresh_token: $refresh_token, username: $username, jabatan: $jabatan, nama: $nama}';
   }
 }
 

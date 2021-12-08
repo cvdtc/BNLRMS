@@ -1,42 +1,19 @@
-import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:http/http.dart';
+import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
-import 'package:rmsmobile/utils/selectListController.dart';
-// import 'package:rmsmobile/utils/warna.dart';
 
 import 'request.bottom.dart';
 
-class RequestTile extends StatelessWidget {
+class RequestTile extends StatefulWidget {
   late final RequestModel request;
   final String token;
   RequestTile({required this.request, required this.token});
 
-  // var controllers = Get.put(SelectedListController());
+  @override
+  State<RequestTile> createState() => _RequestTileState();
+}
 
-  // void openFilterDialog(context) async{
-  //   await FilterListDialog.display<String>(
-  //     context, 
-  //     listData: request.kategori,
-  //     selectedListData: controllers.getSelectedList(), 
-  //     headlineText: 'Pilih Kategori',
-  //     closeIconColor: Colors.grey,
-  //     applyButtonTextStyle: TextStyle(fontSize: 20),
-  //     choiceChipLabel: (item)=> item,
-  //     validateSelectedItem: (list, val)=>list!.contains(val),
-  //     onItemSearch: (list, text){
-  //       if (list!.any((element) => element.toLowerCase().contains(text.toLowerCase()))) {
-  //         return list.where((element) => element.toLowerCase().contains(text.toLowerCase())).toList();
-  //       } else {
-  //         return [];
-  //       }
-  //     },
-  //     onApplyButtonClick: (list){
-  //       controllers.setSelectedList(List<String>.from(list!));
-  //     });
-  // }
-
+class _RequestTileState extends State<RequestTile> {
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(
@@ -51,13 +28,14 @@ class RequestTile extends StatelessWidget {
                       setState(() {
                         ReusableClass().modalActionItem(
                             context,
-                            token,
-                            request.keterangan,
-                            request.due_date,
-                            request.kategori,
-                            request.idpermintaan.toString(),
-                            request.tipeupdate,
-                            request.flag_selesai);
+                            widget.token,
+                            widget.request.keterangan,
+                            widget.request.due_date,
+                            widget.request.kategori,
+                            widget.request.idpermintaan.toString(),
+                            widget.request.keterangan_selesai,
+                            widget.request.tipeupdate,
+                            widget.request.flag_selesai,);
                       });
                     },
                     child: Padding(
@@ -68,10 +46,10 @@ class RequestTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Nama Req : ',
-                                  style: TextStyle(fontSize: 12.0)),
-                              Text(request.nama_request,
+                              Text(widget.request.kategori,
                                   style: TextStyle(fontSize: 12.0)),
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -89,7 +67,7 @@ class RequestTile extends StatelessWidget {
                                     ),
                                     Container(
                                       decoration: BoxDecoration(
-                                          color: request.flag_selesai == 1
+                                          color: widget.request.flag_selesai == 1
                                               ? Colors.green
                                               : Colors.red,
                                           borderRadius: BorderRadius.only(
@@ -100,9 +78,9 @@ class RequestTile extends StatelessWidget {
                                       height: 30.0,
                                       child: Center(
                                         child: Text(
-                                          request.flag_selesai == 1
+                                          widget.request.flag_selesai == 1
                                               ? 'Selesai'
-                                              : 'Progres',
+                                              : 'Belum Selesai',
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ),
@@ -115,17 +93,21 @@ class RequestTile extends StatelessWidget {
                           SizedBox(
                             height: 5,
                           ),
+                          Text(widget.request.keterangan.toString(),
+                              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold,)),
+                          SizedBox(
+                            height: 10,
+                          ),
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Kategori : ' + request.kategori,
-                                  style: TextStyle(fontSize: 12.0))
+                              Text("Tenggat : "+widget.request.due_date,
+                                  style: TextStyle(fontSize: 14.0, color: Colors.black38)),
+                              Text(widget.request.nama_request,
+                                  style: TextStyle(fontSize: 14.0, color: Colors.black38)),
                             ],
                           ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text('Keterangan : ' + request.keterangan,
-                              style: TextStyle(fontSize: 12.0)),
                         ],
                       ),
                     ),

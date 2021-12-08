@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
-// import 'package:rmsmobile/model/request/request.model.hapus.dart';
+import 'package:rmsmobile/pages/request/request.page.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
@@ -14,7 +15,7 @@ class ReusableClass {
   TextEditingController _tecDueDate = TextEditingController(text: "");
   TextEditingController _tecKeteranganSelesai = TextEditingController(text: "");
   String _dropdownValue = "Paten", tanggal = "";
-
+  // List<RequestModel> _requestDisplay = <RequestModel>[];
   DateTime selectedDate = DateTime.now();
 
   bool isSelesai = false;
@@ -28,7 +29,7 @@ class ReusableClass {
       String kategori,
       String duedate,
       String flag_selesai,
-      idpermintaan,
+      String idpermintaan,
       String keterangan_selesai,
       String tipeupdate) {
     // * setting value text form field if action is edit
@@ -42,6 +43,7 @@ class ReusableClass {
           text: duedate,
           selection: TextSelection.fromPosition(
               TextPosition(offset: _tecDueDate.text.length)));
+      _dropdownValue = kategori;
     }
     tipe == 'progres'
         ? showModalBottomSheet(
@@ -83,7 +85,7 @@ class ReusableClass {
                       ElevatedButton(
                           onPressed: () {
                             print(
-                                'showmodalbottomsheet1 $token, $tipe, ${_tecKeterangan.text.toString()}, ${_dropdownValue.toString()}, ${_tecDueDate.text.toString()}, $idpermintaan');
+                                'showmodalbottomsheet1progress $token, $tipe, ${_tecKeterangan.text.toString()}, ${_dropdownValue.toString()}, ${_tecDueDate.text.toString()}, $idpermintaan');
                             _modalKonfirmasi(
                                 context,
                                 token,
@@ -91,10 +93,12 @@ class ReusableClass {
                                 _tecKeterangan.text.toString(),
                                 "",
                                 "",
-                                tipeupdate == false ? '0' : '1',
+                                0,
                                 "",
-                                tipeupdate == false ? 'data' : 'selesai',
+                                "tambahprogress",
                                 idpermintaan.toString());
+                            _tecKeterangan.clear();
+                            _tecDueDate.clear();
                           },
                           style: ElevatedButton.styleFrom(
                               elevation: 0.0, primary: Colors.white),
@@ -173,7 +177,7 @@ class ReusableClass {
                                       },
                                       decoration: InputDecoration(
                                           icon: Icon(Icons.note_outlined),
-                                          labelText: 'Pilih Tanggal',
+                                          labelText: 'Pilih Tanggal Tenggat',
                                           hintText: 'Pilih Tanggal',
                                           suffixIcon: Icon(Icons
                                               .check_circle_outline_outlined))),
@@ -214,7 +218,7 @@ class ReusableClass {
                                         }
                                       });
                                     },
-                                    child: Text('Tgl'))
+                                    child: Text('Pilih'))
                               ],
                             ),
                             SizedBox(
@@ -295,11 +299,11 @@ class ReusableClass {
                                                   activeColor: Colors.green,
                                                   value: isSelesai,
                                                 ),
-                                                Text(
-                                                  isSelesai == true
-                                                      ? 'selesai'
-                                                      : 'data',
-                                                )
+                                                // Text(
+                                                //   isSelesai == true
+                                                //       ? 'selesai'
+                                                //       : 'data',
+                                                // )
                                               ],
                                             ),
                                             SizedBox(
@@ -344,7 +348,7 @@ class ReusableClass {
                                       _tecKeterangan.text.toString(),
                                       _dropdownValue.toString(),
                                       _tecDueDate.text.toString(),
-                                      isSelesai == true ? '1' : '0',
+                                      isSelesai == true ? 1 : 0,
                                       _tecKeteranganSelesai.text.toString(),
                                       isSelesai == true ? 'selesai' : 'data',
                                       idpermintaan);
@@ -384,12 +388,12 @@ class ReusableClass {
       String keterangan,
       String kategori,
       String duedate,
-      String flag_selesai,
+      int flag_selesai,
       String keterangan_selesai,
       String tipeupdate,
       String idpermintaan) {
     if (tipe == "progres") {
-      print('idper? $idpermintaan $tipeupdate');
+      print('idperrogres? $idpermintaan $tipeupdate');
       if (keterangan == "") {
         _modalbottomSite(
             context,
@@ -403,7 +407,17 @@ class ReusableClass {
         _modalbottomSite(context, "Tidak Valid!", "idpermintaan tidak valid",
             'f405', 'assets/images/sorry.png');
       }
-    } else {
+    } else if (tipe == 'tambah') {
+      print('tipeupdatenya?? $tipeupdate');
+      if (keterangan == "" || duedate == "" || kategori == "") {
+        _modalbottomSite(
+            context,
+            "Tidak Valid!",
+            "Pastikan semua kolom terisi dengan benar",
+            'f405',
+            'assets/images/sorry.png');
+      }
+    } else if (tipe == 'ubah') {
       print('tipeupdatenya?? $tipeupdate');
       if (keterangan == "" || duedate == "" || kategori == "") {
         _modalbottomSite(
@@ -486,18 +500,19 @@ class ReusableClass {
                       ),
                       StatefulBuilder(builder:
                           (BuildContext context, StateSetter setState) {
-                            return ElevatedButton(
+                        return ElevatedButton(
                             onPressed: () {
-                              // Navigator.of(context).pop();
                               print("Will be Execute up" +
                                   tipe +
                                   token +
                                   keterangan +
                                   kategori +
                                   duedate +
-                                  flag_selesai +
+                                  flag_selesai.toString() +
+                                  keterangan_selesai +
                                   idpermintaan.toString());
                               if (tipe == 'progres') {
+                                Navigator.of(context).pop();
                                 _actiontoapiProgress(
                                     context,
                                     tipe,
@@ -521,7 +536,27 @@ class ReusableClass {
                                     keterangan_selesai,
                                     tipeupdate,
                                     idpermintaan);
-                              } else {
+                              } else if (tipe == 'tambah') {
+                                Navigator.of(context).pop();
+                                // _apiService.getListRequest(token).then((value){
+                                //     setState((){
+                                //       this._requestDisplay= value!;
+                                //       print('valuenya $value');
+                                //     });
+                                //   });
+                                _actiontoapi(
+                                    context,
+                                    tipe,
+                                    token,
+                                    keterangan,
+                                    kategori,
+                                    duedate,
+                                    flag_selesai,
+                                    "",
+                                    tipeupdate,
+                                    "");
+                              } else if (tipe == 'ubah') {
+                                Navigator.of(context).pop();
                                 _actiontoapi(
                                     context,
                                     tipe,
@@ -532,7 +567,7 @@ class ReusableClass {
                                     flag_selesai,
                                     keterangan_selesai,
                                     tipeupdate,
-                                    idpermintaan);
+                                    idpermintaan.toString());
                               }
                               // tipe == 'progres'
                               // ? _actiontoapiProgress(
@@ -593,16 +628,21 @@ class ReusableClass {
       String keterangan,
       String kategori,
       String duedate,
-      String flag_selesai,
+      int flag_selesai,
       String keterangan_selesai,
       String tipeupdate,
       String idpermintaan) {
     print('here? $tipe');
     print("Will be Execute act to api " +
-        tipe +
-        token +
-        keterangan +
-        idpermintaan);
+        tipe.toString() +
+        token.toString() +
+        keterangan.toString() +
+        kategori.toString() +
+        duedate.toString() +
+        flag_selesai.toString() +
+        keterangan_selesai.toString() +
+        tipeupdate.toString() +
+        idpermintaan.toString());
     if (keterangan == "" || duedate == "" || kategori == "") {
       print('mosok masuk sini?');
       _modalbottomSite(
@@ -624,23 +664,43 @@ class ReusableClass {
           keterangan_selesai: keterangan_selesai,
           tipeupdate: tipeupdate);
 
-      RequestModel data = RequestModel(
+      RequestModel dataadd = RequestModel(
           keterangan: keterangan,
           kategori: kategori,
           due_date: duedate,
           flag_selesai: flag_selesai);
-      print('model ?' + data.toString());
+      print('model ?' + dataadd.toString());
       if (tipe == 'tambah') {
-        _apiService.addRequest(token, data).then((isSuccess) {
-          print('ini tambah ya $token + $data + $isSuccess');
+        _apiService.addRequest(token.toString(), dataadd).then((isSuccess) {
+          // print('ini tambah ya $token + $dataadd + $isSuccess');
           if (isSuccess) {
-            Navigator.of(context).pop();
-            _modalbottomSite(
-                context,
-                "Berhasil!",
-                "${_apiService.responseCode.messageApi}",
-                "f200",
-                "assets/images/congratulations.png");
+            // Navigator.pop(context);
+            // print('tes masuk');s
+            Fluttertoast.showToast(
+                msg: "Berhasil tambah permintaan",
+                backgroundColor: Colors.black,
+                textColor: Colors.white);
+                
+            // Navigator.pushAndRemoveUntil(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (BuildContext context) =>
+            //             BottomNav(initIndex: 1, callpage: RequestPageSearch())),
+            //     (route) => false);
+            // return Navigator.of(context).pushAndRemoveUntil(
+            //     MaterialPageRoute(
+            //         builder: (BuildContext context) => BottomNav(
+            //               callpage: RequestPageSearch(),
+            //               initIndex: 1,
+            //             )),
+            //     (Route<dynamic> route) => false);
+            // Navigator.of(context).pop();
+            // _modalbottomSite(
+            //     context,
+            //     "Berhasil!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f200",
+            //     "assets/images/congratulations.png");
           } else {
             _modalbottomSite(
                 context,
@@ -649,24 +709,28 @@ class ReusableClass {
                 "f400",
                 "assets/images/sorry.png");
           }
-          return;
+          // return;
         });
       } else if (tipe == 'ubah') {
         print('ubah belum kamu buat');
         _apiService
-            .ubahRequest(token, idpermintaan, dataEdit)
+            .ubahRequest(token.toString(), idpermintaan.toString(), dataEdit)
             .then((isSuccess) {
           print('masuk edit? $token, - $idpermintaan, - $dataEdit');
           if (isSuccess) {
-            Navigator.of(context).pop();
+            // Navigator.of(context).pop();
+            Fluttertoast.showToast(
+                msg: "Berhasil ubah data permintaan",
+                backgroundColor: Colors.black,
+                textColor: Colors.white);
             // _tecNama.clear();
             // _tecKeterangan.clear();
-            _modalbottomSite(
-                context,
-                "Berhasil!",
-                "${_apiService.responseCode.messageApi}",
-                "f200",
-                "assets/images/congratulations.png");
+            // _modalbottomSite(
+            //     context,
+            //     "Berhasil!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f200",
+            //     "assets/images/congratulations.png");
           } else {
             _modalbottomSite(
                 context,
@@ -679,7 +743,9 @@ class ReusableClass {
         });
       } else if (tipe == 'hapus') {
         print('hapus belum kamu buat');
-        _apiService.hapusRequest(token, idpermintaan).then((isSuccess) {
+        _apiService
+            .hapusRequest(token.toString(), idpermintaan.toString())
+            .then((isSuccess) {
           if (isSuccess) {
             _modalbottomSite(
                 context,
@@ -699,16 +765,22 @@ class ReusableClass {
         });
       } else if (tipe == 'progres') {
         print('ini tambah progres lho');
-        _apiService.addProgres(token, dataprogress).then((isSuccess) {
+        _apiService
+            .addProgres(token.toString(), dataprogress)
+            .then((isSuccess) {
           print('tambah progress $token, $dataprogress');
           if (isSuccess) {
-            Navigator.of(context).pop();
-            _modalbottomSite(
-                context,
-                "Berhasil!",
-                "${_apiService.responseCode.messageApi}",
-                "f200",
-                "assets/images/congratulations.png");
+            Fluttertoast.showToast(
+                msg: "Berhasil tambah data progres",
+                backgroundColor: Colors.black,
+                textColor: Colors.white);
+            // Navigator.of(context).pop();
+            // _modalbottomSite(
+            //     context,
+            //     "Berhasil!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f200",
+            //     "assets/images/congratulations.png");
           } else {
             _modalbottomSite(
                 context,
@@ -733,7 +805,7 @@ class ReusableClass {
       String keterangan,
       String kategori,
       String duedate,
-      String flag_selesai,
+      int flag_selesai,
       String keterangan_selesai,
       String tipeupdate,
       String idpermintaan) {
@@ -754,20 +826,24 @@ class ReusableClass {
     } else {
       print('heres?? $tipe ~ $idpermintaan');
       ProgressModelAdd dataprogress =
-          ProgressModelAdd(keterangan: keterangan, idpermintaan: idpermintaan);
-
+          ProgressModelAdd(keterangan: keterangan, idpermintaan: idpermintaan, idnextuser: flag_selesai, tipe: tipeupdate);
+          print('act to api progress $dataprogress');
       if (tipe == 'progres') {
         print('ini tambah progres lho');
         _apiService.addProgres(token, dataprogress).then((isSuccess) {
           print('tambah progress $token, $dataprogress');
           if (isSuccess) {
-            Navigator.of(context).pop();
-            _modalbottomSite(
-                context,
-                "Berhasil!",
-                "${_apiService.responseCode.messageApi}",
-                "f200",
-                "assets/images/congratulations.png");
+            Fluttertoast.showToast(
+                msg: "Berhasil tambah data progres",
+                backgroundColor: Colors.black,
+                textColor: Colors.white);
+            // Navigator.of(context).pop();
+            // _modalbottomSite(
+            //     context,
+            //     "Berhasil!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f200",
+            //     "assets/images/congratulations.png");
           } else {
             _modalbottomSite(
                 context,
@@ -792,7 +868,7 @@ class ReusableClass {
       String keterangan,
       String kategori,
       String duedate,
-      String flag_selesai,
+      int flag_selesai,
       String keterangan_selesai,
       String tipeupdate,
       String idpermintaan) {
@@ -847,6 +923,7 @@ class ReusableClass {
       String duedate,
       String kategori,
       String idpermintaan,
+      String keterangan_selesai,
       String tipeupdate,
       int flag_selesai) {
     showModalBottomSheet(
@@ -961,9 +1038,9 @@ class ReusableClass {
                                 keterangan,
                                 kategori,
                                 duedate,
-                                '',
+                                flag_selesai.toString(),
                                 idpermintaan,
-                                '',
+                                keterangan_selesai,
                                 tipeupdate);
                           },
                           style: ElevatedButton.styleFrom(

@@ -9,16 +9,12 @@ import 'package:rmsmobile/pages/dashboard/dashboard.item.page/progres.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class Dahsboard extends StatefulWidget {
   const Dahsboard({Key? key}) : super(key: key);
 
   @override
   _DahsboardState createState() => _DahsboardState();
 }
-
-
 
 Text subheading(String title) {
   return Text(
@@ -56,13 +52,13 @@ class _DahsboardState extends State<Dahsboard> {
     sp = await SharedPreferences.getInstance();
     setState(() {
       token = sp.getString("access_token");
-      // username = sp.getString("username");
       nama = sp.getString('nama');
       jabatan = sp.getString("jabatan");
     });
+    print('cek print ${_apiService.responseCode.messageApi.toString()}');
     _apiService.getDashboard(token!).then((value) {
       // DashboardModel dashboardModel = DashboardModel();
-      print("Jumlah Masalah? " + value.toString());
+      print("Jumlah Masalah? " + value.toString()+ "sttt"+ _apiService.responseCode.statusCode.toString());
       setState(() {
         _dashboard.addAll(value!);
       });
@@ -83,19 +79,11 @@ class _DahsboardState extends State<Dahsboard> {
     super.dispose();
     _apiService.client.close();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            actions: [
-              IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.notifications,
-                    color: Colors.black,
-                  ))
-            ],
             elevation: 0,
             backgroundColor: thirdcolor,
             centerTitle: true,
@@ -128,14 +116,16 @@ class _DahsboardState extends State<Dahsboard> {
                                 // mainAxisAlignment:
                                 //     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                 CircleAvatar(
-                                      backgroundColor: kBlue,
-                                      radius: 20.0,
-                                      backgroundImage: AssetImage(
-                                        'assets/images/bnllogo.png',
-                                      ),
+                                  CircleAvatar(
+                                    backgroundColor: kBlue,
+                                    radius: 20.0,
+                                    backgroundImage: AssetImage(
+                                      'assets/images/bnllogo.png',
                                     ),
-                                    SizedBox(width: 10,),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
                                   Column(
                                     // crossAxisAlignment:
                                     //     CrossAxisAlignment.center,
@@ -186,7 +176,11 @@ class _DahsboardState extends State<Dahsboard> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      _dashboard.length > 0 ? _dashboard[0].belum_selesai.toString() : "",
+                                      _dashboard.length > 0
+                                          ? _dashboard[0]
+                                              .belum_selesai
+                                              .toString()
+                                          : "",
                                       style: TextStyle(fontSize: 30),
                                     ),
                                     Text(
@@ -206,7 +200,9 @@ class _DahsboardState extends State<Dahsboard> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      _dashboard.length > 0 ? _dashboard[0].selesai.toString() : "",
+                                      _dashboard.length > 0
+                                          ? _dashboard[0].selesai.toString()
+                                          : "",
                                       style: TextStyle(fontSize: 30),
                                     ),
                                     Text(
@@ -232,59 +228,58 @@ class _DahsboardState extends State<Dahsboard> {
               height: 10,
             ),
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10.0
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              subheading('Permintaan'),
-                              // GestureDetector(
-                              //   onTap: (){},
-                              //   child: Text('Selengkapnya >>>'),
-                              // )
-                            ],
-                          ),
-                          SizedBox(height: 10,),
-                          PermintaanList()
-                        ],
-                      ),
+                child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            subheading('Permintaan'),
+                            // GestureDetector(
+                            //   onTap: (){},
+                            //   child: Text('Selengkapnya >>>'),
+                            // )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        PermintaanList()
+                      ],
                     ),
-                    SizedBox(
-                      height: 10,
+                  ),
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            subheading('Progres'),
+                            // GestureDetector(
+                            //   onTap: (){},
+                            //   child: Text('Selengkapnya >>>'),
+                            // )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ProgresList()
+                      ],
                     ),
-                     Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10.0
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              subheading('Progres'),
-                              // GestureDetector(
-                              //   onTap: (){},
-                              //   child: Text('Selengkapnya >>>'),
-                              // )
-                            ],
-                          ),
-                          SizedBox(height: 10,),
-                          ProgresList()
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ))
+                  )
+                ],
+              ),
+            ))
             // Expanded(
             //   child: SingleChildScrollView(
             //     child: Column(
