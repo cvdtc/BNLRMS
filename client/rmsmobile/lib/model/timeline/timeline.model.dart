@@ -15,7 +15,9 @@ class TimelineModel {
       prg_edited,
       prg_flag_selesai,
       nama_request,
-      nama_progress;
+      nama_progress,
+      nama_close_permintaan,
+      date_selesai;
 
   TimelineModel(
       {this.tipe,
@@ -32,31 +34,33 @@ class TimelineModel {
       this.prg_edited,
       this.prg_flag_selesai,
       this.nama_request,
-      this.nama_progress
-      });
+      this.nama_progress,
+      this.nama_close_permintaan,
+      this.date_selesai});
 
   factory TimelineModel.fromJson(Map<String, dynamic> map) {
     return TimelineModel(
-      tipe: map['tipe'],
-      keterangan: map['keterangan'],
-      kategori: map['kategori'],
-      due_date: map['due_date'],
-      created: map['created'],
-      edited: map['edited'],
-      flag_selesai: map['flag_selesai'],
-      keterangan_selesai: map['keterangan_selesai'],
-      idpengguna_close_permintaan: map['idpengguna_close_permintaan'],
-      prg_keterangan: map['prg_keterangan'],
-      prg_created: map['prg_created'],
-      prg_edited: map['prg_edited'],
-      prg_flag_selesai: map['prg_flag_selesai'],
-      nama_request: map['nama_request'],
-      nama_progress: map['nama_progress'],
-    );
+        tipe: map['tipe'],
+        keterangan: map['keterangan'],
+        kategori: map['kategori'],
+        due_date: map['due_date'],
+        created: map['created'],
+        edited: map['edited'],
+        flag_selesai: map['flag_selesai'],
+        keterangan_selesai: map['keterangan_selesai'],
+        idpengguna_close_permintaan: map['idpengguna_close_permintaan'],
+        prg_keterangan: map['prg_keterangan'],
+        prg_created: map['prg_created'],
+        prg_edited: map['prg_edited'],
+        prg_flag_selesai: map['prg_flag_selesai'],
+        nama_request: map['nama_request'],
+        nama_progress: map['nama_progress'],
+        nama_close_permintaan: map['nama_close_permintaan'],
+        date_selesai: map['date_selesai']);
   }
   @override
   String toString() {
-    return 'tipe: $tipe, keterangan: $keterangan, kategori: $kategori, due_date: $due_date, created: $created, edited: $edited, flag_selesai: $flag_selesai, keterangan_selesai: $keterangan_selesai, idpengguna_close_permintaan: $idpengguna_close_permintaan, prg_keterangan: $prg_keterangan, prg_created: $prg_created, prg_edited: $prg_edited, prg_flag_selesai: $prg_flag_selesai, nama_request: $nama_request, nama_progress: $nama_progress';
+    return 'tipe: $tipe, keterangan: $keterangan, kategori: $kategori, due_date: $due_date, created: $created, edited: $edited, flag_selesai: $flag_selesai, keterangan_selesai: $keterangan_selesai, idpengguna_close_permintaan: $idpengguna_close_permintaan, prg_keterangan: $prg_keterangan, prg_created: $prg_created, prg_edited: $prg_edited, prg_flag_selesai: $prg_flag_selesai, nama_request: $nama_request, nama_progress: $nama_progress, nama_close_permintaan: $nama_close_permintaan';
   }
 }
 

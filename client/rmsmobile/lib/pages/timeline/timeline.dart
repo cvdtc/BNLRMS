@@ -143,8 +143,9 @@ class _TimelinePageState extends State<TimelinePage> {
                         dataTimeline.prg_edited,
                         dataTimeline.prg_flag_selesai,
                         dataTimeline.nama_request,
-                        dataTimeline.nama_progress
-                        )),
+                        dataTimeline.nama_progress,
+                        dataTimeline.nama_close_permintaan,
+                        dataTimeline.date_selesai)),
               ));
         });
   }
@@ -164,9 +165,11 @@ class _TimelinePageState extends State<TimelinePage> {
       String prg_edited,
       String prg_flag_selesai,
       String nama_request,
-      String nama_progress
-      ) {
+      String nama_progress,
+      String nama_close_permintaan,
+      String date_selesai) {
     double c_width = MediaQuery.of(context).size.width * 0.8;
+    print("xxxxx" + flag_selesai.toString());
     if (tipe == 1) {
       // * show data masalah
       return Container(
@@ -177,30 +180,55 @@ class _TimelinePageState extends State<TimelinePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Request',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Permintaan',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      created,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ],
                 ),
                 Divider(
-                  thickness: 2,
-                  height: 8,
+                  thickness: 1,
                 ),
-                Text('Keterangan : $keterangan'),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('kategori : '),
-                      Text(kategori),
-                    ],
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(kategori),
+                    Text(nama_request),
+                  ],
+                ),
+                Text(
+                  keterangan,
+                  style: TextStyle(
+                    fontSize: 16,
                   ),
                 ),
-                Text('Tanggal Tenggat: $due_date')
+                flag_selesai == 1 ? Text(keterangan_selesai) : Container(),
+                Divider(
+                  thickness: 1,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Batas Waktu: $due_date'),
+                    Text('Updated: $edited')
+                  ],
+                ),
               ],
             )),
       );
     } else if (tipe == 2) {
+      print(tipe);
       // * show data progress
       return Container(
         width: c_width,
@@ -211,33 +239,48 @@ class _TimelinePageState extends State<TimelinePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Progress',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Divider(
-                thickness: 2,
-                height: 8,
-              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text('Created : '), Text(prg_created)],
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Progres',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    prg_created,
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+              Divider(thickness: 1),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(nama_progress),
+                ],
               ),
               Flexible(
-                child: Text('Keterangan : ' + prg_keterangan),
+                child: Text(
+                  prg_keterangan,
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
-              Flexible(
-                child: Text('Edited : ' + edited),
-              ),
-              Flexible(
-                child: Text('User Prog : ' + nama_progress),
+              Divider(thickness: 1),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  prg_edited != null && prg_flag_selesai != 1
+                      ? Text('Updated : ' + prg_edited.toString())
+                      : Text('Updated : Belum diselesaikan'),
+                ],
               ),
             ],
           ),
         ),
       );
     } else if (tipe == 3) {
+      print("x" + tipe.toString());
       // * show data penyelesaian
       return Container(
         color: Colors.blue[300],
@@ -256,16 +299,21 @@ class _TimelinePageState extends State<TimelinePage> {
                   height: 8,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Tanggal : '),
-                    Text(due_date),
+                    Text('Status : Selesai'),
+                    Text(nama_close_permintaan),
                   ],
                 ),
                 Flexible(
-                  child: Text('Keterangan : ' + keterangan_selesai),
-                )
+                  child: Text(keterangan_selesai.toUpperCase()),
+                ),
+                Divider(thickness: 1),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [Text('Tgl. Selesai : ' + date_selesai.toString())],
+                ),
               ],
             )),
       );

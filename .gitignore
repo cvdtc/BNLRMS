@@ -74,4 +74,9 @@ typings/
 
 # FuseBox cache
 .fusebox/
+
+#exeptional
 server/utils/bnlrms-firebase-token.json
+client/rmsweb
+client/rmsvue
+client/rmsreact

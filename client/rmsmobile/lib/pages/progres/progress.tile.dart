@@ -12,16 +12,16 @@ import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Country {
-  final String countryCode;
-  final String countryName;
+class Pengguna {
+  final String idpengguna;
+  final String namapengguna;
 
-  Country({required this.countryCode, required this.countryName});
+  Pengguna({required this.idpengguna, required this.namapengguna});
 
-  factory Country.fromJson(Map<String, dynamic> json) {
-    return Country(
-      countryCode: json['idpengguna'],
-      countryName: json['nama'],
+  factory Pengguna.fromJson(Map<String, dynamic> json) {
+    return Pengguna(
+      idpengguna: json['idpengguna'],
+      namapengguna: json['nama'],
     );
   }
 }
@@ -95,6 +95,7 @@ class _ProgressTileState extends State<ProgressTile> {
             child: InkWell(
               onTap: () {
                 setState(() {
+                  // ! ???? WTF code
                   showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
@@ -312,36 +313,74 @@ class _ProgressTileState extends State<ProgressTile> {
                                                           ),
                                                           ElevatedButton(
                                                               onPressed: () {
-                                                                print('keterangannya ${_tecKeterangan.text} $token');
+                                                                print(
+                                                                    'keterangannya ${_tecKeterangan.text} $token');
                                                                 ProgressModelEdit modeledit = ProgressModelEdit(
-                                                                    keterangan:_tecKeterangan.text.toString(),
-                                                                    flag_selesai:'1',
-                                                                    next_idpengguna:_mypengguna);
+                                                                    keterangan:
+                                                                        _tecKeterangan
+                                                                            .text
+                                                                            .toString(),
+                                                                    flag_selesai:
+                                                                        '1',
+                                                                    next_idpengguna:
+                                                                        _mypengguna);
 
                                                                 ProgressModelAdd modelAdd = ProgressModelAdd(
-                                                                    keterangan: _tecKeteranganNext.text.toString(),
-                                                                    idpermintaan: widget.progress.idpermintaan,
-                                                                    idnextuser:_mypengguna,
-                                                                    tipe:'nextuser');
+                                                                    keterangan: _tecKeteranganNext
+                                                                        .text
+                                                                        .toString(),
+                                                                    idpermintaan: widget
+                                                                        .progress
+                                                                        .idpermintaan,
+                                                                    idnextuser:
+                                                                        _mypengguna,
+                                                                    tipe:
+                                                                        'nextuser');
                                                                 print(
                                                                     'dataselesai $modeledit idprogress $idprogress modeladd $modelAdd');
-                                                                _apiService.ubahProgresJadiSelesai(token.toString(),idprogress.toString(),modeledit).then((isSuccess) {
-                                                                          print('disini sukses nggak ?');
+                                                                _apiService
+                                                                    .ubahProgresJadiSelesai(
+                                                                        token
+                                                                            .toString(),
+                                                                        idprogress
+                                                                            .toString(),
+                                                                        modeledit)
+                                                                    .then(
+                                                                        (isSuccess) {
+                                                                  print(
+                                                                      'disini sukses nggak ?');
                                                                   if (isSuccess) {
-                                                                    Navigator.of(context).pop();
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
                                                                     Fluttertoast.showToast(
-                                                                            msg:"Berhasil ubah data progres selesai",
-                                                                            backgroundColor:Colors.black,
-                                                                            textColor: Colors.white);
-                                                                    _tecKeterangan.clear();
-                                                                    if (isSelesai ==true) {
-                                                                      _apiService.addProgres(token.toString(),modelAdd).then((value) {
-                                                                        print('tes progres piye ? $modeledit $modelAdd');
-                                                                        print('disini sukses nggak1 ?');
-                                                                        Navigator.of(context).pop();
+                                                                        msg:
+                                                                            "Berhasil ubah data progres selesai",
+                                                                        backgroundColor:
+                                                                            Colors
+                                                                                .black,
+                                                                        textColor:
+                                                                            Colors.white);
+                                                                    _tecKeterangan
+                                                                        .clear();
+                                                                    if (isSelesai ==
+                                                                        true) {
+                                                                      _apiService
+                                                                          .addProgres(
+                                                                              token.toString(),
+                                                                              modelAdd)
+                                                                          .then((value) {
+                                                                        print(
+                                                                            'tes progres piye ? $modeledit $modelAdd');
+                                                                        print(
+                                                                            'disini sukses nggak1 ?');
+                                                                        Navigator.of(context)
+                                                                            .pop();
                                                                         Fluttertoast.showToast(
-                                                                            msg:"Berhasil ubah data progres ke next user",
-                                                                            backgroundColor:Colors.black,
+                                                                            msg:
+                                                                                "Berhasil ubah data progres ke next user",
+                                                                            backgroundColor:
+                                                                                Colors.black,
                                                                             textColor: Colors.white);
                                                                       });
                                                                     }
@@ -456,7 +495,7 @@ class _ProgressTileState extends State<ProgressTile> {
                         );
                       });
                 });
-
+                // ! END WTF CODE
                 // ReusableClassProgress().modalActionItem(
                 //     context,
                 //     widget.token,
@@ -472,23 +511,34 @@ class _ProgressTileState extends State<ProgressTile> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Permintaan : ${widget.progress.permintaan}',
-                        style: TextStyle(fontSize: 14.0)),
-                    SizedBox(
-                      height: 5,
-                    ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Kategori : ' + widget.progress.kategori,
-                            style: TextStyle(fontSize: 14.0)),
+                        Text(widget.progress.kategori),
+                        Text(widget.progress.nama),
                       ],
                     ),
-                    SizedBox(
-                      height: 5,
+                    Divider(
+                      thickness: 1,
                     ),
-                    Text('Keterangan : ' + widget.progress.keterangan,
+                    Text(
+                        'Permintaan : ' +
+                            widget.progress.permintaan.toString().toUpperCase(),
+                        style: TextStyle(fontSize: 16.0)),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    Text(
+                      'tgl. akhir : ' +
+                          widget.progress.due_date.toString().toUpperCase(),
+                    ),
+                    Divider(
+                      thickness: 1,
+                    ),
+                    Text('Progress Awal : ' + widget.progress.keterangan,
                         style: TextStyle(fontSize: 14.0)),
-                    Text('User Pembuat : ' + widget.progress.nama,
+                    Text('Tanggal : ' + widget.progress.created,
                         style: TextStyle(fontSize: 14.0)),
                   ],
                 ),

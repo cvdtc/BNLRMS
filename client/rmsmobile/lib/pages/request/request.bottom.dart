@@ -5,7 +5,6 @@ import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
-import 'package:rmsmobile/pages/request/request.page.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
@@ -15,7 +14,6 @@ class ReusableClass {
   TextEditingController _tecDueDate = TextEditingController(text: "");
   TextEditingController _tecKeteranganSelesai = TextEditingController(text: "");
   String _dropdownValue = "Paten", tanggal = "";
-  // List<RequestModel> _requestDisplay = <RequestModel>[];
   DateTime selectedDate = DateTime.now();
 
   bool isSelesai = false;
@@ -680,7 +678,7 @@ class ReusableClass {
                 msg: "Berhasil tambah permintaan",
                 backgroundColor: Colors.black,
                 textColor: Colors.white);
-                
+
             // Navigator.pushAndRemoveUntil(
             //     context,
             //     MaterialPageRoute(
@@ -825,9 +823,12 @@ class ReusableClass {
           'assets/images/sorry.png');
     } else {
       print('heres?? $tipe ~ $idpermintaan');
-      ProgressModelAdd dataprogress =
-          ProgressModelAdd(keterangan: keterangan, idpermintaan: idpermintaan, idnextuser: flag_selesai, tipe: tipeupdate);
-          print('act to api progress $dataprogress');
+      ProgressModelAdd dataprogress = ProgressModelAdd(
+          keterangan: keterangan,
+          idpermintaan: idpermintaan,
+          idnextuser: flag_selesai,
+          tipe: tipeupdate);
+      print('act to api progress $dataprogress');
       if (tipe == 'progres') {
         print('ini tambah progres lho');
         _apiService.addProgres(token, dataprogress).then((isSuccess) {

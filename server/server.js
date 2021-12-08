@@ -25,7 +25,7 @@ const fs = require('fs')
 
 // * setting up express or api to json type
 app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({extended: false}))
 app.use(cors())
 // * allow image access for public
 app.use('/images', express.static(path.join(__dirname, '/images')))

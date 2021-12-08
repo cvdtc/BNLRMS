@@ -4,8 +4,8 @@ import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
+import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/warna.dart';
-
 
 class ReusableClassProgress {
   ApiService _apiService = new ApiService();
@@ -38,78 +38,77 @@ class ReusableClassProgress {
               TextPosition(offset: _tecDueDate.text.length)));
     }
     showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15.0),
-                    topRight: Radius.circular(15.0))),
-            builder: (BuildContext context) {
-              return Padding(
-                padding: MediaQuery.of(context).viewInsets,
-                child: Container(
-                  padding: EdgeInsets.all(15.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        tipe.toUpperCase(),
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10.0),
-                      TextFormField(
-                          controller: _tecKeterangan,
-                          textCapitalization: TextCapitalization.characters,
-                          decoration: InputDecoration(
-                              icon: Icon(Icons.cabin_rounded),
-                              labelText: 'Keterangan Progres',
-                              hintText: 'Masukkan Deskripsi',
-                              suffixIcon:
-                                  Icon(Icons.check_circle_outline_outlined))),
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {
-                            print(
-                                'showmodalbottomsheet1 $token, $tipe, ${_tecKeterangan.text.toString()}, ${_dropdownValue.toString()}, ${_tecDueDate.text.toString()}, $idpermintaan');
-                            _modalKonfirmasi(
-                                context,
-                                token,
-                                tipe,
-                                _tecKeterangan.text.toString(),
-                                "",
-                                "",
-                                "0",
-                                "",
-                                "",
-                                idpermintaan.toString());
-                          },
-                          style: ElevatedButton.styleFrom(
-                              elevation: 0.0, primary: Colors.white),
-                          child: Ink(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(18.0)),
-                              child: Container(
-                                width: 325,
-                                height: 45,
-                                alignment: Alignment.center,
-                                child: Text('S I M P A N',
-                                    style: TextStyle(
-                                      color: primarycolor,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                              )))
-                    ],
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0))),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Container(
+              padding: EdgeInsets.all(15.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    tipe.toUpperCase(),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                ),
-              );
-            });
+                  SizedBox(height: 10.0),
+                  TextFormField(
+                      controller: _tecKeterangan,
+                      textCapitalization: TextCapitalization.characters,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.cabin_rounded),
+                          labelText: 'Keterangan Progres',
+                          hintText: 'Masukkan Deskripsi',
+                          suffixIcon:
+                              Icon(Icons.check_circle_outline_outlined))),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        print(
+                            'showmodalbottomsheet1 $token, $tipe, ${_tecKeterangan.text.toString()}, ${_dropdownValue.toString()}, ${_tecDueDate.text.toString()}, $idpermintaan');
+                        _modalKonfirmasi(
+                            context,
+                            token,
+                            tipe,
+                            _tecKeterangan.text.toString(),
+                            "",
+                            "",
+                            "0",
+                            "",
+                            "",
+                            idpermintaan.toString());
+                      },
+                      style: ElevatedButton.styleFrom(
+                          elevation: 0.0, primary: Colors.white),
+                      child: Ink(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18.0)),
+                          child: Container(
+                            width: 325,
+                            height: 45,
+                            alignment: Alignment.center,
+                            child: Text('S I M P A N',
+                                style: TextStyle(
+                                  color: primarycolor,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          )))
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   // ++ BOTTOM MODAL CONFIRMATION
@@ -225,59 +224,59 @@ class ReusableClassProgress {
                                 duedate +
                                 flag_selesai +
                                 idpermintaan.toString());
-                                if (tipe == 'progres') {
-                                  Navigator.of(context).pop();
-                                  _actiontoapiProgress(
-                                    context,
-                                    tipe,
-                                    token,
-                                    keterangan,
-                                    kategori,
-                                    duedate,
-                                    flag_selesai,
-                                    keterangan_selesai,
-                                    tipeupdate,
-                                    idpermintaan);
-                                } 
-                                // else if (tipe == 'hapus'){
-                                // } 
-                                else {
-                                  Navigator.of(context).pop();
-                                  _actiontoapi(
-                                    context,
-                                    tipe,
-                                    token,
-                                    keterangan,
-                                    kategori,
-                                    duedate,
-                                    flag_selesai,
-                                    keterangan_selesai,
-                                    tipeupdate,
-                                    idpermintaan);
-                                }
+                            if (tipe == 'progres') {
+                              Navigator.of(context).pop();
+                              _actiontoapiProgress(
+                                  context,
+                                  tipe,
+                                  token,
+                                  keterangan,
+                                  kategori,
+                                  duedate,
+                                  flag_selesai,
+                                  keterangan_selesai,
+                                  tipeupdate,
+                                  idpermintaan);
+                            }
+                            // else if (tipe == 'hapus'){
+                            // }
+                            else {
+                              Navigator.of(context).pop();
+                              _actiontoapi(
+                                  context,
+                                  tipe,
+                                  token,
+                                  keterangan,
+                                  kategori,
+                                  duedate,
+                                  flag_selesai,
+                                  keterangan_selesai,
+                                  tipeupdate,
+                                  idpermintaan);
+                            }
                             // tipe == 'progres'
-                                // ? _actiontoapiProgress(
-                                //     context,
-                                //     tipe,
-                                //     token,
-                                //     keterangan,
-                                //     kategori,
-                                //     duedate,
-                                //     flag_selesai,
-                                //     keterangan_selesai,
-                                //     tipeupdate,
-                                //     idpermintaan)
-                                // : _actiontoapi(
-                                //     context,
-                                //     tipe,
-                                //     token,
-                                //     keterangan,
-                                //     kategori,
-                                //     duedate,
-                                //     flag_selesai,
-                                //     keterangan_selesai,
-                                //     tipeupdate,
-                                //     idpermintaan);
+                            // ? _actiontoapiProgress(
+                            //     context,
+                            //     tipe,
+                            //     token,
+                            //     keterangan,
+                            //     kategori,
+                            //     duedate,
+                            //     flag_selesai,
+                            //     keterangan_selesai,
+                            //     tipeupdate,
+                            //     idpermintaan)
+                            // : _actiontoapi(
+                            //     context,
+                            //     tipe,
+                            //     token,
+                            //     keterangan,
+                            //     kategori,
+                            //     duedate,
+                            //     flag_selesai,
+                            //     keterangan_selesai,
+                            //     tipeupdate,
+                            //     idpermintaan);
                             Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
@@ -352,7 +351,8 @@ class ReusableClassProgress {
       print('model ?' + data.toString());
       if (tipe == 'tambah') {
         _apiService.addRequest(token, data).then((isSuccess) {
-          print('ini tambah ya $token + $data + $isSuccess + ${_apiService.responseCode}');
+          print(
+              'ini tambah ya $token + $data + $isSuccess + ${_apiService.responseCode}');
           if (isSuccess) {
             // Navigator.of(context).pop();
             _modalbottomSite(
@@ -549,21 +549,53 @@ class ReusableClassProgress {
                   SizedBox(
                     height: 10,
                   ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TimelinePage(
+                                      idpermintaan: idpermintaan,
+                                    )));
+                      },
+                      style: ElevatedButton.styleFrom(
+                          side: BorderSide(width: 2, color: Colors.orange),
+                          elevation: 0.0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          primary: Colors.white),
+                      child: Ink(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18.0)),
+                          child: Container(
+                            width: 325,
+                            height: 45,
+                            alignment: Alignment.center,
+                            child: Text('LIHAT TIMELINE',
+                                style: TextStyle(
+                                  color: Colors.orange,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ))),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Divider(
                     height: 5,
                   ),
                   TextFormField(
-                          controller: _tecKeterangan,
-                          textCapitalization: TextCapitalization.characters,
-                          decoration: InputDecoration(
-                              icon: Icon(Icons.cabin_rounded),
-                              labelText: 'Keterangan Progres',
-                              hintText: 'Masukkan Deskripsi',
-                              suffixIcon:
-                                  Icon(Icons.check_circle_outline_outlined))),
-                      SizedBox(
-                        height: 15.0,
-                      ),
+                      controller: _tecKeterangan,
+                      textCapitalization: TextCapitalization.characters,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.cabin_rounded),
+                          labelText: 'Keterangan Progres',
+                          hintText: 'Masukkan Deskripsi',
+                          suffixIcon:
+                              Icon(Icons.check_circle_outline_outlined))),
+                  SizedBox(
+                    height: 15.0,
+                  ),
                   ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();

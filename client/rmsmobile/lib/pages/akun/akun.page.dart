@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,10 +16,13 @@ class AkunPage extends StatefulWidget {
 
 class _AkunPageState extends State<AkunPage> {
   late SharedPreferences sp;
-  bool _obsecureText = true, _fieldPassword = false, _fieldPasswordretype = false;
+  bool _obsecureText = true,
+      _fieldPassword = false,
+      _fieldPasswordretype = false;
   String? token = "", username = "", jabatan = "", nama = "";
   TextEditingController _textFieldControllerGantipass = TextEditingController();
-  TextEditingController _textFieldControllerGantipassretype = TextEditingController();
+  TextEditingController _textFieldControllerGantipassretype =
+      TextEditingController();
 
   // * ceking token and getting dashboard value from Shared Preferences
   cekToken() async {
@@ -69,9 +73,10 @@ class _AkunPageState extends State<AkunPage> {
               SizedBox(
                 width: 15,
               ),
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text(username.toString().toUpperCase()), Text(jabatan.toString())]),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(username.toString().toUpperCase()),
+                Text(jabatan.toString())
+              ]),
             ],
           ),
           _option(context),
@@ -116,7 +121,9 @@ class _AkunPageState extends State<AkunPage> {
                       }
                     },
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   TextField(
                     controller: _textFieldControllerGantipassretype,
                     textInputAction: TextInputAction.go,
@@ -148,14 +155,19 @@ class _AkunPageState extends State<AkunPage> {
                           notification_token: "",
                           aktif: 1);
                       print('data pass yang ke kirim $gantipass');
-                      if (_textFieldControllerGantipass.text.toString() == "" || _textFieldControllerGantipassretype.text.toString() == "") {
+                      if (_textFieldControllerGantipass.text.toString() == "" ||
+                          _textFieldControllerGantipassretype.text.toString() ==
+                              "") {
                         Fluttertoast.showToast(
                             msg: "Maaf, pastikan semua kolom terisi",
                             backgroundColor: Colors.red,
                             textColor: Colors.white);
-                      } else if(_textFieldControllerGantipassretype.text.toString() != _textFieldControllerGantipass.text.toString()){
+                      } else if (_textFieldControllerGantipassretype.text
+                              .toString() !=
+                          _textFieldControllerGantipass.text.toString()) {
                         Fluttertoast.showToast(
-                            msg: "Maaf, Kolom Password tidak sama dengan retype password",
+                            msg:
+                                "Maaf, Kolom Password tidak sama dengan retype password",
                             backgroundColor: Colors.red,
                             textColor: Colors.white);
                       } else {
@@ -163,8 +175,10 @@ class _AkunPageState extends State<AkunPage> {
                         //     msg: "Tes masuk sini !",
                         //     backgroundColor: Colors.black,
                         //     textColor: Colors.white);
-                        ApiService().ubahPassword(token.toString(), gantipass).then((isSuccess) {
-                              print('masuk1 $isSuccess');
+                        ApiService()
+                            .ubahPassword(token.toString(), gantipass)
+                            .then((isSuccess) {
+                          print('masuk1 $isSuccess');
                           if (isSuccess) {
                             print('masuk2');
                             Navigator.of(context).pop();
@@ -370,7 +384,12 @@ class _AkunPageState extends State<AkunPage> {
   void exit() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.remove(token.toString());
-    // preferences.clear();
+    preferences.clear();
+    late FirebaseMessaging messaging;
+    // * adding firebase configuration setup
+    messaging = FirebaseMessaging.instance;
+    messaging.unsubscribeFromTopic('RMSPERMINTAANdebug');
+    messaging.unsubscribeFromTopic('RMSPROGRESSdebug');
     // print('preference $preferences');
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Loginscreen()));
