@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
+import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/request/request.bottom.dart';
 
 import 'package:rmsmobile/pages/request/request.network.dart';
@@ -54,6 +55,9 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
         _requestDisplay = _requests;
         print(_requestDisplay.length);
       });
+    }).onError((error, stackTrace) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Loginscreen()));
     });
   }
 

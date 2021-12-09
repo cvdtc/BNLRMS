@@ -61,7 +61,10 @@ class _DahsboardState extends State<Dahsboard> {
     print('cek print ++ $token');
     _apiService.getDashboard(token!).then((value) {
       // DashboardModel dashboardModel = DashboardModel();
-      print("Jumlah Masalah? " + value.toString()+ "sttt"+ _apiService.responseCode.statusCode.toString());
+      print("Jumlah Masalah? " +
+          value.toString() +
+          "sttt" +
+          _apiService.responseCode.statusCode.toString());
       setState(() {
         _dashboard.addAll(value!);
       });

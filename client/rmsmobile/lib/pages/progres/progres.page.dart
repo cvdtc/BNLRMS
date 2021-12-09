@@ -29,10 +29,11 @@ class _ProgressPageState extends State<ProgressPage> {
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
-    print('object progress ${ApiService().responseCode.statusCode} ++++ $token');
+    print(
+        'object progress ${ApiService().responseCode.statusCode} ++++ $token');
     if (token == null) {
       Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Loginscreen()));
+          context, MaterialPageRoute(builder: (context) => Loginscreen()));
     }
     fetchProgress(token!).then((value) {
       setState(() {
@@ -42,7 +43,11 @@ class _ProgressPageState extends State<ProgressPage> {
         print(_progressDisplay.length);
       });
       print('yes bisa ?');
+    }).onError((error, stackTrace) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Loginscreen()));
     });
+    ;
   }
 
   @override
@@ -57,7 +62,8 @@ class _ProgressPageState extends State<ProgressPage> {
       appBar: AppBar(
         title: Text(
           'Daftar Progres',
-          style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+          style: GoogleFonts.lato(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         centerTitle: true,
         backgroundColor: thirdcolor,

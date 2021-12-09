@@ -19,12 +19,13 @@ Future<List<RequestModel>> fetchKomponen(String token) async {
     // ++ fyi : sending token with BEARER
     'Authorization': 'Bearer ' + token
   });
-  print("NETWORK permintaan? " + token);
-  return compute(parseSite, response.body);
-  // if (response.statusCode == 200) {
-  //   print('Success?');
-  //   return compute(parseSite, response.body);
-  // } else {
-  //   throw Exception(response.statusCode);
-  // }
+  print("NETWORK permintaan? " + response.statusCode.toString());
+  // return compute(parseSite, response.body);
+  if (response.statusCode == 200) {
+    print('Success?');
+    return compute(parseSite, response.body);
+  } else {
+    // return compute(null, null);
+    return throw Exception(response.statusCode);
+  }
 }
