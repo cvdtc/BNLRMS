@@ -16,9 +16,11 @@ class AkunPage extends StatefulWidget {
 
 class _AkunPageState extends State<AkunPage> {
   late SharedPreferences sp;
-  bool _obsecureText = true,
-      _fieldPassword = false,
-      _fieldPasswordretype = false;
+  bool 
+  // _obsecureText = true,
+      _fieldPassword = false;
+      // _fieldPasswordretype = false
+      // ;
   String? token = "", username = "", jabatan = "", nama = "";
   TextEditingController _textFieldControllerGantipass = TextEditingController();
   TextEditingController _textFieldControllerGantipassretype =
@@ -27,6 +29,10 @@ class _AkunPageState extends State<AkunPage> {
   // * ceking token and getting dashboard value from Shared Preferences
   cekToken() async {
     sp = await SharedPreferences.getInstance();
+    if (token == null) {
+      Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Loginscreen()));
+    }
     setState(() {
       token = sp.getString("access_token");
       username = sp.getString("username");
@@ -35,22 +41,20 @@ class _AkunPageState extends State<AkunPage> {
     });
   }
 
-  void _toggle() {
-    setState(() {
-      _obsecureText = !_obsecureText;
-    });
-  }
+  // void _toggle() {
+  //   setState(() {
+  //     _obsecureText = !_obsecureText;
+  //   });
+  // }
 
   @override
   initState() {
-    // TODO: implement initState
     super.initState();
     cekToken();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 

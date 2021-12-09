@@ -1,15 +1,14 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-
+import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/pages/akun/akun.page.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.dart';
 import 'package:rmsmobile/pages/progres/progres.page.dart';
 import 'package:rmsmobile/pages/request/request.page.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:rolling_nav_bar/rolling_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 double scaledHeight(BuildContext context, double baseSize) {
   return baseSize * (MediaQuery.of(context).size.height / 800);
@@ -31,6 +30,9 @@ class _BottomNavState extends State<BottomNav> {
   int _currentTab = 0;
   Color logoColor = Colors.red[600]!;
   bool hasinet = false;
+  ApiService _apiService = ApiService();
+  late SharedPreferences sp;
+  String? token = "", username = "", jabatan = "", nama = "";
   PageStorageBucket bucket = PageStorageBucket();
   var iconData = <IconData>[
     Icons.home_filled,
@@ -54,6 +56,19 @@ class _BottomNavState extends State<BottomNav> {
     Text('Akun', style: TextStyle(color: Colors.grey, fontSize: 12)),
   ];
 
+  cekToken() async {
+    sp = await SharedPreferences.getInstance();
+    setState(() {
+      token = sp.getString("access_token");
+      nama = sp.getString('nama');
+      jabatan = sp.getString("jabatan");
+    });
+    // if (token == null) {
+    //   Navigator.pushReplacement(
+    //     context, MaterialPageRoute(builder: (context) => Loginscreen()));
+    // }
+    print('cek print ${_apiService.responseCode.messageApi.toString()} ++ $token');
+  }
 
   @override
   void initState() {

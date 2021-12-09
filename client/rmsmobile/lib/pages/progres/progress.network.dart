@@ -23,7 +23,11 @@ Future<List<ProgressModel>> fetchProgress(String token) async {
   if (response.statusCode == 200) {
     print('Success?');
     return compute(parseSite, response.body);
-  } else {
+  } else if(response.statusCode == 401){
+    print('Gagal dsini!');
+    return compute(parseSite, response.body[401]);
+  }else{
+    print('Gagal ! ${response.statusCode}');
     throw Exception(response.statusCode);
   }
 }

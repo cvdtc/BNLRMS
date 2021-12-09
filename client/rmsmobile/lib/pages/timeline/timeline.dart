@@ -7,6 +7,7 @@ import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
+// ignore: must_be_immutable
 class TimelinePage extends StatefulWidget {
   String idpermintaan;
   TimelinePage({required this.idpermintaan});
@@ -19,8 +20,8 @@ class _TimelinePageState extends State<TimelinePage> {
   ApiService _apiService = new ApiService();
   late SharedPreferences sp;
   String? token = "", username = "", jabatan = "", idpermintaan = "";
-  TextEditingController _tecNama = TextEditingController(text: "");
-  TextEditingController _tecKeterangan = TextEditingController(text: "");
+  TextEditingController tecNama = TextEditingController(text: "");
+  TextEditingController tecKeterangan = TextEditingController(text: "");
 
   // * ceking token and getting dashboard value from Shared Preferences
   cekToken() async {
@@ -41,7 +42,6 @@ class _TimelinePageState extends State<TimelinePage> {
 
   @override
   dispose() {
-    // TODO: implement dispose
     super.dispose();
     _apiService.client.close();
   }

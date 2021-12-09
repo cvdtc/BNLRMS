@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
 import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
@@ -17,8 +18,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiService {
   final String baseUrl = "http://server.bnl.id:9990/api/v1/";
   Client client = Client();
+  String? token = "";
+
   ResponseCode responseCode = ResponseCode();
 
+  void clearshared() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.remove(token.toString());
+    // preferences.clear();
+    late FirebaseMessaging messaging;
+    // * adding firebase configuration setup
+    messaging = FirebaseMessaging.instance;
+    messaging.unsubscribeFromTopic('RMSPERMINTAANdebug');
+    messaging.unsubscribeFromTopic('RMSPROGRESSdebug');
+    // print('preference $preferences');
+  }
 
 //  LOGIN
   Future<bool> loginIn(LoginModel data) async {
@@ -65,6 +79,9 @@ class ApiService {
     print("Data Komponen : " + response.body);
     if (response.statusCode == 200) {
       return RequestModelFromJson(response.body);
+    } else if (response.statusCode == 401) {
+      print("cek masuk dash");
+      clearshared();
     } else {
       return null;
     }
@@ -162,6 +179,9 @@ class ApiService {
     print("Data Komponen : " + response.body);
     if (response.statusCode == 200) {
       return ProgressModelFromJson(response.body);
+    } else if (response.statusCode == 401) {
+      print("cek masuk dash ${response.statusCode}");
+      clearshared();
     } else {
       return null;
     }
@@ -199,6 +219,9 @@ class ApiService {
     print("Data pengguna : " + response.body);
     if (response.statusCode == 200) {
       return PenggunaModelFromJson(response.body);
+    } else if (response.statusCode == 401) {
+      print("cek masuk dash");
+      clearshared();
     } else {
       return null;
     }
@@ -237,6 +260,9 @@ class ApiService {
     print("Data Site : " + response.body);
     if (response.statusCode == 200) {
       return timelineFromJson(response.body);
+    } else if (response.statusCode == 401) {
+      print("cek masuk dash");
+      clearshared();
     } else {
       return null;
     }
@@ -253,10 +279,13 @@ class ApiService {
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
     print("Data Dashbaord : " + response.body);
-    print("pesan dari langit!"+ response.statusCode.toString());
+    print("pesan dari langit!" + response.statusCode.toString());
     if (response.statusCode == 200) {
       return dashboardFromJson(response.body);
       // return compute(parseDashboard, response.body);
+    } else if (response.statusCode == 401) {
+      print("cek masuk dash");
+      clearshared();
     } else {
       return null;
       // throw Exception(response.statusCode);

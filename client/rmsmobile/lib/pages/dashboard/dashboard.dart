@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
-
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/permintaan.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/progres.dart';
 
@@ -55,16 +54,17 @@ class _DahsboardState extends State<Dahsboard> {
       nama = sp.getString('nama');
       jabatan = sp.getString("jabatan");
     });
-    print('cek print ${_apiService.responseCode.messageApi.toString()}');
+    // if (token == null) {
+    //   Navigator.pushReplacement(
+    //     context, MaterialPageRoute(builder: (context) => Loginscreen()));
+    // }
+    print('cek print ++ $token');
     _apiService.getDashboard(token!).then((value) {
       // DashboardModel dashboardModel = DashboardModel();
       print("Jumlah Masalah? " + value.toString()+ "sttt"+ _apiService.responseCode.statusCode.toString());
       setState(() {
         _dashboard.addAll(value!);
       });
-      // jml_masalah = value.toString();
-      // jml_selesai = dashboardModel.jml_selesai;
-      // belum_selesai = jml_masalah - jml_selesai;
     });
   }
 

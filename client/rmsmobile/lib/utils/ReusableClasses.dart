@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 
 class ReusableClasses {
   // ! MODAL BOTTOM SHEET FOR WARNING ERROR
   modalbottomWarning(context, String title, String message, String kode,
       String imagelocation) {
-    dynamic navigation;
+    // dynamic navigation;
     showModalBottomSheet(
         context: context,
         backgroundColor: Colors.white,

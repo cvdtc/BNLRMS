@@ -43,6 +43,10 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
+    // if (token == null) {
+    //   Navigator.pushReplacement(
+    //     context, MaterialPageRoute(builder: (context) => Loginscreen()));
+    // }
     fetchKomponen(token!).then((value) {
       setState(() {
         _isLoading = false;

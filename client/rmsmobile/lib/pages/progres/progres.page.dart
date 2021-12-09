@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
+import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/progres/progress.network.dart';
 import 'package:rmsmobile/pages/progres/progress.tile.dart';
 import 'package:rmsmobile/utils/warna.dart';
@@ -27,6 +29,11 @@ class _ProgressPageState extends State<ProgressPage> {
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
+    print('object progress ${ApiService().responseCode.statusCode} ++++ $token');
+    if (token == null) {
+      Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => Loginscreen()));
+    }
     fetchProgress(token!).then((value) {
       setState(() {
         _isLoading = false;
@@ -34,6 +41,7 @@ class _ProgressPageState extends State<ProgressPage> {
         _progressDisplay = _progress;
         print(_progressDisplay.length);
       });
+      print('yes bisa ?');
     });
   }
 

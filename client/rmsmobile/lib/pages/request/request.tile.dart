@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 
 import 'request.bottom.dart';

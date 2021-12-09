@@ -20,10 +20,11 @@ Future<List<RequestModel>> fetchKomponen(String token) async {
     'Authorization': 'Bearer ' + token
   });
   print("NETWORK permintaan? " + token);
-  if (response.statusCode == 200) {
-    print('Success?');
-    return compute(parseSite, response.body);
-  } else {
-    throw Exception(response.statusCode);
-  }
+  return compute(parseSite, response.body);
+  // if (response.statusCode == 200) {
+  //   print('Success?');
+  //   return compute(parseSite, response.body);
+  // } else {
+  //   throw Exception(response.statusCode);
+  // }
 }
