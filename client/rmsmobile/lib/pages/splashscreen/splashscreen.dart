@@ -31,34 +31,35 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       token = sp.getString("access_token");
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
-      notifpermintaan = sp.getBool('notif_permintaan')!;
-      notifprogress = sp.getBool('notif_progress')!;
+      // notifpermintaan = sp.getBool('notif_permintaan')!;
+      // notifprogress = sp.getBool('notif_progress')!;
     });
-    // * adding firebase configuration setup
-    messaging = FirebaseMessaging.instance;
-    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      print("message recieved");
-      print(event.notification!.body);
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Message clicked!');
-    });
-    // ++ SUBSCRIBE TOPIC RMS PERMINTAAN
-    if (notifpermintaan) {
-      // messaging.subscribeToTopic('RMSPERMINTAAN');
-      messaging.subscribeToTopic('RMSPERMINTAAN');
-    } else {
-      // messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-      messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-    }
-    // ++ SUBSCRIBE TOPIC RMSPROGRESS
-    if (notifprogress) {
-      // messaging.subscribeToTopic('RMSPROGRESS');
-      messaging.subscribeToTopic('RMSPROGRESS');
-    } else {
-      // messaging.unsubscribeFromTopic('RMSPROGRESS');
-      messaging.unsubscribeFromTopic('RMSPROGRESS');
-    }
+
+    // // * adding firebase configuration setup
+    // messaging = FirebaseMessaging.instance;
+    // FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+    //   print("message recieved");
+    //   print(event.notification!.body);
+    // });
+    // FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    //   print('Message clicked!');
+    // });
+    // // ++ SUBSCRIBE TOPIC RMS PERMINTAAN
+    // if (notifpermintaan) {
+    //   // messaging.subscribeToTopic('RMSPERMINTAAN');
+    //   messaging.subscribeToTopic('RMSPERMINTAAN');
+    // } else {
+    //   // messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+    //   messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+    // }
+    // // ++ SUBSCRIBE TOPIC RMSPROGRESS
+    // if (notifprogress) {
+    //   // messaging.subscribeToTopic('RMSPROGRESS');
+    //   messaging.subscribeToTopic('RMSPROGRESS');
+    // } else {
+    //   // messaging.unsubscribeFromTopic('RMSPROGRESS');
+    //   messaging.unsubscribeFromTopic('RMSPROGRESS');
+    // }
     print('tokenyya $token ${_apiService.responseCode.messageApi}');
     if (token == null) {
       Navigator.pushReplacement(
@@ -74,6 +75,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
+
     Timer(Duration(seconds: 4), () {
       cekToken();
     });
@@ -124,7 +126,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     padding:
                         const EdgeInsets.only(left: 50, right: 50, bottom: 30),
                     child: Text(
-                      'Memberikan solusi terbaik untuk kemudahan anda dalam menyelesaikan sebuah masalah.',
+                      'Request Management System',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
                         color: Colors.black,
