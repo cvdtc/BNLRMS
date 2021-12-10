@@ -220,8 +220,10 @@ class _TimelinePageState extends State<TimelinePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Batas Waktu: $due_date'),
-                    Text('Updated: $edited')
+                    Text('JT: $due_date'),
+                    edited != null
+                        ? Text('Updated: $edited')
+                        : Text('Updated: -')
                   ],
                 ),
               ],

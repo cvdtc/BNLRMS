@@ -8,6 +8,7 @@ import 'package:rmsmobile/pages/request/request.bottom.dart';
 
 import 'package:rmsmobile/pages/request/request.network.dart';
 import 'package:rmsmobile/pages/request/request.tile.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,13 +58,17 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
         print(_requestDisplay.length);
       });
     }).onError((error, stackTrace) {
-      ApiService().clearshared();
-      Fluttertoast.showToast(
-          msg: "Maaf, Token anda expired, silahkan melakukan login ulang",
-          backgroundColor: Colors.black,
-          textColor: Colors.white);
+      print("REQUEST STATUS CODE?" + error.toString());
+      ReusableClasses().modalbottomWarning(
+          context,
+          'Sesi Berakhir',
+          'harap login kembali karena sesi anda telah berakhir',
+          error.toString(),
+          'assets/images/sorry.png');
+      ReusableClasses().clearSharedPreferences();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Loginscreen()));
+      // ApiService().clearshared();
     });
   }
 

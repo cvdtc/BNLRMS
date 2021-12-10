@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
+import 'package:rmsmobile/pages/login/login.dart';
+import 'package:rmsmobile/pages/timeline/timeline.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,7 +48,19 @@ class _PermintaanListState extends State<PermintaanList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _apiService.getListRequest(token.toString()),
+      future: _apiService
+          .getListRequest(token.toString())
+          .onError((error, stackTrace) {
+        ReusableClasses().modalbottomWarning(
+            context,
+            'Sesi Berakhir',
+            'harap login kembali karena sesi anda telah berakhir',
+            error.toString(),
+            'assets/images/sorry.png');
+        ReusableClasses().clearSharedPreferences();
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Loginscreen()));
+      }),
       builder: (context, AsyncSnapshot<List<RequestModel>?> snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -96,7 +112,7 @@ class _PermintaanListState extends State<PermintaanList> {
   // ++ DESIGN LIST COMPONENT
   Widget _listRequest(List<RequestModel>? dataIndex) {
     return Container(
-      height: MediaQuery.of(context).size.height /4,
+      height: MediaQuery.of(context).size.height / 4,
       margin: EdgeInsets.only(left: 16, right: 16),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -104,61 +120,93 @@ class _PermintaanListState extends State<PermintaanList> {
           itemBuilder: (context, index) {
             RequestModel? dataRequest = dataIndex[index];
             print('flagselesainya ${dataRequest.flag_selesai}');
-            return Container(
-              padding: const EdgeInsets.all(8.0),
-              margin: EdgeInsets.all(8),
-              height: 70,
-              width: MediaQuery.of(context).size.width * 0.6,
-              decoration: BoxDecoration(
-                color: mFillColor,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: mBorderColor, width: 1),
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              ClipOval(
-                                child: dataRequest.flag_selesai == 1 ? Container(
-                                    color: Colors.green,
-                                    height: 30.0,
-                                    width: 30.0,
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                    )) : Container(
-                                    color: Colors.orange,
-                                    height: 30.0,
-                                    width: 30.0,
-                                    child: Icon(
-                                      Icons.priority_high_rounded,
-                                      color: Colors.white,
-                                    )),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text(dataRequest.nama_request.toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black45)),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10,),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 10,
-                            child: Text(dataRequest.keterangan.toString().toUpperCase(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black))),
-                          SizedBox(height: 10,),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Text(dataRequest.due_date.toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black45)))
-                        ],
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TimelinePage(
+                              idpermintaan: dataRequest.idpermintaan.toString(),
+                            )));
+              },
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                margin: EdgeInsets.all(8),
+                height: 70,
+                width: MediaQuery.of(context).size.width * 0.6,
+                decoration: BoxDecoration(
+                  color: mFillColor,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: mBorderColor, width: 1),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                ClipOval(
+                                  child: dataRequest.flag_selesai == 1
+                                      ? Container(
+                                          color: Colors.green,
+                                          height: 30.0,
+                                          width: 30.0,
+                                          child: Icon(
+                                            Icons.check,
+                                            color: Colors.white,
+                                          ))
+                                      : Container(
+                                          color: Colors.orange,
+                                          height: 30.0,
+                                          width: 30.0,
+                                          child: Icon(
+                                            Icons.priority_high_rounded,
+                                            color: Colors.white,
+                                          )),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Text(
+                                      dataRequest.nama_request.toString(),
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black45)),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                                height: MediaQuery.of(context).size.height / 10,
+                                child: Text(
+                                    dataRequest.keterangan
+                                        .toString()
+                                        .toUpperCase(),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black))),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Align(
+                                alignment: Alignment.bottomRight,
+                                child: Text(dataRequest.due_date.toString(),
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black45)))
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             );
           }),

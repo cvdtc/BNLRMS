@@ -19,7 +19,6 @@ class ActiveProjectsCard extends StatelessWidget {
     return Expanded(
       flex: 1,
       child: Container(
-        
         margin: EdgeInsets.symmetric(vertical: 10.0),
         padding: EdgeInsets.all(15.0),
         height: 200,
@@ -42,7 +41,7 @@ class ActiveProjectsCard extends StatelessWidget {
                 backgroundColor: Colors.white10,
                 progressColor: Colors.white,
                 center: Text(
-                  '${(loadingPercent*100).round()}%',
+                  '${(loadingPercent * 100).round()}%',
                   style: TextStyle(
                       fontWeight: FontWeight.w700, color: Colors.white),
                 ),

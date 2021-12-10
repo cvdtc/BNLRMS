@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:http/http.dart' as http;
@@ -54,6 +55,16 @@ class ReusableClasses {
             ),
           );
         });
+  }
+
+  clearSharedPreferences() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+    late FirebaseMessaging messaging;
+    // * adding firebase configuration setup
+    messaging = FirebaseMessaging.instance;
+    messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+    messaging.unsubscribeFromTopic('RMSPROGRESS');
   }
 }
 

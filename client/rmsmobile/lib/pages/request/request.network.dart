@@ -25,6 +25,7 @@ Future<List<RequestModel>> fetchKomponen(String token) async {
     print('Success?');
     return compute(parseSite, response.body);
   } else {
+    print("REQUEST STATUS CODE?" + response.statusCode.toString());
     // return compute(null, null);
     return throw Exception(response.statusCode);
   }

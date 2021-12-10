@@ -16,11 +16,11 @@ class AkunPage extends StatefulWidget {
 
 class _AkunPageState extends State<AkunPage> {
   late SharedPreferences sp;
-  bool 
-  // _obsecureText = true,
+  bool
+      // _obsecureText = true,
       _fieldPassword = false;
-      // _fieldPasswordretype = false
-      // ;
+  // _fieldPasswordretype = false
+  // ;
   String? token = "", username = "", jabatan = "", nama = "";
   TextEditingController _textFieldControllerGantipass = TextEditingController();
   TextEditingController _textFieldControllerGantipassretype =
@@ -31,7 +31,7 @@ class _AkunPageState extends State<AkunPage> {
     sp = await SharedPreferences.getInstance();
     if (token == null) {
       Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Loginscreen()));
+          context, MaterialPageRoute(builder: (context) => Loginscreen()));
     }
     setState(() {
       token = sp.getString("access_token");
@@ -100,10 +100,11 @@ class _AkunPageState extends State<AkunPage> {
               children: [
                 Text('Ganti Password'),
                 IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.close_rounded))
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.password_outlined),
+                )
               ],
             ),
             content: Container(
@@ -229,13 +230,10 @@ class _AkunPageState extends State<AkunPage> {
               },
               title: (Text(
                 'Ganti Password',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
+                style: TextStyle(fontSize: 18, color: Colors.black),
               )),
               leading: Icon(
-                Icons.exit_to_app_rounded,
+                Icons.password_rounded,
                 color: Colors.black,
                 size: 22,
               ),
@@ -256,13 +254,10 @@ class _AkunPageState extends State<AkunPage> {
               },
               title: (Text(
                 'Setting Notifikasi',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
+                style: TextStyle(fontSize: 18, color: Colors.black),
               )),
               leading: Icon(
-                Icons.exit_to_app_rounded,
+                Icons.notifications_active_outlined,
                 color: Colors.black,
                 size: 22,
               ),
@@ -387,8 +382,8 @@ class _AkunPageState extends State<AkunPage> {
 
   void exit() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.remove(token.toString());
-    preferences.clear();
+    await preferences.clear();
+    print(preferences.toString());
     late FirebaseMessaging messaging;
     // * adding firebase configuration setup
     messaging = FirebaseMessaging.instance;

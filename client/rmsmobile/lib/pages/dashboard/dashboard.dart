@@ -6,6 +6,7 @@ import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/permintaan.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/progres.dart';
 import 'package:rmsmobile/pages/login/login.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,14 +72,16 @@ class _DahsboardState extends State<Dahsboard> {
         _dashboard.addAll(value!);
       });
     }).onError((error, stackTrace) {
+      ReusableClasses().clearSharedPreferences();
       Fluttertoast.showToast(
           msg: "Maaf, Token anda expired, silahkan melakukan login ulang",
           backgroundColor: Colors.black,
           textColor: Colors.white);
-      ApiService().clearshared();
+      // ApiService().clearshared();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    });;
+    });
+    ;
   }
 
   @override

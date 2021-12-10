@@ -22,18 +22,6 @@ class ApiService {
 
   ResponseCode responseCode = ResponseCode();
 
-  void clearshared() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.remove(token.toString());
-    preferences.clear();
-    late FirebaseMessaging messaging;
-    // * adding firebase configuration setup
-    messaging = FirebaseMessaging.instance;
-    messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-    messaging.unsubscribeFromTopic('RMSPROGRESS');
-    // print('preference $preferences');
-  }
-
 //  LOGIN
   Future<bool> loginIn(LoginModel data) async {
     var url = Uri.parse(baseUrl + 'login');
@@ -79,9 +67,6 @@ class ApiService {
     print("Data Komponen : " + response.body);
     if (response.statusCode == 200) {
       return RequestModelFromJson(response.body);
-    } else if (response.statusCode == 401) {
-      print("cek masuk dash");
-      clearshared();
     } else {
       return null;
     }
@@ -179,9 +164,6 @@ class ApiService {
     print("Data Komponen : " + response.body);
     if (response.statusCode == 200) {
       return ProgressModelFromJson(response.body);
-    } else if (response.statusCode == 401) {
-      print("cek masuk dash ${response.statusCode}");
-      clearshared();
     } else {
       return null;
     }
@@ -219,9 +201,6 @@ class ApiService {
     print("Data pengguna : " + response.body);
     if (response.statusCode == 200) {
       return PenggunaModelFromJson(response.body);
-    } else if (response.statusCode == 401) {
-      print("cek masuk dash");
-      clearshared();
     } else {
       return null;
     }
@@ -260,9 +239,6 @@ class ApiService {
     print("Data Site : " + response.body);
     if (response.statusCode == 200) {
       return timelineFromJson(response.body);
-    } else if (response.statusCode == 401) {
-      print("cek masuk dash");
-      clearshared();
     } else {
       return null;
     }
@@ -283,9 +259,6 @@ class ApiService {
     if (response.statusCode == 200) {
       return dashboardFromJson(response.body);
       // return compute(parseDashboard, response.body);
-    } else if (response.statusCode == 401) {
-      print("cek masuk dash");
-      clearshared();
     } else {
       return null;
       // throw Exception(response.statusCode);

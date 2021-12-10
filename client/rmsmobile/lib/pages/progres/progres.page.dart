@@ -6,6 +6,7 @@ import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/progres/progress.network.dart';
 import 'package:rmsmobile/pages/progres/progress.tile.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,12 +31,12 @@ class _ProgressPageState extends State<ProgressPage> {
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
-    print(
-        'object progress ${ApiService().responseCode.statusCode} ++++ $token');
-    if (token == null) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    }
+    // print(
+    //     'object progress ${ApiService().responseCode.statusCode} ++++ $token');
+    // if (token == null) {
+    //   Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (context) => Loginscreen()));
+    // }
     fetchProgress(token!).then((value) {
       setState(() {
         _isLoading = false;
@@ -45,11 +46,14 @@ class _ProgressPageState extends State<ProgressPage> {
       });
       print('yes bisa ?');
     }).onError((error, stackTrace) {
-      Fluttertoast.showToast(
-          msg: "Maaf, Token anda expired, silahkan melakukan login ulang",
-          backgroundColor: Colors.black,
-          textColor: Colors.white);
-      ApiService().clearshared();
+      print("PROGRESS STATUS CODE?" + error.toString());
+      ReusableClasses().modalbottomWarning(
+          context,
+          'Sesi Berakhir',
+          'harap login kembali karena sesi anda telah berakhir',
+          error.toString(),
+          'assets/images/sorry.png');
+      ReusableClasses().clearSharedPreferences();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Loginscreen()));
     });

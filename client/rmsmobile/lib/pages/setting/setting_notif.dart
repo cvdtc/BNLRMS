@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/utils/warna.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingNotifikasi extends StatefulWidget {
   @override
@@ -7,6 +8,27 @@ class SettingNotifikasi extends StatefulWidget {
 }
 
 class _SettingNotifikasiState extends State<SettingNotifikasi> {
+  late SharedPreferences sp;
+  String? token = "", username = "", jabatan = "";
+  bool notifpermintaan = true, notifprogress = true;
+  cekToken() async {
+    sp = await SharedPreferences.getInstance();
+    setState(() {
+      token = sp.getString("access_token");
+      username = sp.getString("username");
+      jabatan = sp.getString("jabatan");
+      notifpermintaan = sp.getBool('notif_permintaan')!;
+      notifprogress = sp.getBool('notif_progress')!;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    cekToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +50,18 @@ class _SettingNotifikasiState extends State<SettingNotifikasi> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Notifikasi Permintaan'),
-                Switch(value: true, onChanged: (bool values) {})
+                Switch(
+                  onChanged: (bool values) {
+                    setState(() {
+                      print(values.toString() +
+                          ' - ' +
+                          notifpermintaan.toString());
+                      notifpermintaan = values;
+                      sp.setBool("notif_permintaan", values);
+                    });
+                  },
+                  value: notifpermintaan,
+                )
               ],
             ),
             Row(
@@ -36,7 +69,17 @@ class _SettingNotifikasiState extends State<SettingNotifikasi> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Notifikasi Progress'),
-                Switch(value: true, onChanged: (bool values) {})
+                Switch(
+                  onChanged: (bool values) {
+                    setState(() {
+                      print(
+                          values.toString() + ' - ' + notifprogress.toString());
+                      notifprogress = values;
+                      sp.setBool("notif_progress", values);
+                    });
+                  },
+                  value: notifprogress,
+                )
               ],
             )
           ],

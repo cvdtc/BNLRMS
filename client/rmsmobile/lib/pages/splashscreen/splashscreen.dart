@@ -19,8 +19,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   late FirebaseMessaging messaging;
   ApiService _apiService = new ApiService();
   String? token = "", username = "", jabatan = "";
-  bool subscribepermintaan = true;
-  bool subscribeprogress = true;
+  bool notifpermintaan = true;
+  bool notifprogress = true;
 
   cekToken() async {
     sp = await SharedPreferences.getInstance();
@@ -31,7 +31,34 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       token = sp.getString("access_token");
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
+      notifpermintaan = sp.getBool('notif_permintaan')!;
+      notifprogress = sp.getBool('notif_progress')!;
     });
+    // * adding firebase configuration setup
+    messaging = FirebaseMessaging.instance;
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      print("message recieved");
+      print(event.notification!.body);
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
+    // ++ SUBSCRIBE TOPIC RMS PERMINTAAN
+    if (notifpermintaan) {
+      // messaging.subscribeToTopic('RMSPERMINTAAN');
+      messaging.subscribeToTopic('RMSPERMINTAAN');
+    } else {
+      // messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+      messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+    }
+    // ++ SUBSCRIBE TOPIC RMSPROGRESS
+    if (notifprogress) {
+      // messaging.subscribeToTopic('RMSPROGRESS');
+      messaging.subscribeToTopic('RMSPROGRESS');
+    } else {
+      // messaging.unsubscribeFromTopic('RMSPROGRESS');
+      messaging.unsubscribeFromTopic('RMSPROGRESS');
+    }
     print('tokenyya $token ${_apiService.responseCode.messageApi}');
     if (token == null) {
       Navigator.pushReplacement(
@@ -47,31 +74,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
-    // * adding firebase configuration setup
-    messaging = FirebaseMessaging.instance;
-    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      print("message recieved");
-      print(event.notification!.body);
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Message clicked!');
-    });
-    // ++ SUBSCRIBE TOPIC RMS PERMINTAAN
-    if (subscribepermintaan) {
-      // messaging.subscribeToTopic('RMSPERMINTAAN');
-      messaging.subscribeToTopic('RMSPERMINTAAN');
-    } else {
-      // messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-      messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-    }
-    // ++ SUBSCRIBE TOPIC RMSPROGRESS
-    if (subscribeprogress) {
-      // messaging.subscribeToTopic('RMSPROGRESS');
-      messaging.subscribeToTopic('RMSPROGRESS');
-    } else {
-      // messaging.unsubscribeFromTopic('RMSPROGRESS');
-      messaging.unsubscribeFromTopic('RMSPROGRESS');
-    }
     Timer(Duration(seconds: 4), () {
       cekToken();
     });
