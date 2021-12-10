@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +12,7 @@ class _SettingNotifikasiState extends State<SettingNotifikasi> {
   late SharedPreferences sp;
   String? token = "", username = "", jabatan = "";
   bool notifpermintaan = true, notifprogress = true;
+
   cekToken() async {
     sp = await SharedPreferences.getInstance();
     setState(() {
@@ -53,11 +55,9 @@ class _SettingNotifikasiState extends State<SettingNotifikasi> {
                 Switch(
                   onChanged: (bool values) {
                     setState(() {
-                      print(values.toString() +
-                          ' - ' +
-                          notifpermintaan.toString());
                       notifpermintaan = values;
-                      sp.setBool("notif_permintaan", values);
+                      ReusableClasses().setFirebaseConfiguration(
+                          'RMSPERMINTAAN', 'notif_permintaan', values);
                     });
                   },
                   value: notifpermintaan,
@@ -72,10 +72,9 @@ class _SettingNotifikasiState extends State<SettingNotifikasi> {
                 Switch(
                   onChanged: (bool values) {
                     setState(() {
-                      print(
-                          values.toString() + ' - ' + notifprogress.toString());
                       notifprogress = values;
-                      sp.setBool("notif_progress", values);
+                      ReusableClasses().setFirebaseConfiguration(
+                          'RMSPROGRESS', 'notif_progress', values);
                     });
                   },
                   value: notifprogress,

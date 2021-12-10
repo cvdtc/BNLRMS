@@ -66,6 +66,20 @@ class ReusableClasses {
     messaging.unsubscribeFromTopic('RMSPERMINTAAN');
     messaging.unsubscribeFromTopic('RMSPROGRESS');
   }
+
+  setFirebaseConfiguration(String topicname, String spname, bool value) async {
+    // * configuration sp for notification
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool(spname, value);
+    // * adding firebase configuration setup
+    late FirebaseMessaging messaging;
+    messaging = FirebaseMessaging.instance;
+    value
+        ? messaging.subscribeToTopic(topicname)
+        : messaging.unsubscribeFromTopic(topicname);
+
+    print(topicname + spname + value.toString());
+  }
 }
 
 class GetSharedPreference {
