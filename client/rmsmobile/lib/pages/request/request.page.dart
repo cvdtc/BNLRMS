@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/request/request.bottom.dart';
@@ -56,6 +57,11 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
         print(_requestDisplay.length);
       });
     }).onError((error, stackTrace) {
+      ApiService().clearshared();
+      Fluttertoast.showToast(
+          msg: "Maaf, Token anda expired, silahkan melakukan login ulang",
+          backgroundColor: Colors.black,
+          textColor: Colors.white);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Loginscreen()));
     });

@@ -59,18 +59,18 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     // ++ SUBSCRIBE TOPIC RMS PERMINTAAN
     if (subscribepermintaan) {
       // messaging.subscribeToTopic('RMSPERMINTAAN');
-      messaging.subscribeToTopic('RMSPERMINTAANdebug');
+      messaging.subscribeToTopic('RMSPERMINTAAN');
     } else {
       // messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-      messaging.unsubscribeFromTopic('RMSPERMINTAANdebug');
+      messaging.unsubscribeFromTopic('RMSPERMINTAAN');
     }
     // ++ SUBSCRIBE TOPIC RMSPROGRESS
     if (subscribeprogress) {
       // messaging.subscribeToTopic('RMSPROGRESS');
-      messaging.subscribeToTopic('RMSPROGRESSdebug');
+      messaging.subscribeToTopic('RMSPROGRESS');
     } else {
       // messaging.unsubscribeFromTopic('RMSPROGRESS');
-      messaging.unsubscribeFromTopic('RMSPROGRESSdebug');
+      messaging.unsubscribeFromTopic('RMSPROGRESS');
     }
     Timer(Duration(seconds: 4), () {
       cekToken();

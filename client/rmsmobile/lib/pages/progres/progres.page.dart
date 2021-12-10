@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
@@ -44,6 +45,11 @@ class _ProgressPageState extends State<ProgressPage> {
       });
       print('yes bisa ?');
     }).onError((error, stackTrace) {
+      Fluttertoast.showToast(
+          msg: "Maaf, Token anda expired, silahkan melakukan login ulang",
+          backgroundColor: Colors.black,
+          textColor: Colors.white);
+      ApiService().clearshared();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Loginscreen()));
     });

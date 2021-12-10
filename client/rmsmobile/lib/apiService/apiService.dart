@@ -25,12 +25,12 @@ class ApiService {
   void clearshared() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.remove(token.toString());
-    // preferences.clear();
+    preferences.clear();
     late FirebaseMessaging messaging;
     // * adding firebase configuration setup
     messaging = FirebaseMessaging.instance;
-    messaging.unsubscribeFromTopic('RMSPERMINTAANdebug');
-    messaging.unsubscribeFromTopic('RMSPROGRESSdebug');
+    messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+    messaging.unsubscribeFromTopic('RMSPROGRESS');
     // print('preference $preferences');
   }
 
