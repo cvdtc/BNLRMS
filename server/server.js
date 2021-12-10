@@ -6,15 +6,26 @@ const docAuth = require('express-basic-auth')
 const swaggerUI = require('swagger-ui-express')
 const swaggerJS = require('swagger-jsdoc')
 const path = require('path')
+const fs = require('fs')
+// * ADDING GRAPHQL CONFIGURATION
+// const { ApolloServer, gql } = require('apollo-server')
+// const gqlresolver = require('./graphql/resolvers')
+// const gqltypeDefs = gql(fs.readFileSync('./graphql/typeDefs.graphql', { encoding: 'utf-8' }))
+// const gqlserver = new ApolloServer({gqltypeDefs, gqlresolver})
+// gqlserver.listen(process.env.GQL_API_PORT).then(({url})=>{console.log('Api is reade to use...', url)})
 
-// var serviceaccount = require('../utils/cmmsgeprivatekey.json')
-// fcm.initializeApp({
-//     credential: fcm.credential.cert(serviceaccount)
-// })
+// * ADDING FIREBASE CONFIGURATION
+// var admin = require("firebase-admin");
+// var serviceAccount = require("./utils/bnlrms-firebase-token.json")
+// * ADDING CREDENTIAL FIREBASE ACCOUNT
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount)
+// });
+
 
 // * setting up express or api to json type
 app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({extended: false}))
 app.use(cors())
 // * allow image access for public
 app.use('/images', express.static(path.join(__dirname, '/images')))

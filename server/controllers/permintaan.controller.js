@@ -2,6 +2,7 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const mysql = require('mysql')
+var fcmadmin = require('../utils/firebaseconfiguration')
 
 /**
  * ! Pool setting up
@@ -67,6 +68,7 @@ const pool = mysql.createPool({
 
 async function getAllPermintaan(req, res) {
     const token = req.headers.authorization;
+    console.log('Akses Permintaan...')
     if (token != null) {
         try {
             jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
@@ -85,8 +87,9 @@ async function getAllPermintaan(req, res) {
                                 data: null
                             })
                         } else {
-                            var sqlquery = `SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna`
+                            var sqlquery = `SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna ORDER BY p.flag_selesai ASC, p.due_date ASC`
                             database.query(sqlquery, (error, rows) => {
+                                database.release()
                                 if (error) {
                                     return res.status(500).send({
                                         message: "Sorry, query has error!",
@@ -189,7 +192,7 @@ async function addPermintaan(req, res) {
     if (Object.keys(req.body).length != 4) {
         return res.status(405).send({
             message: "Sorry,  parameters not match",
-            error: jwtresult,
+            error: null,
             data: null
         })
     } else {
@@ -222,7 +225,6 @@ async function addPermintaan(req, res) {
                             database.query(sqlquery, datapermintaan, (error, result) => {
                                 if (error) {
                                     database.rollback(function () {
-                                        database.release()
                                         return res.status(407).send({
                                             message: "Sorry,  query has error!",
                                             error: error,
@@ -233,19 +235,44 @@ async function addPermintaan(req, res) {
                                     database.commit(function (errcommit) {
                                         if (errcommit) {
                                             database.rollback(function () {
-                                                database.release()
                                                 return res.status(407).send({
-                                                    message: "Sorry,  fail to store data pengguna",
+                                                    message: "Sorry,  fail to store data!",
                                                     error: errcommit,
                                                     data: null
                                                 })
                                             })
                                         } else {
-                                            database.release()
-                                            return res.status(201).send({
-                                                message: "Done!,  Data has been stored!",
-                                                error: null,
-                                                data: null
+                                            var getnameuser = "SELECT nama FROM pengguna WHERE idpengguna = ?"
+                                            database.query(getnameuser, jwtresult.idpengguna, (error, result)=>{
+                                                database.release()
+                                                // * set firebase notification message 
+                                                let notificationMessage = {
+                                                    notification: {
+                                                        title: `Permintaan baru dari ${result[0].nama}`,
+                                                        body: keterangan,
+                                                        sound: 'default',
+                                                        'click_action': 'FCM_PLUGIN_ACTIVITY'
+                                                    },
+                                                    data:{
+                                                        "judul": `Permintaan baru dari ${result[0].nama}`,
+                                                        "isi": keterangan
+                                                    }
+                                                }
+                                                // * sending notification topic RMSPERMINTAAN
+                                                fcmadmin.messaging().sendToTopic('RMSPERMINTAAN', notificationMessage)
+                                                .then(function (response) {
+                                                    return res.status(201).send({
+                                                        message: "Done!,  Data has been stored!",
+                                                        error: null,
+                                                        data: response
+                                                    })
+                                                }).catch(function (error) {
+                                                    return res.status(201).send({
+                                                        message: "Done!,  Data has been stored!",
+                                                        error: error,
+                                                        data: null
+                                                    })
+                                                })
                                             })
                                         }
                                     })
@@ -256,6 +283,7 @@ async function addPermintaan(req, res) {
                 }
             })
         } catch (error) {
+            console.log('FORBIDDEN PERMINTAAN')
             return res.status(403).send({
                 message: "forbiden!",
                 error: error,
@@ -383,9 +411,9 @@ async function ubahPermintaan(req, res) {
                                 }
                                 var sqlquery = "UPDATE permintaan SET ? WHERE idpermintaan = ?"
                                 database.query(sqlquery, [tipeupdate == 'selesai' ? selesaidatapermintaan : updatedatapermintaan, idpermintaan], (error, result) => {
+                                    database.release()
                                     if (error) {
                                         database.rollback(function () {
-                                            database.release()
                                             return res.status(407).send({
                                                 message: "Sorry,  query has error!",
                                                 error: error,
@@ -396,7 +424,6 @@ async function ubahPermintaan(req, res) {
                                         database.commit(function (errcommit) {
                                             if (errcommit) {
                                                 database.rollback(function () {
-                                                    database.release()
                                                     return res.status(407).send({
                                                         message: "Sorry,  fail to change data pengguna",
                                                         error: errcommit,
@@ -404,7 +431,6 @@ async function ubahPermintaan(req, res) {
                                                     })
                                                 })
                                             } else {
-                                                database.release()
                                                 return res.status(200).send({
                                                     message: "Done!,  Data has changed!",
                                                     error: null,
@@ -494,9 +520,9 @@ async function deletePermintaan(req, res) {
                         database.beginTransaction(function (error) {
                             var sqlquery = "DELETE FROM permintaan WHERE idpermintaan = ?"
                             database.query(sqlquery, [idpermintaan], (error, result) => {
+                                database.release()
                                 if (error) {
                                     database.rollback(function () {
-                                        database.release()
                                         return res.status(407).send({
                                             message: "Sorry,  query has error!",
                                             error: error,
@@ -507,7 +533,6 @@ async function deletePermintaan(req, res) {
                                     database.commit(function (errcommit) {
                                         if (errcommit) {
                                             database.rollback(function () {
-                                                database.release()
                                                 return res.status(407).send({
                                                     message: "Sorry,  fail to change data pengguna",
                                                     error: errcommit,
@@ -515,7 +540,6 @@ async function deletePermintaan(req, res) {
                                                 })
                                             })
                                         } else {
-                                            database.release()
                                             return res.status(200).send({
                                                 message: "Done!,  Data has removed!",
                                                 error: null,

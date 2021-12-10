@@ -70,4 +70,10 @@ router.delete('/note/:idnote', function (req, res) {
     RouteToNote.deleteNote(req, res)
 })
 
-module.exports = router
+// ! REPORT
+var RouteToReport = require('../controllers/report.controller')
+router.get('/timeline/:idpermintaan', function (req, res) {
+    RouteToReport.getTimeline(req, res)
+});
+
+module.exports = router;

@@ -90,6 +90,7 @@ async function Login(req, res) {
                 } else {
                     var sqlquery = "SELECT * FROM pengguna WHERE username = ?"
                     database.query(sqlquery, [username], function (error, rows) {
+                        database.release()
                         if (error) {
                             res.status(407).send({
                                 message: "Sorry, sql query have a problem",

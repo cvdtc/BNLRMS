@@ -108,6 +108,7 @@ async function getAllNote(req, res) {
                             }
                             var sqlquery = `SELECT * FROM note WHERE pengguna_idpengguna = ? `+sqlfilter
                             database.query(sqlquery, [jwtresult.idpengguna], (error, rows) => {
+                                database.release()
                                 if (error) {
                                     return res.status(500).send({
                                         message: "Sorry, query has error!",
@@ -227,9 +228,9 @@ async function addNote(req, res) {
                             }
                             var sqlquery = "INSERT INTO note SET ?"
                             database.query(sqlquery, datanote, (error, result) => {
+                                database.release()
                                 if (error) {
                                     database.rollback(function () {
-                                        database.release()
                                         return res.status(407).send({
                                             message: "Sorry,  query has error!",
                                             error: error,
@@ -240,7 +241,6 @@ async function addNote(req, res) {
                                     database.commit(function (errcommit) {
                                         if (errcommit) {
                                             database.rollback(function () {
-                                                database.release()
                                                 return res.status(407).send({
                                                     message: "Sorry,  fail to store!",
                                                     error: errcommit,
@@ -248,7 +248,6 @@ async function addNote(req, res) {
                                                 })
                                             })
                                         } else {
-                                            database.release()
                                             return res.status(201).send({
                                                 message: "Done!,  Data has been stored!",
                                                 error: null,
@@ -361,9 +360,9 @@ async function ubahNote(req, res) {
                                 }
                                 var sqlquery = "UPDATE note SET ? WHERE idreminder = ?" // * idreminder will be change to idnote
                                 database.query(sqlquery, [updatenote, idnote], (error, result) => {
+                                    database.release()
                                     if (error) {
                                         database.rollback(function () {
-                                            database.release()
                                             return res.status(407).send({
                                                 message: "Sorry,  query has error!",
                                                 error: error,
@@ -374,7 +373,6 @@ async function ubahNote(req, res) {
                                         database.commit(function (errcommit) {
                                             if (errcommit) {
                                                 database.rollback(function () {
-                                                    database.release()
                                                     return res.status(407).send({
                                                         message: "Sorry,  fail to change data pengguna",
                                                         error: errcommit,
@@ -382,7 +380,6 @@ async function ubahNote(req, res) {
                                                     })
                                                 })
                                             } else {
-                                                database.release()
                                                 return res.status(200).send({
                                                     message: "Done!, Data has changed!",
                                                     error: null,
@@ -472,9 +469,9 @@ async function deleteNote(req, res) {
                         database.beginTransaction(function (error) {
                             var sqlquery = "DELETE FROM note WHERE idreminder = ?" // * idreminder will be change to idnote
                             database.query(sqlquery, [idprogress], (error, result) => {
+                                database.release()
                                 if (error) {
                                     database.rollback(function () {
-                                        database.release()
                                         return res.status(407).send({
                                             message: "Sorry,  query has error!",
                                             error: error,
@@ -485,7 +482,6 @@ async function deleteNote(req, res) {
                                     database.commit(function (errcommit) {
                                         if (errcommit) {
                                             database.rollback(function () {
-                                                database.release()
                                                 return res.status(407).send({
                                                     message: "Sorry,  fail to change data",
                                                     error: errcommit,
@@ -493,7 +489,6 @@ async function deleteNote(req, res) {
                                                 })
                                             })
                                         } else {
-                                            database.release()
                                             return res.status(200).send({
                                                 message: "Done!,  Data has removed!",
                                                 error: null,
