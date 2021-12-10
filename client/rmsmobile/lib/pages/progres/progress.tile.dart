@@ -8,7 +8,9 @@ import 'package:rmsmobile/model/progress/progress.edit.selesai.model.dart';
 import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:http/http.dart' as client;
+import 'package:rmsmobile/pages/request/request.bottom.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,7 +62,13 @@ class _ProgressTileState extends State<ProgressTile> {
     var url = Uri.parse(_apiService.baseUrl + 'pengguna');
     final response =
         await client.get(url, headers: {"Authorization": "BEARER ${token}"});
+    // .then((value) => print("Pengguna?" + value.toString()))
+    // .onError((error, stackTrace) {
+    //   ReusableClasses().modalbottomWarning(context, "Pengguna ",
+    //       'Pengguna tidak ke load', 'f404', 'assets/images/sorry');
+    // });
     var dataz = json.decode(response.body);
+    print(dataz.toString());
     setState(() {
       pnggunaList = dataz['data'];
     });
@@ -73,17 +81,17 @@ class _ProgressTileState extends State<ProgressTile> {
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
+    _pngguna();
+    _mypengguna;
+    _penggunaDisplay;
   }
 
   @override
   void initState() {
+    super.initState();
     idprogress = widget.progress.idprogress.toString();
     idpermintaan = widget.progress.idpermintaan.toString();
     cekToken();
-    _mypengguna;
-    _pngguna();
-    _penggunaDisplay;
-    super.initState();
   }
 
   @override
@@ -363,27 +371,28 @@ class _ProgressTileState extends State<ProgressTile> {
                                                                             Colors.white);
                                                                     _tecKeterangan
                                                                         .clear();
-                                                                    if (isSelesai ==
-                                                                        true) {
-                                                                      _apiService
-                                                                          .addProgres(
-                                                                              token.toString(),
-                                                                              modelAdd)
-                                                                          .then((value) {
-                                                                        print(
-                                                                            'tes progres piye ? $modeledit $modelAdd');
-                                                                        print(
-                                                                            'disini sukses nggak1 ?');
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                        Fluttertoast.showToast(
-                                                                            msg:
-                                                                                "Berhasil ubah data progres ke next user",
-                                                                            backgroundColor:
-                                                                                Colors.black,
-                                                                            textColor: Colors.white);
-                                                                      });
-                                                                    }
+                                                                    _apiService
+                                                                        .addProgres(
+                                                                            token
+                                                                                .toString(),
+                                                                            modelAdd)
+                                                                        .then(
+                                                                            (value) {
+                                                                      print(
+                                                                          'tes progres piye ? $modeledit $modelAdd');
+                                                                      print(
+                                                                          'disini sukses nggak1 ?');
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop();
+                                                                      Fluttertoast.showToast(
+                                                                          msg:
+                                                                              "Berhasil ubah data progres ke next user",
+                                                                          backgroundColor: Colors
+                                                                              .black,
+                                                                          textColor:
+                                                                              Colors.white);
+                                                                    });
                                                                   } else {
                                                                     _modalbottomSite(
                                                                         context,
@@ -393,6 +402,11 @@ class _ProgressTileState extends State<ProgressTile> {
                                                                         "assets/images/sorry.png");
                                                                   }
                                                                   return;
+                                                                }).onError((error,
+                                                                        stackTrace) {
+                                                                  print("ERROR PROGRESS" +
+                                                                      error
+                                                                          .toString());
                                                                 });
                                                               },
                                                               style:

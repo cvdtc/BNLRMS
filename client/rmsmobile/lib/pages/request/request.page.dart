@@ -19,8 +19,8 @@ class RequestPageSearch extends StatefulWidget {
 
 class _RequestPageSearchState extends State<RequestPageSearch> {
   late SharedPreferences sp;
-  String? defaultKategori = 'Patent';
-  String? jenisKategori = 'Patent';
+  String? defaultKategori = 'Paten';
+  String? jenisKategori = 'Paten';
   String? tipe = "";
   String? keterangan = "";
   String? kategori = "";
@@ -31,7 +31,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
   String? tipeupdate = "";
   // dynamic cekid;
   int? pilihkategori;
-  var dataKategori = ['Patent', 'Merek', 'Desain Industri', 'Lainnya'];
+  var dataKategori = ['Merek', 'Paten', 'Desain Industri', 'Lainnya'];
   String? token = "", username = "", jabatan = "", flagcari = '0';
   List<RequestModel> _requests = <RequestModel>[];
   List<RequestModel> _requestDisplay = <RequestModel>[];
@@ -110,9 +110,9 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
   @override
   initState() {
     defaultKategori = dataKategori[0];
-    if (defaultKategori == 'Patent') {
+    if (defaultKategori == 'Merek') {
       defaultKategori = dataKategori[0];
-    } else if (defaultKategori == 'Merek') {
+    } else if (defaultKategori == 'Paten') {
       defaultKategori = dataKategori[1];
     } else if (defaultKategori == 'Desain Industri') {
       defaultKategori = dataKategori[2];

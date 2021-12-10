@@ -179,6 +179,7 @@ class ApiService {
           'Authorization': 'Bearer ${token}'
         },
         body: ProgressModelEditToJson(data));
+    print(response.toString());
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
     if (response.statusCode == 200) {
