@@ -72,22 +72,10 @@ class _ProgressPageState extends State<ProgressPage> {
         child: Container(
           child: ListView.builder(
             itemBuilder: (context, index) {
+              print("Values??" + index.toString());
               if (!_isLoading) {
                 return index == 0
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.3,
-                            ),
-                            Image.asset(
-                              'assets/images/sorry.png',
-                              height: 150,
-                              width: 250,
-                            ),
-                            Text('Data di halaman ini masih kosong!')
-                          ])
+                    ? _searchBar()
                     : ProgressTile(
                         progress: this._progressDisplay[index - 1],
                         token: token!,

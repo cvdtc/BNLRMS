@@ -66,6 +66,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
   }
 
   Future refreshPage() async {
+    _requestDisplay.clear();
     await Future.delayed(Duration(seconds: 2));
     Fluttertoast.showToast(
         msg: "Data Berhasil diperbarui",
