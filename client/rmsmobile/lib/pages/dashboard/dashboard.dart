@@ -1,5 +1,5 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
@@ -46,8 +46,10 @@ class _DahsboardState extends State<Dahsboard> {
   ApiService _apiService = ApiService();
   late SharedPreferences sp;
   String? token = "", username = "", jabatan = "", nama = "";
+  bool? notifpermintaan = true, notifprogress = true;
   var jml_masalah = "", jml_selesai = 0, belum_selesai = 0;
   List<DashboardModel> _dashboard = <DashboardModel>[];
+  late FirebaseMessaging messaging;
 
   // * ceking token and getting dashboard value from api
   cekToken() async {
@@ -56,38 +58,42 @@ class _DahsboardState extends State<Dahsboard> {
       token = sp.getString("access_token");
       nama = sp.getString('nama');
       jabatan = sp.getString("jabatan");
+      notifpermintaan = sp.getBool("notif_permintaan");
+      notifprogress = sp.getBool("notif_progress");
     });
-    // if (token == null) {
-    //   Navigator.pushReplacement(
-    //     context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    // }
-    print('cek print ++ $token');
     _apiService.getDashboard(token!).then((value) {
-      // DashboardModel dashboardModel = DashboardModel();
-      print("Jumlah Masalah? " +
-          value.toString() +
-          "sttt" +
-          _apiService.responseCode.statusCode.toString());
       setState(() {
         _dashboard.addAll(value!);
       });
     }).onError((error, stackTrace) {
-      ReusableClasses().clearSharedPreferences();
-      Fluttertoast.showToast(
-          msg: "Maaf, Token anda expired, silahkan melakukan login ulang",
-          backgroundColor: Colors.black,
-          textColor: Colors.white);
-      // ApiService().clearshared();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
+      if (error == 401) {
+        ReusableClasses().clearSharedPreferences();
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Loginscreen(
+                      tipe: 'sesiberakhir',
+                    )));
+      }
     });
-    ;
   }
 
   @override
   initState() {
     super.initState();
     cekToken();
+    print(notifprogress);
+    messaging = FirebaseMessaging.instance;
+    if (notifprogress == true) {
+      messaging.subscribeToTopic('RMSPERMINTAAN');
+    } else {
+      messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+    }
+    if (notifpermintaan == true) {
+      messaging.subscribeToTopic('RMSPROGRESS');
+    } else {
+      messaging.unsubscribeFromTopic('RMSPROGRESS');
+    }
   }
 
   @override
@@ -128,12 +134,9 @@ class _DahsboardState extends State<Dahsboard> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 0.15),
                               child: Row(
-                                // crossAxisAlignment: CrossAxisAlignment.center,
-                                // mainAxisAlignment:
-                                //     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
                                   CircleAvatar(
-                                    backgroundColor: kBlue,
+                                    backgroundColor: Colors.white,
                                     radius: 20.0,
                                     backgroundImage: AssetImage(
                                       'assets/images/bnllogo.png',
@@ -142,34 +145,21 @@ class _DahsboardState extends State<Dahsboard> {
                                   SizedBox(
                                     width: 10,
                                   ),
-                                  Column(
-                                    // crossAxisAlignment:
-                                    //     CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Container(
-                                        child: Text(
-                                          nama.toString(),
-                                          textAlign: TextAlign.start,
-                                          style: TextStyle(
-                                            fontSize: 18.0,
-                                            color: kDarkBlue,
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                        ),
+                                  Row(children: [
+                                    Text(
+                                      "Halo, ",
+                                      style: TextStyle(
+                                        fontSize: 20.0,
                                       ),
-                                      Container(
-                                        child: Text(
-                                          jabatan.toString(),
-                                          textAlign: TextAlign.start,
-                                          style: TextStyle(
-                                            fontSize: 14.0,
-                                            color: Colors.black45,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
+                                    ),
+                                    Text(
+                                      nama.toString(),
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.w800,
                                       ),
-                                    ],
-                                  )
+                                    ),
+                                  ]),
                                 ],
                               ),
                             ),

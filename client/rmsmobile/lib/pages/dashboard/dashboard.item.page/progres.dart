@@ -51,15 +51,13 @@ class _ProgresListState extends State<ProgresList> {
       future: _apiService
           .getListProgres(token.toString())
           .onError((error, stackTrace) {
-        ReusableClasses().modalbottomWarning(
-            context,
-            'Sesi Berakhir',
-            'harap login kembali karena sesi anda telah berakhir',
-            error.toString(),
-            'assets/images/sorry.png');
         ReusableClasses().clearSharedPreferences();
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Loginscreen()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => Loginscreen(
+                      tipe: 'sesiberakhir',
+                    )));
       }),
       builder: (context, AsyncSnapshot<List<ProgressModel>?> snapshot) {
         if (snapshot.hasError) {
@@ -124,7 +122,6 @@ class _ProgresListState extends State<ProgresList> {
           itemCount: dataIndex!.length,
           itemBuilder: (context, index) {
             ProgressModel? dataprogress = dataIndex[index];
-            print('flagselesainya ${dataprogress.flag_selesai}');
             return InkWell(
               onTap: () {
                 Navigator.push(
@@ -199,13 +196,19 @@ class _ProgresListState extends State<ProgresList> {
                             SizedBox(
                               height: 10,
                             ),
-                            Align(
-                                alignment: Alignment.bottomRight,
-                                child: Text(dataprogress.created.toString(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    "Update: " +
+                                        dataprogress.created.toString(),
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black45)))
+                                        color: Colors.black45)),
+                              ],
+                            )
                           ],
                         ),
                       ),
@@ -216,54 +219,5 @@ class _ProgresListState extends State<ProgresList> {
             );
           }),
     );
-    // return Container(
-    //   // width: MediaQuery.of(context).size.height /4,
-    //   height: MediaQuery.of(context).size.height / 4,
-    //   margin: EdgeInsets.only(left: 16, right: 16),
-    //   child: ListView.builder(
-    //       scrollDirection: Axis.horizontal,
-    //       itemCount: dataIndex!.length,
-    //       itemBuilder: (context, index) {
-    //         ProgressModel? dataRequest = dataIndex[index];
-    //         return Padding(
-    //             padding: const EdgeInsets.all(5.0),
-    //             child: Card(
-    //                 elevation: 0.0,
-    //                 child: Padding(
-    //                   padding: EdgeInsets.only(
-    //                       left: 20, right: 20, top: 10, bottom: 15),
-    //                   child: Column(
-    //                     mainAxisAlignment: MainAxisAlignment.start,
-    //                     crossAxisAlignment: CrossAxisAlignment.start,
-    //                     children: [
-    //                       Row(
-    //                         children: [
-    //                           Text('Kategori : ',
-    //                               style: TextStyle(fontSize: 18.0)),
-    //                           Text(dataRequest.kategori,
-    //                               style: TextStyle(fontSize: 18.0))
-    //                         ],
-    //                       ),
-    //                       SizedBox(
-    //                         height: 5,
-    //                       ),
-    //                       Row(
-    //                         children: [
-    //                           Text('Permintaan : ',
-    //                               style: TextStyle(fontSize: 18.0)),
-    //                           Text(dataRequest.permintaan,
-    //                               style: TextStyle(fontSize: 18.0))
-    //                         ],
-    //                       ),
-    //                       SizedBox(
-    //                         height: 5,
-    //                       ),
-    //                       Text('Keterangan : ' + dataRequest.keterangan,
-    //                           style: TextStyle(fontSize: 18.0)),
-    //                     ],
-    //                   ),
-    //                 )));
-    //       }),
-    // );
   }
 }

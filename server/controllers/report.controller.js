@@ -74,7 +74,7 @@ async function getTimeline(req, res) {
     if (token != null) {     try {
         jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
             if (!jwtresult) {
-                res.status(401).send(JSON.stringify({
+                return res.status(401).send(JSON.stringify({
                     message: "Sorry, Your token has expired!",
                     error: jwterror,
                     data: null
@@ -88,8 +88,9 @@ async function getTimeline(req, res) {
                             data: null
                         })
                     } else {
-                        var sqlquery = "SELECT 1 AS tipe, pe.keterangan, pe.kategori, pe.due_date, pe.created, pe.edited, pe.flag_selesai, pe.keterangan_selesai, pe.idpengguna_close_permintaan, '-' AS prg_keterangan, '-' AS prg_created, '-' AS prg_edited, '-' AS prg_flag_selesai FROM permintaan pe WHERE pe.idpermintaan=? UNION SELECT 2 AS tipe, '-' as keterangan, '-' as kategori, '-' as due_date, '-' as created, '-' as edited, '-' as flag_selesai, '-' as keterangan_selesai, '-' as idpengguna_close_permintaan, prg.keterangan AS prg_keterangan, prg.created AS prg_created, prg.edited AS prg_edited, prg.flag_selesai AS prg_flag_selesai FROM progress prg WHERE prg.idpermintaan=?;"
-                        database.query(sqlquery,[idpermintaan, idpermintaan], (error, rows) => {
+                        // var sqlquery = "SELECT 1 AS tipe, pe.keterangan, pe.kategori, pe.due_date, pe.created, pe.edited, pe.flag_selesai, pe.keterangan_selesai, pe.idpengguna_close_permintaan, '-' AS prg_keterangan, '-' AS prg_created, '-' AS prg_edited, '-' AS prg_flag_selesai, p.nama as nama_request, '-' as nama_progress FROM permintaan pe, pengguna p WHERE p.idpengguna=pe.idpengguna AND pe.idpermintaan=? UNION SELECT 2 AS tipe, '-' as keterangan, '-' as kategori, '-' as due_date, '-' as created, '-' as edited, '-' as flag_selesai, '-' as keterangan_selesai, '-' as idpengguna_close_permintaan, prg.keterangan AS prg_keterangan, prg.created AS prg_created, prg.edited AS prg_edited, prg.flag_selesai AS prg_flag_selesai, '-' as nama_request, p.nama as nama_progress FROM progress prg , pengguna p WHERE p.idpengguna=prg.idpengguna and prg.idpermintaan=?;"
+                        var sqlquery = "SELECT 1 AS tipe, pe.keterangan, pe.kategori, pe.due_date, pe.created, pe.edited, pe.idpengguna_close_permintaan, '-' AS prg_keterangan, '-' AS prg_created, '-' AS prg_edited, '-' AS prg_flag_selesai, p.nama as nama_request, '-' as nama_progress, '-' AS flag_selesai, '-' AS keterangan_selesai, '-' as nama_close_permintaan,'-' as date_selesai FROM permintaan pe, pengguna p WHERE p.idpengguna=pe.idpengguna AND pe.idpermintaan=? UNION SELECT 2 AS tipe, '-' as keterangan, '-' as kategori, '-' as due_date, '-' as created, '-' as edited, '-' as idpengguna_close_permintaan, prg.keterangan AS prg_keterangan, prg.created AS prg_created, prg.edited AS prg_edited, prg.flag_selesai AS prg_flag_selesai, '-' as nama_request, p.nama as nama_progress, '-' AS flag_selesai, '-' AS keterangan_selesai, '-' as nama_close_permintaan, '-' as date_selesai FROM progress prg , pengguna p WHERE p.idpengguna=prg.idpengguna and prg.idpermintaan=? UNION SELECT 3 AS tipe, '-' as keterangan, '-' as kategori, '-' as due_date, '-' as created, '-' as edited, '-' as idpengguna_close_permintaan, '-' AS prg_keterangan, '-' AS prg_created, '-' AS prg_edited, '-' AS prg_flag_selesai, '-' as nama_request, '-' as nama_progress, pr.flag_selesai, pr.keterangan_selesai, pe.nama as nama_close_permintaan, pr.date_selesai FROM permintaan pr, pengguna  pe WHERE pe.idpengguna=pr.idpengguna_close_permintaan and idpermintaan = ?;"
+                        database.query(sqlquery,[idpermintaan, idpermintaan, idpermintaan], (error, rows) => {
                             database.release()
                             if (error) {
                                 return res.status(500).send({
@@ -130,6 +131,7 @@ async function getTimeline(req, res) {
         })
     }
 }
+
 
 // * FUNCTION GET DASHBOARD
 
@@ -180,7 +182,7 @@ async function getTimeline(req, res) {
                             data: null
                         })
                     } else {
-                        var sqlquery = "select (select count(idpermintaan) from permintaan where flag_selesai=0) as belum_selesai, (select count(idpermintaan) from permintaan where flag_selesai=1) as sudah_selesai, ((select count(idpermintaan) from permintaan where flag_selesai=0)-(select count(idpermintaan) from permintaan where flag_selesai=1)) as jumlah;"
+                        var sqlquery = "SELECT (SELECT COUNT(idpermintaan) FROM permintaan) AS jumlah, (SELECT COUNT(idpermintaan) FROM permintaan WHERE flag_selesai=1) AS sudah_selesai, (SELECT COUNT(idpermintaan) FROM permintaan WHERE flag_selesai=0) AS belum_selesai;"
                         database.query(sqlquery, (error, rows) => {
                             database.release()
                             if (error) {
@@ -222,6 +224,7 @@ async function getTimeline(req, res) {
         })
     }
 }
+
 
 module.exports = {
     getTimeline,

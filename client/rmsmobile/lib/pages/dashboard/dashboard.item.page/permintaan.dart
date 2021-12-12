@@ -19,18 +19,14 @@ class _PermintaanListState extends State<PermintaanList> {
   late SharedPreferences sp;
   ApiService _apiService = ApiService();
   bool isSuccess = false;
-  String? token = "", username = "", jabatan = "", nama = "";
+  String? token = "";
 
   // * ceking token and getting dashboard value from api
   cekToken() async {
     sp = await SharedPreferences.getInstance();
     setState(() {
       token = sp.getString("access_token");
-      // username = sp.getString("username");
-      nama = sp.getString('nama');
-      jabatan = sp.getString("jabatan");
     });
-    // });
   }
 
   @override
@@ -51,15 +47,14 @@ class _PermintaanListState extends State<PermintaanList> {
       future: _apiService
           .getListRequest(token.toString())
           .onError((error, stackTrace) {
-        ReusableClasses().modalbottomWarning(
-            context,
-            'Sesi Berakhir',
-            'harap login kembali karena sesi anda telah berakhir',
-            error.toString(),
-            'assets/images/sorry.png');
+        print("List Permintaan Dashboard? " + error.toString());
         ReusableClasses().clearSharedPreferences();
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Loginscreen()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => Loginscreen(
+                      tipe: 'sesiberakhir',
+                    )));
       }),
       builder: (context, AsyncSnapshot<List<RequestModel>?> snapshot) {
         if (snapshot.hasError) {
@@ -84,12 +79,16 @@ class _PermintaanListState extends State<PermintaanList> {
         } else if (snapshot.connectionState == ConnectionState.done) {
           List<RequestModel>? dataRequest = snapshot.data;
           if (dataRequest!.isNotEmpty) {
+            print('masuk sini?');
             return _listRequest(dataRequest);
+          } else {
+            print('masuk sini');
+            print('data request $dataRequest + ${snapshot.data}');
+            return Container(
+              child: Text('Data Permintaan masih kosong'),
+            );
           }
         } else {
-          return Container(child: Text('Data permintaan masih kosong'));
-        }
-        {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -169,8 +168,7 @@ class _PermintaanListState extends State<PermintaanList> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
-                                  child: Text(
-                                      dataRequest.nama_request.toString(),
+                                  child: Text(dataRequest.kategori.toString(),
                                       style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.bold,
@@ -194,13 +192,22 @@ class _PermintaanListState extends State<PermintaanList> {
                             SizedBox(
                               height: 10,
                             ),
-                            Align(
-                                alignment: Alignment.bottomRight,
-                                child: Text(dataRequest.due_date.toString(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text("JT: " + dataRequest.due_date.toString(),
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black45)))
+                                        color: Colors.black45)),
+                                Text(dataRequest.nama_request.toString(),
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black45))
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -211,56 +218,5 @@ class _PermintaanListState extends State<PermintaanList> {
             );
           }),
     );
-    // return Container(
-    //   // width: MediaQuery.of(context).size.height /4,
-    //   height: MediaQuery.of(context).size.height / 4,
-    //   margin: EdgeInsets.only(left: 10, right: 10),
-    //   child: ListView.builder(
-    //       scrollDirection: Axis.horizontal,
-    //       itemCount: dataIndex!.length,
-    //       itemBuilder: (context, index) {
-    //         RequestModel? dataRequest = dataIndex[index];
-    //         return Padding(
-    //             padding: const EdgeInsets.all(5.0),
-    //             child: Container(
-    //               height: MediaQuery.of(context).size.height / 5,
-    //               width: MediaQuery.of(context).size.width,
-    //               color: Colors.white,
-    //               child: Padding(
-    //                 padding: EdgeInsets.only(
-    //                     left: 20, right: 20, top: 10, bottom: 15),
-    //                 child: Column(
-    //                   mainAxisAlignment: MainAxisAlignment.start,
-    //                   crossAxisAlignment: CrossAxisAlignment.start,
-    //                   children: [
-    //                     Row(
-    //                       children: [
-    //                         Text('Kategori : ',
-    //                             style: TextStyle(fontSize: 18.0)),
-    //                         Text(dataRequest.kategori,
-    //                             style: TextStyle(fontSize: 18.0))
-    //                       ],
-    //                     ),
-    //                     SizedBox(
-    //                       height: 5,
-    //                     ),
-    //                     Row(
-    //                       children: [
-    //                         Text('Nama : ', style: TextStyle(fontSize: 18.0)),
-    //                         Text(dataRequest.nama_request,
-    //                             style: TextStyle(fontSize: 18.0))
-    //                       ],
-    //                     ),
-    //                     SizedBox(
-    //                       height: 5,
-    //                     ),
-    //                     Text('Keterangan : ' + dataRequest.keterangan,
-    //                         style: TextStyle(fontSize: 18.0)),
-    //                   ],
-    //                 ),
-    //               ),
-    //             ));
-    //       }),
-    // );
   }
 }

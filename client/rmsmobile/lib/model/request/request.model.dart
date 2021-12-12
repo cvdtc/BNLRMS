@@ -1,44 +1,47 @@
 import 'dart:convert';
 
 class RequestModel {
+  // ++ list json response
   var idpermintaan,
       keterangan,
       kategori,
+      due_date,
       created,
       edited,
       flag_selesai,
       keterangan_selesai,
       nama_request,
-      due_date,
-      token, tipeupdate;
+      jmlprogress;
+// ++ addons json
+  var token, tipeupdate;
 
   RequestModel(
       {this.idpermintaan,
       this.keterangan,
       this.kategori,
+      this.due_date,
       this.created,
       this.edited,
       this.flag_selesai,
       this.keterangan_selesai,
       this.nama_request,
-      this.due_date,
+      this.jmlprogress,
       this.token,
-      this.tipeupdate
-      });
+      this.tipeupdate});
 
   factory RequestModel.fromJson(Map<dynamic, dynamic> map) {
     return RequestModel(
-        idpermintaan: map["idpermintaan"],
-        keterangan: map["keterangan"],
-        kategori: map["kategori"],
-        created: map["created"],
-        edited: map["edited"],
-        flag_selesai: map["flag_selesai"],
-        keterangan_selesai: map["keterangan_selesai"],
-        nama_request: map["nama_request"],
-        due_date: map["due_date"],
-        token: map["access_token"],
-        tipeupdate: map["tipeupdate"]);
+      idpermintaan: map["idpermintaan"],
+      keterangan: map["keterangan"],
+      kategori: map["kategori"],
+      due_date: map["due_date"],
+      created: map["created"],
+      edited: map["edited"],
+      flag_selesai: map["flag_selesai"],
+      keterangan_selesai: map["keterangan_selesai"],
+      nama_request: map["nama_request"],
+      jmlprogress: map["jmlprogress"],
+    );
   }
 
   Map<String, dynamic> toJson() {

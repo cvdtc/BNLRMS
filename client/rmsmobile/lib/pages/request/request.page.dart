@@ -19,8 +19,8 @@ class RequestPageSearch extends StatefulWidget {
 
 class _RequestPageSearchState extends State<RequestPageSearch> {
   late SharedPreferences sp;
-  String? defaultKategori = 'Paten';
-  String? jenisKategori = 'Paten';
+  String? defaultKategori = 'Merek';
+  String? jenisKategori = 'Merek';
   String? tipe = "";
   String? keterangan = "";
   String? kategori = "";
@@ -46,10 +46,6 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
-    // if (token == null) {
-    //   Navigator.pushReplacement(
-    //     context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    // }
     fetchKomponen(token!).then((value) {
       setState(() {
         _isLoading = false;
@@ -59,16 +55,13 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       });
     }).onError((error, stackTrace) {
       print("REQUEST STATUS CODE?" + error.toString());
-      ReusableClasses().modalbottomWarning(
-          context,
-          'Sesi Berakhir',
-          'harap login kembali karena sesi anda telah berakhir',
-          error.toString(),
-          'assets/images/sorry.png');
       ReusableClasses().clearSharedPreferences();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
-      // ApiService().clearshared();
+          context,
+          MaterialPageRoute(
+              builder: (context) => Loginscreen(
+                    tipe: 'sesiberakhir',
+                  )));
     });
   }
 
@@ -83,30 +76,6 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
     });
   }
 
-  // var controllers = Get.put(SelectedListController());
-  // void openFilterDialog(context) async{
-  //   await FilterListDialog.display<RequestModel>(
-  //     context,
-  //     listData: _requestDisplay,
-  //     selectedListData: controllers.selectedList,
-  //     headlineText: 'Pilih Kategori',
-  //     closeIconColor: Colors.grey,
-  //     applyButtonTextStyle: TextStyle(fontSize: 20),
-  //     choiceChipLabel: (item)=> item.toString(),
-  //     validateSelectedItem: (list, val)=>list!.contains(val),
-  //     onItemSearch: (list, text){
-  //       if (list!.any((element) => element.toString().toLowerCase().contains(text.toLowerCase()))) {
-  //         return list.where((element) => element.kategori().toLowerCase().contains(text.toLowerCase())).toList();
-  //       } else {
-  //         return [];
-  //       }
-  //     },
-  //     onApplyButtonClick: (list){
-  //       controllers.selectedList.value =(List<RequestModel>.from(list!));
-  //       Navigator.of(context).pop();
-  //     });
-  // }
-
   @override
   initState() {
     defaultKategori = dataKategori[0];
@@ -116,7 +85,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       defaultKategori = dataKategori[1];
     } else if (defaultKategori == 'Desain Industri') {
       defaultKategori = dataKategori[2];
-    } else if (defaultKategori == 'Lainnya') {
+    } else if (defaultKategori == 'Hak Cipta') {
       defaultKategori = dataKategori[3];
     }
     cekToken();
@@ -147,7 +116,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          ReusableClass().modalAddSite(
+          RequestModalBottom().modalAddSite(
               context,
               'tambah',
               token!,
@@ -160,9 +129,13 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
               tipeupdate!);
         },
         backgroundColor: thirdcolor,
+        icon: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         label: Text(
           'Tambah Permintaan',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: RefreshIndicator(
@@ -194,70 +167,6 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       ),
     );
   }
-
-  // Widget _buildKomboPermintaan(String produks) {
-  //   return DropdownButtonFormField(
-  //     dropdownColor: Colors.white,
-  //     hint: Padding(
-  //         padding: EdgeInsets.only(left: 10),
-  //         child: Row(
-  //           children: [
-  //             Icon(
-  //               Icons.search,
-  //             ),
-  //             SizedBox(
-  //               width: 7,
-  //             ),
-  //             Text("$defaultKategori",
-  //                 textAlign: TextAlign.end,
-  //                 style:
-  //                     GoogleFonts.inter(color: Colors.grey[800], fontSize: 14)),
-  //           ],
-  //         )),
-  //     value:
-  //         pilihkategori == null ? null : dataKategori.join("$defaultKategori"),
-  //     decoration: InputDecoration(
-  //         fillColor: Colors.grey[200],
-  //         filled: true,
-  //         border: const OutlineInputBorder(),
-  //         enabledBorder: OutlineInputBorder(
-  //             borderSide:
-  //                 const BorderSide(color: Colors.transparent, width: 0.0),
-  //             borderRadius: BorderRadius.circular(5.0)),
-  //         isDense: true,
-  //         contentPadding:
-  //             const EdgeInsets.only(bottom: 8.0, top: 8.0, left: 5.0)),
-  //     items: dataKategori.map((String value) {
-  //       return DropdownMenuItem<String>(
-  //         value: value,
-  //         child: Padding(
-  //           padding: const EdgeInsets.only(left: 10),
-  //           child: new Text(value,
-  //               style:
-  //                   GoogleFonts.inter(color: Colors.grey[800], fontSize: 14)),
-  //         ),
-  //       );
-  //     }).toList(),
-  //     onChanged: (value) {
-  //       setState(() {
-  //         print('object value $value');
-  //         defaultKategori = value.toString();
-  //         if (value == null) {
-  //           return null;
-  //         } else if (defaultKategori == 'Patent') {
-  //           cekid = '0';
-  //         } else if (defaultKategori == 'Merek') {
-  //           cekid = '1';
-  //         } else if (defaultKategori == 'Desain Industri') {
-  //           cekid = '2';
-  //         } else if (defaultKategori == 'Lainnya') {
-  //           cekid = '3';
-  //         }
-  //         print('IDNYa $cekid');
-  //       });
-  //     },
-  //   );
-  // }
 
   _searchBar() {
     return Padding(

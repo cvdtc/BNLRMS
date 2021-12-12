@@ -31,33 +31,23 @@ class _ProgressPageState extends State<ProgressPage> {
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
-    // print(
-    //     'object progress ${ApiService().responseCode.statusCode} ++++ $token');
-    // if (token == null) {
-    //   Navigator.pushReplacement(
-    //       context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    // }
     fetchProgress(token!).then((value) {
       setState(() {
         _isLoading = false;
         _progress.addAll(value);
         _progressDisplay = _progress;
-        print(_progressDisplay.length);
+        print("progressdisplay? " + _progressDisplay.length.toString());
+        print("progress? " + value.toString());
       });
-      print('yes bisa ?');
     }).onError((error, stackTrace) {
-      print("PROGRESS STATUS CODE?" + error.toString());
-      ReusableClasses().modalbottomWarning(
-          context,
-          'Sesi Berakhir',
-          'harap login kembali karena sesi anda telah berakhir',
-          error.toString(),
-          'assets/images/sorry.png');
       ReusableClasses().clearSharedPreferences();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => Loginscreen(
+                    tipe: 'sesiberakhir',
+                  )));
     });
-    ;
   }
 
   @override
@@ -84,12 +74,24 @@ class _ProgressPageState extends State<ProgressPage> {
             itemBuilder: (context, index) {
               if (!_isLoading) {
                 return index == 0
-                    ? _searchBar()
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.3,
+                            ),
+                            Image.asset(
+                              'assets/images/sorry.png',
+                              height: 150,
+                              width: 250,
+                            ),
+                            Text('Data di halaman ini masih kosong!')
+                          ])
                     : ProgressTile(
                         progress: this._progressDisplay[index - 1],
                         token: token!,
                       );
-                // : SiteTile(site: this._sitesDisplay[index - 1]);
               } else {
                 return Center(
                   child: CircularProgressIndicator(),

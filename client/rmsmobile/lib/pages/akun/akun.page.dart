@@ -1,9 +1,9 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.gantipassword.dart';
+import 'package:rmsmobile/pages/akun/akun.bottommodal.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/setting/setting_notif.dart';
 import 'package:rmsmobile/utils/warna.dart';
@@ -29,23 +29,21 @@ class _AkunPageState extends State<AkunPage> {
   // * ceking token and getting dashboard value from Shared Preferences
   cekToken() async {
     sp = await SharedPreferences.getInstance();
-    if (token == null) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    }
     setState(() {
       token = sp.getString("access_token");
       username = sp.getString("username");
       nama = sp.getString("nama");
       jabatan = sp.getString("jabatan");
     });
+    if (token == null) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Loginscreen(
+                    tipe: 'sesiberakhir',
+                  )));
+    }
   }
-
-  // void _toggle() {
-  //   setState(() {
-  //     _obsecureText = !_obsecureText;
-  //   });
-  // }
 
   @override
   initState() {
@@ -70,7 +68,7 @@ class _AkunPageState extends State<AkunPage> {
               Container(
                 padding: EdgeInsets.only(left: 20),
                 child: CircleAvatar(
-                  backgroundColor: primarycolor,
+                  backgroundColor: Colors.white,
                   child: Image.asset('assets/images/bnllogo.png'),
                 ),
               ),
@@ -78,13 +76,15 @@ class _AkunPageState extends State<AkunPage> {
                 width: 15,
               ),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(username.toString().toUpperCase()),
+                Text(nama.toString().toUpperCase(),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
                 Text(jabatan.toString())
               ]),
             ],
           ),
           _option(context),
-          Text('v.1.0.4 debuging')
+          Text('v.1.0.5 debuging')
         ],
       ),
     ));
@@ -176,10 +176,6 @@ class _AkunPageState extends State<AkunPage> {
                             backgroundColor: Colors.red,
                             textColor: Colors.white);
                       } else {
-                        // Fluttertoast.showToast(
-                        //     msg: "Tes masuk sini !",
-                        //     backgroundColor: Colors.black,
-                        //     textColor: Colors.white);
                         ApiService()
                             .ubahPassword(token.toString(), gantipass)
                             .then((isSuccess) {
@@ -353,8 +349,8 @@ class _AkunPageState extends State<AkunPage> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            exit();
                             Navigator.of(context).pop();
+                            AkunBottomModal().exit(context);
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0.0,
@@ -367,7 +363,10 @@ class _AkunPageState extends State<AkunPage> {
                               alignment: Alignment.center,
                               child: Text(
                                 "Ya",
-                                style: TextStyle(color: primarycolor),
+                                style: TextStyle(
+                                    color: primarycolor,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           )),
@@ -378,19 +377,5 @@ class _AkunPageState extends State<AkunPage> {
             ),
           );
         });
-  }
-
-  void exit() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.clear();
-    print(preferences.toString());
-    late FirebaseMessaging messaging;
-    // * adding firebase configuration setup
-    messaging = FirebaseMessaging.instance;
-    messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-    messaging.unsubscribeFromTopic('RMSPROGRESS');
-    // print('preference $preferences');
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Loginscreen()));
   }
 }
