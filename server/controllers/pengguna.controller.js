@@ -70,10 +70,11 @@ const pool = mysql.createPool({
 
 async function getAllPengguna(req, res) {
     const token = req.headers.authorization;
+    console.log(new Date());
     if (token != null) {     try {
         jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
             if (!jwtresult) {
-                res.status(401).send(JSON.stringify({
+                return res.status(401).send(JSON.stringify({
                     message: "Sorry, Your token has expired!",
                     error: jwterror,
                     data: null
@@ -291,7 +292,7 @@ async function addPengguna(req, res) {
 
 /**
  * @swagger
- * /pengguna/:idpengguna:
+ * /pengguna:
  *  put:
  *      summary: endpoint API mengubah data pengguna.
  *      tags: [PENGGUNA]
@@ -300,12 +301,6 @@ async function addPengguna(req, res) {
  *      consumes:
  *          - application/json
  *      parameters:
- *          - name: idpengguna
- *            in: path
- *            schema:
- *              type: int
- *              description: >
- *                  parameter `idpengguna` dikirim di dipath.
  *          - name: token
  *            in: header
  *            schema:
@@ -358,7 +353,6 @@ async function addPengguna(req, res) {
     var jabatan = req.body.jabatan
     var notification_token = req.body.notification_token
     var aktif = req.body.aktif
-    var idpengguna = req.params.idpengguna
     const token = req.headers.authorization
     if (Object.keys(req.body).length != 6) {
         return res.status(405).send({
@@ -404,7 +398,7 @@ async function addPengguna(req, res) {
                                             last_login: new Date().toISOString().replace('T', ' ').substring(0, 19)
                                         }
                                         var sqlquery = "UPDATE pengguna SET ? WHERE idpengguna = ?"
-                                        database.query(sqlquery, [datapengguna, idpengguna], (error, result) => {
+                                        database.query(sqlquery, [datapengguna, jwtresult.idpengguna], (error, result) => {
                                             database.release()
                                             if (error) {
                                                 database.rollback(function () {

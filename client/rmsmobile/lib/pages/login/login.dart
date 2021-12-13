@@ -9,7 +9,8 @@ import 'package:rmsmobile/utils/warna.dart';
 import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 
 class Loginscreen extends StatefulWidget {
-  const Loginscreen({Key? key}) : super(key: key);
+  var tipe;
+  Loginscreen({this.tipe});
 
   @override
   _LoginscreenState createState() => _LoginscreenState();
@@ -23,7 +24,7 @@ class _LoginscreenState extends State<Loginscreen> {
       _obsecureText = true,
       _fieldPassword = false,
       isloading = false;
-  var emailaccountselection, token = '';
+  var emailaccountselection, token = '', tipelogin;
 
   void _toggle() {
     setState(() {
@@ -32,10 +33,26 @@ class _LoginscreenState extends State<Loginscreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tipelogin = widget.tipe;
+    // if (tipelogin == 'sesiberakhir') {
+    //   ReusableClasses().modalbottomWarning(
+    //       context,
+    //       'Sesi Berakhir',
+    //       'Waaah, sesi anda sudah berakhir nih, login lagi yaa.... :)',
+    //       'f401',
+    //       'assets/images/sorry.png');
+    // }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
+        padding: EdgeInsets.all(25.0),
         decoration: BoxDecoration(
           image: DecorationImage(
               image: AssetImage('assets/images/1.png'), fit: BoxFit.cover),
@@ -73,7 +90,7 @@ class _LoginscreenState extends State<Loginscreen> {
                     width: 40,
                   ),
                   Text(
-                    'Masukkan akun yang sudah terdaftar',
+                    'Masukkan username yang sudah terdaftar',
                     style: TextStyle(color: Colors.white, fontSize: 14),
                   )
                 ],
@@ -81,34 +98,34 @@ class _LoginscreenState extends State<Loginscreen> {
               SizedBox(
                 height: 65,
               ),
-              _buildTextFieldEmail(),
+              Container(child: _TextEditingUsername()),
               SizedBox(
                 height: 10,
               ),
-              _buildTextFieldPassword(),
+              Container(child: _TextEditingPassword()),
               SizedBox(
-                height: 20,
+                height: 45,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 25, right: 25),
-                child: ButtonTheme(
-                    buttonColor: Colors.white,
-                    minWidth: MediaQuery.of(context).size.width,
-                    height: 55,
-                    // ignore: deprecated_member_use
-                    child: RaisedButton(
-                      onPressed: () {
-                        // Navigator.push(context, MaterialPageRoute(builder: (context)=>BottomNav()));
-                        loginClick();
-                      },
-                      child: Text(
-                        'Login',
-                        style: TextStyle(color: Colors.blue, fontSize: 22),
-                      ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
-                    )),
-              ),
+              ElevatedButton(
+                  onPressed: () {
+                    loginClick();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0.0, primary: Colors.blue),
+                  child: Ink(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18.0)),
+                      child: Container(
+                        width: 325,
+                        height: 55,
+                        alignment: Alignment.center,
+                        child: Text('L O G I N',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      )))
             ],
           ),
         ),
@@ -116,65 +133,39 @@ class _LoginscreenState extends State<Loginscreen> {
     );
   }
 
-  Widget _buildTextFieldEmail() {
-    return TextFieldContainer(
-      child: TextField(
-        textInputAction: TextInputAction.next,
-        // enabled: uuidAnyar != "" ? false : true,
+  // * widget for text editing username
+  Widget _TextEditingUsername() {
+    return TextFormField(
         controller: _controllerUsername,
         decoration: InputDecoration(
-          icon: Icon(
-            Icons.person,
-            color: Colors.blue,
-          ),
-          hintText: "Username",
-          fillColor: Colors.lightBlue,
-          border: InputBorder.none,
-          // errorText:
-          //     _fieldEmail == null || _fieldEmail ? null : "Email Harus Diisi!",
-        ),
-        onChanged: (value) {
-          bool isFieldValid = value.trim().isNotEmpty;
-          if (isFieldValid != _fieldEmail) {
-            setState(() => _fieldEmail = isFieldValid);
-          }
-        },
-      ),
-    );
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
+          focusColor: thirdcolor,
+          icon: Icon(Icons.people_alt_outlined),
+          hintText: 'Masukkan Username',
+          suffixIcon: Icon(Icons.check_circle),
+        ));
   }
 
-  Widget _buildTextFieldPassword() {
-    return TextFieldContainer(
-      child: TextField(
-        textInputAction: TextInputAction.done,
+  // * widget for text editing password
+  Widget _TextEditingPassword() {
+    return TextFormField(
+        cursorColor: thirdcolor,
         controller: _controllerPassword,
-        keyboardType: TextInputType.text,
         obscureText: _obsecureText,
         decoration: InputDecoration(
-          icon: Icon(
-            Icons.lock,
-            color: Colors.blue,
-          ),
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
+          icon: Icon(Icons.password),
+          hintText: 'Masukkan Password',
           suffixIcon: IconButton(
             onPressed: _toggle,
             icon: new Icon(
                 _obsecureText ? Icons.remove_red_eye : Icons.visibility_off),
           ),
-          hintText: "Password",
-          fillColor: Colors.white12,
-          border: InputBorder.none,
-          // errorText: _fieldPassword == null || _fieldPassword
-          //     ? null
-          //     : "Password Harus Diisi!",
-        ),
-        onChanged: (value) {
-          bool isFieldValid = value.trim().isNotEmpty;
-          if (isFieldValid != _fieldPassword) {
-            setState(() => _fieldPassword = isFieldValid);
-          }
-        },
-      ),
-    );
+        ));
   }
 
   loginClick() {

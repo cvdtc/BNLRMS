@@ -220,8 +220,10 @@ class _TimelinePageState extends State<TimelinePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Batas Waktu: $due_date'),
-                    Text('Updated: $edited')
+                    Text('JT: $due_date'),
+                    edited != null
+                        ? Text('Updated: $edited')
+                        : Text('Updated: -')
                   ],
                 ),
               ],
@@ -262,10 +264,18 @@ class _TimelinePageState extends State<TimelinePage> {
               ),
               Flexible(
                 child: Text(
-                  prg_keterangan,
+                  "Deskripsi: " + prg_keterangan,
                   style: TextStyle(fontSize: 16),
                 ),
               ),
+              keterangan_selesai != "-"
+                  ? Flexible(
+                      child: Text(
+                        "Ket. Selesai: " + keterangan_selesai,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    )
+                  : Container(),
               Divider(thickness: 1),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

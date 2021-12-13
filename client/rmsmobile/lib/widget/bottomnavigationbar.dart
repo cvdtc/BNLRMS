@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
@@ -34,6 +35,7 @@ class _BottomNavState extends State<BottomNav> {
   late SharedPreferences sp;
   String? token = "", username = "", jabatan = "", nama = "";
   PageStorageBucket bucket = PageStorageBucket();
+
   var iconData = <IconData>[
     Icons.home_filled,
     Icons.document_scanner_outlined,
@@ -56,20 +58,6 @@ class _BottomNavState extends State<BottomNav> {
     Text('Akun', style: TextStyle(color: Colors.grey, fontSize: 12)),
   ];
 
-  cekToken() async {
-    sp = await SharedPreferences.getInstance();
-    setState(() {
-      token = sp.getString("access_token");
-      nama = sp.getString('nama');
-      jabatan = sp.getString("jabatan");
-    });
-    // if (token == null) {
-    //   Navigator.pushReplacement(
-    //     context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    // }
-    print('cek print ${_apiService.responseCode.messageApi.toString()} ++ $token');
-  }
-
   @override
   void initState() {
     super.initState();
@@ -78,54 +66,54 @@ class _BottomNavState extends State<BottomNav> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: _onBackPressed,
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            scaffoldBackgroundColor: Colors.grey[100],
-          ),
-          home: Builder(
-            builder: (BuildContext context) {
-              double largeIconHeight = MediaQuery.of(context).size.width;
-              double navBarHeight = scaledHeight(context, 85);
-              double topOffset = (MediaQuery.of(context).size.height -
-                      largeIconHeight -
-                      MediaQuery.of(context).viewInsets.top -
-                      (navBarHeight * 2)) /
-                  2;
-              return Scaffold(
-                body:
-                    PageStorage(bucket: bucket, child: _currentPage[_currentTab]),
-                bottomNavigationBar: Container(
-                  height: navBarHeight,
-                  width: MediaQuery.of(context).size.width,
-                  // Option 1: Recommended
-                  child: RollingNavBar.iconData(
-                    activeBadgeColors: <Color>[
-                      Colors.white,
-                    ],
-                    activeIndex: _currentTab,
-                    animationCurve: Curves.linear,
-                    animationType: AnimationType.roll,
-                    baseAnimationSpeed: 200,
-                    iconData: iconData,
-                    iconColors: <Color>[Colors.grey[800]!],
-                    iconText: iconText,
-                    indicatorColors: <Color>[thirdcolor],
-                    iconSize: 25,
-                    indicatorRadius: scaledHeight(context, 30),
-                    onTap: (value) {
-                      setState(() {
-                        _currentTab = value;
-                      });
-                    },
-                  ),
-                ),
-              );
-            },
-          ),
+      onWillPop: _onBackPressed,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.grey[100],
         ),
-      );
+        home: Builder(
+          builder: (BuildContext context) {
+            double largeIconHeight = MediaQuery.of(context).size.width;
+            double navBarHeight = scaledHeight(context, 85);
+            double topOffset = (MediaQuery.of(context).size.height -
+                    largeIconHeight -
+                    MediaQuery.of(context).viewInsets.top -
+                    (navBarHeight * 2)) /
+                2;
+            return Scaffold(
+              body:
+                  PageStorage(bucket: bucket, child: _currentPage[_currentTab]),
+              bottomNavigationBar: Container(
+                height: navBarHeight,
+                width: MediaQuery.of(context).size.width,
+                // Option 1: Recommended
+                child: RollingNavBar.iconData(
+                  activeBadgeColors: <Color>[
+                    Colors.white,
+                  ],
+                  activeIndex: _currentTab,
+                  animationCurve: Curves.linear,
+                  animationType: AnimationType.roll,
+                  baseAnimationSpeed: 200,
+                  iconData: iconData,
+                  iconColors: <Color>[Colors.grey[800]!],
+                  iconText: iconText,
+                  indicatorColors: <Color>[thirdcolor],
+                  iconSize: 25,
+                  indicatorRadius: scaledHeight(context, 30),
+                  onTap: (value) {
+                    setState(() {
+                      _currentTab = value;
+                    });
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   Future<bool> _onBackPressed() async {

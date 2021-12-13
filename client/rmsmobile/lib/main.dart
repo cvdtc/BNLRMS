@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       title: 'RMS BNL',
       theme: ThemeData.light().copyWith(
           scaffoldBackgroundColor: backgroundcolor,
-          textTheme: GoogleFonts.openSansTextTheme(Theme.of(context).textTheme)
+          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
               .apply(bodyColor: textcolor),
           canvasColor: Colors.transparent),
       debugShowCheckedModeBanner: false,

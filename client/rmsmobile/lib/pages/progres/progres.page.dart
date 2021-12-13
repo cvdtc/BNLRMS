@@ -6,6 +6,7 @@ import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/progres/progress.network.dart';
 import 'package:rmsmobile/pages/progres/progress.tile.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,30 +31,23 @@ class _ProgressPageState extends State<ProgressPage> {
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
-    print(
-        'object progress ${ApiService().responseCode.statusCode} ++++ $token');
-    if (token == null) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    }
     fetchProgress(token!).then((value) {
       setState(() {
         _isLoading = false;
         _progress.addAll(value);
         _progressDisplay = _progress;
-        print(_progressDisplay.length);
+        print("progressdisplay? " + _progressDisplay.length.toString());
+        print("progress? " + value.toString());
       });
-      print('yes bisa ?');
     }).onError((error, stackTrace) {
-      Fluttertoast.showToast(
-          msg: "Maaf, Token anda expired, silahkan melakukan login ulang",
-          backgroundColor: Colors.black,
-          textColor: Colors.white);
-      ApiService().clearshared();
+      ReusableClasses().clearSharedPreferences();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => Loginscreen(
+                    tipe: 'sesiberakhir',
+                  )));
     });
-    ;
   }
 
   @override
@@ -78,6 +72,7 @@ class _ProgressPageState extends State<ProgressPage> {
         child: Container(
           child: ListView.builder(
             itemBuilder: (context, index) {
+              print("Values??" + index.toString());
               if (!_isLoading) {
                 return index == 0
                     ? _searchBar()
@@ -85,7 +80,6 @@ class _ProgressPageState extends State<ProgressPage> {
                         progress: this._progressDisplay[index - 1],
                         token: token!,
                       );
-                // : SiteTile(site: this._sitesDisplay[index - 1]);
               } else {
                 return Center(
                   child: CircularProgressIndicator(),

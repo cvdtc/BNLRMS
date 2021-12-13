@@ -21,6 +21,12 @@ const pool = mysql.createPool({
     timezone: 'utc-8'
 })
 
+var nows = {
+    toSqlString: function () {
+        return "NOW()";
+    },
+};
+
 /**
  * @swagger
  * tags:
@@ -73,7 +79,7 @@ async function getAllPermintaan(req, res) {
         try {
             jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
                 if (!jwtresult) {
-                    res.status(401).send(JSON.stringify({
+                    return res.status(401).send(JSON.stringify({
                         message: "Sorry, Your token has expired!",
                         error: jwterror,
                         data: null
@@ -183,6 +189,12 @@ async function getAllPermintaan(req, res) {
  *              description: kesalahan pada query sql
  */
 
+/**
+ * NOTE!
+ * [03-12-2021] add firebase notification
+ * [04-12-2021] memberikan nama penambah permintaan pada notifikasi
+ */
+
 async function addPermintaan(req, res) {
     var keterangan = req.body.keterangan
     var kategori = req.body.kategori
@@ -218,11 +230,12 @@ async function addPermintaan(req, res) {
                                 kategori: kategori,
                                 due_date: due_date,
                                 flag_selesai: flag_selesai,
-                                created: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                                created: nows,
                                 idpengguna: jwtresult.idpengguna
                             }
                             var sqlquery = "INSERT INTO permintaan SET ?"
                             database.query(sqlquery, datapermintaan, (error, result) => {
+                                // database.release()
                                 if (error) {
                                     database.rollback(function () {
                                         return res.status(407).send({
@@ -397,7 +410,7 @@ async function ubahPermintaan(req, res) {
                                     due_date: due_date,
                                     flag_selesai: flag_selesai,
                                     keterangan_selesai: keterangan_selesai,
-                                    edited: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                                    edited: nows,
                                     idpengguna: jwtresult.idpengguna
                                 }
                                 let selesaidatapermintaan = {
@@ -406,7 +419,7 @@ async function ubahPermintaan(req, res) {
                                     due_date: due_date,
                                     flag_selesai: flag_selesai,
                                     keterangan_selesai: keterangan_selesai,
-                                    edited: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                                    date_selesai: nows,
                                     idpengguna_close_permintaan: jwtresult.idpengguna // * doesn't work bcz database failed to sync
                                 }
                                 var sqlquery = "UPDATE permintaan SET ? WHERE idpermintaan = ?"

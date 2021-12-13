@@ -24,6 +24,7 @@ Future<List<ProgressModel>> fetchProgress(String token) async {
     print('Success?');
     return compute(parseSite, response.body);
   } else {
+    print("Progress STATUS CODE?" + response.statusCode.toString());
     return throw Exception(response.statusCode);
   }
 }

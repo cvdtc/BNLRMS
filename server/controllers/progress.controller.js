@@ -2,6 +2,7 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const mysql = require('mysql')
+var fcmadmin = require('../utils/firebaseconfiguration')
 
 /**
  * ! Pool setting up
@@ -19,6 +20,12 @@ const pool = mysql.createPool({
     queueLimit: 25,
     timezone: 'utc-8'
 })
+
+var nows = {
+        toSqlString: function () {
+            return "NOW()";
+        },
+    };
 
 /**
  * @swagger
@@ -71,7 +78,7 @@ async function getAllProgress(req, res) {
         try {
             jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
                 if (!jwtresult) {
-                    res.status(401).send(JSON.stringify({
+                    return res.status(401).send(JSON.stringify({
                         message: "Sorry, Your token has expired!",
                         error: jwterror,
                         data: null
@@ -85,7 +92,7 @@ async function getAllProgress(req, res) {
                                 data: null
                             })
                         } else {
-                            var sqlquery = `SELECT pr.idprogress, pr.keterangan, DATE_FORMAT(pr.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(pr.edited, "%Y-%m-%d %H:%i") as edited, pr.flag_selesai, pr.next_idpengguna, pr.idpengguna, pr.idpermintaan, pe.keterangan as permintaan, pe.kategori, pe.due_date FROM permintaan pe, progress pr WHERE pr.idpermintaan=pe.idpermintaan AND pr.idpengguna = ? AND pr.flag_selesai=0`
+                            var sqlquery = `SELECT pr.idprogress, pr.keterangan, DATE_FORMAT(pr.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(pr.edited, "%Y-%m-%d %H:%i") as edited, pr.flag_selesai, pr.next_idpengguna, pr.idpengguna, pr.idpermintaan, pe.keterangan as permintaan, pe.kategori, DATE_FORMAT(pe.due_date, "%Y-%m-%d") as due_date, p.nama FROM permintaan pe, progress pr, pengguna p WHERE pr.idpermintaan=pe.idpermintaan AND pe.idpengguna=p.idpengguna AND pr.idpengguna = ? AND pr.flag_selesai=0`
                             database.query(sqlquery, [jwtresult.idpengguna], (error, rows) => {
                                 database.release()
                                 if (error) {
@@ -187,7 +194,7 @@ async function addProgress(req, res) {
     var idnextuser = req.body.idnextuser
     var tipe = req.body.tipe
     const token = req.headers.authorization
-	console.log('ada yang mencoba menambah progress', keterangan, idpermintaan, token);
+    console.log('ada yang mencoba menambah progress', keterangan, idpermintaan, token);
     if (Object.keys(req.body).length != 4) {
         return res.status(405).send({
             message: "Sorry,  parameters not match",
@@ -212,32 +219,23 @@ async function addProgress(req, res) {
                                 data: null
                             });
                         } else {
-                            // add filter tipe add progress untuk menentukan idpengguna yang akan disimpan ke database add at []
-                            if(tipe == 'tambahprogress'){
-                                let dataprogress = {
-                                    keterangan: keterangan,
-                                    flag_selesai: 0,
-                                    idpermintaan: idpermintaan,
-                                    created: new Date().toISOString().replace('T', ' ').substring(0, 19),
-                                    idpengguna: jwtresult.idpengguna
-                                }
-                            }else if(tipe == 'nextuser'){
-                                let dataprogress = {
-                                    keterangan: keterangan,
-                                    flag_selesai: 0,
-                                    idpermintaan: idpermintaan,
-                                    created: new Date().toISOString().replace('T', ' ').substring(0, 19),
-                                    idpengguna: idnextuser
-                                }
-                            }else{
-                                return res.status(400).send({
-                                    message: "Sorry,  tipe anda masih kosong!",
-                                    error: null,
-                                    data: null
-                                });
+                            let dataprogress = {
+                                keterangan: keterangan,
+                                flag_selesai: 0,
+                                idpermintaan: idpermintaan,
+                                created: nows,
+                                idpengguna: jwtresult.idpengguna
+                            }
+                            let dataprogressnext = {
+                                keterangan: keterangan,
+                                flag_selesai: 0,
+                                idpermintaan: idpermintaan,
+                                created: nows,
+                                idpengguna: idnextuser
                             }
                             var sqlquery = "INSERT INTO progress SET ?"
-                            database.query(sqlquery, dataprogress, (error, result) => {
+                            // * ketika insert tipe akan menentukan apa yang di insert, ketika tipe next user maka idpengguna akan di insert idnext user selain tipe next user, idpengguna yang di insert berasal dari jwt
+                            database.query(sqlquery, tipe == 'nextuser' ? dataprogressnext : dataprogress, (error, result) => {
                                 database.release()
                                 if (error) {
                                     database.rollback(function () {
@@ -371,7 +369,7 @@ async function ubahProgress(req, res) {
                                     keterangan: keterangan,
                                     flag_selesai: flag_selesai,
                                     next_idpengguna: next_idpengguna, // * wiil be change to next_idpengguna if database successfull sync
-                                    edited: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                                    edited: nows,
                                     idpengguna: jwtresult.idpengguna
                                 }
                                 var sqlquery = "UPDATE progress SET ? WHERE idprogress = ?"
@@ -397,8 +395,8 @@ async function ubahProgress(req, res) {
                                                 })
                                             } else {
                                                 if (flag_selesai == 1) {
-                                                    var getnameuser = "SELECT p.keterangan as permintaan, pr.keterangan as progress, pe.nama FROM permintaan p, progress pr, pengguna pe WHERE p.idpermintaan=pr.idpermintaan AND pr.idpengguna=pe.idpengguna AND pr.idprogress = ?"
-                                                    database.query(getnameuser, idprogress, (error, result) => {
+                                                    var getdatanotif = "SELECT p.keterangan as permintaan, pr.keterangan as progress, pe.nama FROM permintaan p, progress pr, pengguna pe WHERE p.idpermintaan=pr.idpermintaan AND pr.idpengguna=pe.idpengguna AND pr.idprogress = ?"
+                                                    database.query(getdatanotif, idprogress, (error, result) => {
                                                         database.release()
                                                         // * set firebase notification message 
                                                         let notificationMessage = {
@@ -409,20 +407,20 @@ async function ubahProgress(req, res) {
                                                                 'click_action': 'FCM_PLUGIN_ACTIVITY'
                                                             },
                                                             data: {
-                                                                title: `Update progress dari ${result[0].nama}`,
-                                                                body: `Ada progress baru untuk `+result[0].permintaan,
+                                                                title: `Ada Update progress dari ${result[0].nama}`,
+                                                                body: `Ada progress baru untuk ${result[0].permintaan}`,
                                                             }
                                                         }
                                                         // * sending notification topic RMSPERMINTAAN
                                                         fcmadmin.messaging().sendToTopic('RMSPROGRESS', notificationMessage)
                                                             .then(function (response) {
-                                                                return res.status(201).send({
+                                                                return res.status(200).send({
                                                                     message: "Done!,  Data has been stored!",
                                                                     error: null,
                                                                     data: response
                                                                 })
                                                             }).catch(function (error) {
-                                                                return res.status(201).send({
+                                                                return res.status(200).send({
                                                                     message: "Done!,  Data has been stored!",
                                                                     error: error,
                                                                     data: null
@@ -455,7 +453,7 @@ async function ubahProgress(req, res) {
     }
 }
 
-// * FUNCTION DELETE DATA PROGRESS
+// * FUNCTION CHANGE DATA PROGRESS
 
 /**
  * @swagger

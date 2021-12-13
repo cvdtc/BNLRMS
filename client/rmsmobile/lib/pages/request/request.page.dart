@@ -8,6 +8,7 @@ import 'package:rmsmobile/pages/request/request.bottom.dart';
 
 import 'package:rmsmobile/pages/request/request.network.dart';
 import 'package:rmsmobile/pages/request/request.tile.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,8 +19,8 @@ class RequestPageSearch extends StatefulWidget {
 
 class _RequestPageSearchState extends State<RequestPageSearch> {
   late SharedPreferences sp;
-  String? defaultKategori = 'Patent';
-  String? jenisKategori = 'Patent';
+  String? defaultKategori = 'Merek';
+  String? jenisKategori = 'Merek';
   String? tipe = "";
   String? keterangan = "";
   String? kategori = "";
@@ -30,7 +31,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
   String? tipeupdate = "";
   // dynamic cekid;
   int? pilihkategori;
-  var dataKategori = ['Patent', 'Merek', 'Desain Industri', 'Lainnya'];
+  var dataKategori = ['Merek', 'Paten', 'Desain Industri', 'Lainnya'];
   String? token = "", username = "", jabatan = "", flagcari = '0';
   List<RequestModel> _requests = <RequestModel>[];
   List<RequestModel> _requestDisplay = <RequestModel>[];
@@ -45,10 +46,6 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
-    // if (token == null) {
-    //   Navigator.pushReplacement(
-    //     context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    // }
     fetchKomponen(token!).then((value) {
       setState(() {
         _isLoading = false;
@@ -57,17 +54,19 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
         print(_requestDisplay.length);
       });
     }).onError((error, stackTrace) {
-      ApiService().clearshared();
-      Fluttertoast.showToast(
-          msg: "Maaf, Token anda expired, silahkan melakukan login ulang",
-          backgroundColor: Colors.black,
-          textColor: Colors.white);
+      print("REQUEST STATUS CODE?" + error.toString());
+      ReusableClasses().clearSharedPreferences();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => Loginscreen(
+                    tipe: 'sesiberakhir',
+                  )));
     });
   }
 
   Future refreshPage() async {
+    _requestDisplay.clear();
     await Future.delayed(Duration(seconds: 2));
     Fluttertoast.showToast(
         msg: "Data Berhasil diperbarui",
@@ -78,40 +77,16 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
     });
   }
 
-  // var controllers = Get.put(SelectedListController());
-  // void openFilterDialog(context) async{
-  //   await FilterListDialog.display<RequestModel>(
-  //     context,
-  //     listData: _requestDisplay,
-  //     selectedListData: controllers.selectedList,
-  //     headlineText: 'Pilih Kategori',
-  //     closeIconColor: Colors.grey,
-  //     applyButtonTextStyle: TextStyle(fontSize: 20),
-  //     choiceChipLabel: (item)=> item.toString(),
-  //     validateSelectedItem: (list, val)=>list!.contains(val),
-  //     onItemSearch: (list, text){
-  //       if (list!.any((element) => element.toString().toLowerCase().contains(text.toLowerCase()))) {
-  //         return list.where((element) => element.kategori().toLowerCase().contains(text.toLowerCase())).toList();
-  //       } else {
-  //         return [];
-  //       }
-  //     },
-  //     onApplyButtonClick: (list){
-  //       controllers.selectedList.value =(List<RequestModel>.from(list!));
-  //       Navigator.of(context).pop();
-  //     });
-  // }
-
   @override
   initState() {
     defaultKategori = dataKategori[0];
-    if (defaultKategori == 'Patent') {
+    if (defaultKategori == 'Merek') {
       defaultKategori = dataKategori[0];
-    } else if (defaultKategori == 'Merek') {
+    } else if (defaultKategori == 'Paten') {
       defaultKategori = dataKategori[1];
     } else if (defaultKategori == 'Desain Industri') {
       defaultKategori = dataKategori[2];
-    } else if (defaultKategori == 'Lainnya') {
+    } else if (defaultKategori == 'Hak Cipta') {
       defaultKategori = dataKategori[3];
     }
     cekToken();
@@ -142,7 +117,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          ReusableClass().modalAddSite(
+          RequestModalBottom().modalAddSite(
               context,
               'tambah',
               token!,
@@ -155,9 +130,13 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
               tipeupdate!);
         },
         backgroundColor: thirdcolor,
+        icon: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         label: Text(
           'Tambah Permintaan',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: RefreshIndicator(
@@ -189,70 +168,6 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       ),
     );
   }
-
-  // Widget _buildKomboPermintaan(String produks) {
-  //   return DropdownButtonFormField(
-  //     dropdownColor: Colors.white,
-  //     hint: Padding(
-  //         padding: EdgeInsets.only(left: 10),
-  //         child: Row(
-  //           children: [
-  //             Icon(
-  //               Icons.search,
-  //             ),
-  //             SizedBox(
-  //               width: 7,
-  //             ),
-  //             Text("$defaultKategori",
-  //                 textAlign: TextAlign.end,
-  //                 style:
-  //                     GoogleFonts.inter(color: Colors.grey[800], fontSize: 14)),
-  //           ],
-  //         )),
-  //     value:
-  //         pilihkategori == null ? null : dataKategori.join("$defaultKategori"),
-  //     decoration: InputDecoration(
-  //         fillColor: Colors.grey[200],
-  //         filled: true,
-  //         border: const OutlineInputBorder(),
-  //         enabledBorder: OutlineInputBorder(
-  //             borderSide:
-  //                 const BorderSide(color: Colors.transparent, width: 0.0),
-  //             borderRadius: BorderRadius.circular(5.0)),
-  //         isDense: true,
-  //         contentPadding:
-  //             const EdgeInsets.only(bottom: 8.0, top: 8.0, left: 5.0)),
-  //     items: dataKategori.map((String value) {
-  //       return DropdownMenuItem<String>(
-  //         value: value,
-  //         child: Padding(
-  //           padding: const EdgeInsets.only(left: 10),
-  //           child: new Text(value,
-  //               style:
-  //                   GoogleFonts.inter(color: Colors.grey[800], fontSize: 14)),
-  //         ),
-  //       );
-  //     }).toList(),
-  //     onChanged: (value) {
-  //       setState(() {
-  //         print('object value $value');
-  //         defaultKategori = value.toString();
-  //         if (value == null) {
-  //           return null;
-  //         } else if (defaultKategori == 'Patent') {
-  //           cekid = '0';
-  //         } else if (defaultKategori == 'Merek') {
-  //           cekid = '1';
-  //         } else if (defaultKategori == 'Desain Industri') {
-  //           cekid = '2';
-  //         } else if (defaultKategori == 'Lainnya') {
-  //           cekid = '3';
-  //         }
-  //         print('IDNYa $cekid');
-  //       });
-  //     },
-  //   );
-  // }
 
   _searchBar() {
     return Padding(

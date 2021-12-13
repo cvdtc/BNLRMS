@@ -7,11 +7,11 @@ import 'package:rmsmobile/model/request/request.model.edit.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
-class ReusableClassProgress {
+class ProgressModalBottom {
   ApiService _apiService = new ApiService();
   TextEditingController _tecKeterangan = TextEditingController(text: "");
   TextEditingController _tecDueDate = TextEditingController(text: "");
-  String _dropdownValue = "Paten";
+  String _dropdownValue = "Merek";
 
   // ++ BOTTOM MODAL INPUT FORM
   void modalAddSite(

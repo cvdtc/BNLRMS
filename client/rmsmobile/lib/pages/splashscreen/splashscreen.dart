@@ -18,24 +18,21 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   late SharedPreferences sp;
   late FirebaseMessaging messaging;
   ApiService _apiService = new ApiService();
-  String? token = "", username = "", jabatan = "";
-  bool subscribepermintaan = true;
-  bool subscribeprogress = true;
+  String? token = "";
 
   cekToken() async {
     sp = await SharedPreferences.getInstance();
-    // token = sp.getString("access_token");
-    // username = sp.getString("username");
-    // jabatan = sp.getString("jabatan");
     setState(() {
       token = sp.getString("access_token");
-      username = sp.getString("username");
-      jabatan = sp.getString("jabatan");
     });
     print('tokenyya $token ${_apiService.responseCode.messageApi}');
     if (token == null) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => Loginscreen(
+                    tipe: 'splashscreen',
+                  )));
     } else {
       print(
           'responsecode ${_apiService.responseCode.messageApi} ++ ${_apiService.responseCode} ++ ');
@@ -47,7 +44,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
-    // * adding firebase configuration setup
+    // // * adding firebase configuration setup
     messaging = FirebaseMessaging.instance;
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
       print("message recieved");
@@ -56,22 +53,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print('Message clicked!');
     });
-    // ++ SUBSCRIBE TOPIC RMS PERMINTAAN
-    if (subscribepermintaan) {
-      // messaging.subscribeToTopic('RMSPERMINTAAN');
-      messaging.subscribeToTopic('RMSPERMINTAAN');
-    } else {
-      // messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-      messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-    }
-    // ++ SUBSCRIBE TOPIC RMSPROGRESS
-    if (subscribeprogress) {
-      // messaging.subscribeToTopic('RMSPROGRESS');
-      messaging.subscribeToTopic('RMSPROGRESS');
-    } else {
-      // messaging.unsubscribeFromTopic('RMSPROGRESS');
-      messaging.unsubscribeFromTopic('RMSPROGRESS');
-    }
     Timer(Duration(seconds: 4), () {
       cekToken();
     });
@@ -122,7 +103,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     padding:
                         const EdgeInsets.only(left: 50, right: 50, bottom: 30),
                     child: Text(
-                      'Memberikan solusi terbaik untuk kemudahan anda dalam menyelesaikan sebuah masalah.',
+                      'Request Management System',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
                         color: Colors.black,
@@ -141,24 +122,12 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                           new AlwaysStoppedAnimation<Color>(Colors.tealAccent),
                     ),
                   )
-                  // LinearPercentIndicator(
-                  //   alignment: MainAxisAlignment.center,
-                  //   width: 240.0,
-                  //   lineHeight: 4.0,
-                  //   animation: true,
-                  //   percent: 1.0,
-                  //   animationDuration: 1250,
-                  //   backgroundColor: Colors.red,
-                  //   progressColor: Colors.white,
-                  // ),
                 ],
               ),
             ),
           ],
         ),
       ),
-      // bottomSheet:
-      //     Image(image: AssetImage('assets/images/splashgif.gif'), fit: BoxFit.fitWidth),
     );
   }
 

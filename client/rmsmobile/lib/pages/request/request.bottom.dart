@@ -8,12 +8,12 @@ import 'package:rmsmobile/model/request/request.model.edit.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
-class ReusableClass {
+class RequestModalBottom {
   ApiService _apiService = new ApiService();
   TextEditingController _tecKeterangan = TextEditingController(text: "");
   TextEditingController _tecDueDate = TextEditingController(text: "");
   TextEditingController _tecKeteranganSelesai = TextEditingController(text: "");
-  String _dropdownValue = "Paten", tanggal = "";
+  String _dropdownValue = "Merek", tanggal = "";
   DateTime selectedDate = DateTime.now();
 
   bool isSelesai = false;
@@ -251,8 +251,8 @@ class ReusableClass {
                                                 // });
                                               },
                                               items: <String>[
-                                                'Paten',
                                                 'Merek',
+                                                'Paten',
                                                 'Desain Industri',
                                                 'Lainnya'
                                               ].map<DropdownMenuItem<String>>(
@@ -917,6 +917,16 @@ class ReusableClass {
   }
 
   // ++ BOTTOM MODAL ACTION ITEM
+  /**
+   * * parameter yang dikirim :
+   * * token jwt dari sharedpreferences,
+   * * keterangan atau deskripsi permintaan
+   * * duedate tanggal deadline permintaan
+   * * idpermintaan yang di ambil dari listview permintaan
+   * * keterangan_selesai jika permintaan sudah selesai
+   * * tipeupdate apakah edit data atau selesai permintaan
+   * * idflag_selesai diambil dari switch jika enable maka valuenya 1 jika sebaliknya 0
+   */
   void modalActionItem(
       context,
       token,
@@ -961,35 +971,48 @@ class ReusableClass {
                   SizedBox(
                     height: 10,
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        modalAddSite(context, 'progres', token, keterangan, '',
-                            '', '0', idpermintaan.toString(), '', tipeupdate);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          side: BorderSide(width: 2, color: Colors.blue),
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          primary: Colors.white),
-                      child: Ink(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18.0)),
-                          child: Container(
-                            width: 325,
-                            height: 45,
-                            alignment: Alignment.center,
-                            child: Text('TAMBAH PROGRESS',
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ))),
+                  // ++ add filter jika permintaan sudah selesai maka tombol tambah progress dihilangkan
+                  flag_selesai == 0
+                      ? ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            modalAddSite(
+                                context,
+                                'progres',
+                                token,
+                                keterangan,
+                                '',
+                                '',
+                                '0',
+                                idpermintaan.toString(),
+                                '',
+                                tipeupdate);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              side: BorderSide(width: 2, color: Colors.blue),
+                              elevation: 0.0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              primary: Colors.white),
+                          child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18.0)),
+                              child: Container(
+                                width: 325,
+                                height: 45,
+                                alignment: Alignment.center,
+                                child: Text('TAMBAH PROGRESS',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              )))
+                      : Container(),
                   SizedBox(
                     height: 10,
                   ),
+                  // ++ end add filter permintaan selesai
                   ElevatedButton(
                       onPressed: () {
                         Navigator.push(
