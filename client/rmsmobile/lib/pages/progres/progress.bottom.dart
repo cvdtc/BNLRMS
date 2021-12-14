@@ -1,30 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
-import 'package:rmsmobile/model/progress/progress.model.add.dart';
+import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
 class ProgressModalBottom {
   ApiService _apiService = new ApiService();
   TextEditingController _tecKeterangan = TextEditingController(text: "");
-  TextEditingController _tecDueDate = TextEditingController(text: "");
+  TextEditingController _tecKeteranganNextUser =
+      TextEditingController(text: "");
+  TextEditingController _tecUrlProgress = TextEditingController(text: "");
   String _dropdownValue = "Merek";
 
   /**
    * * parameter yang dikirim :
    * * tipe yaitu insert update atau delete
    * * token jwt yang di ambil dari shared preferences
-   * keterangan adalah deskripsi progress
-   * idpermintaan adalah idpermintaan yang dikirim dari listview
-   * idnext_user apabila progress tersebut sudah selesai dan akan di lanjutkan ke user yang lain jika tidak yang dikirim ""
-   * tipeinsert adalah tipe yang akan dikirim ke api sebagai filter, apabila tipeinsert berisi tambahprogress makan yang di simpan ke database adalah idpengguna yang membuat progress akan tetapi jika yang dikirim nextuser maka idpengguna yang disimpan ke database adalah idnext_user
-   * idprogress dibutuhkan jika parameter tipe yang dikirim adalah update
-   * flag_selesai berisi 0/1 untuk menentukan apakah progress yang dibuat sudah selesai atau belum
-   * next_idpengguna adalah idpengguna yang dipilih user dari combobox halaman progress
-   * 
+   * * keterangan adalah deskripsi progress
+   * * idpermintaan adalah idpermintaan yang dikirim dari listview
+   * * idnext_user apabila progress tersebut sudah selesai dan akan di lanjutkan ke user yang lain jika tidak yang dikirim ""
+   * * tipeinsert adalah tipe yang akan dikirim ke api sebagai filter, apabila tipeinsert berisi tambahprogress makan yang di simpan ke database adalah idpengguna yang membuat progress akan tetapi jika yang dikirim nextuser maka idpengguna yang disimpan ke database adalah idnext_user
+   * * idprogress dibutuhkan jika parameter tipe yang dikirim adalah update
+   * * flag_selesai berisi 0/1 untuk menentukan apakah progress yang dibuat sudah selesai atau belum
+   * * next_idpengguna adalah idpengguna yang dipilih user dari combobox halaman progress
+   * * keterangan_next user untuk memberikan deskripsi atau note kepada user yang dituju
+   * * url_progress untuk memberikan / menyematkan url jika diperlukan
    */
 
   // ++ BOTTOM MODAL INPUT FORM
@@ -39,17 +43,22 @@ class ProgressModalBottom {
       String idprogress,
       String flag_selesai,
       String next_idpengguna,
-      String keterangan_nextuser) {
+      String keterangan_nextuser,
+      String url_progress) {
     // * setting value text form field if action is edit
     if (tipe == 'ubah' && idprogress != "") {
       _tecKeterangan.value = TextEditingValue(
           text: keterangan,
           selection: TextSelection.fromPosition(
               TextPosition(offset: _tecKeterangan.text.length)));
-      _tecDueDate.value = TextEditingValue(
-          text: duedate,
+      _tecKeteranganNextUser.value = TextEditingValue(
+          text: keterangan_nextuser,
           selection: TextSelection.fromPosition(
-              TextPosition(offset: _tecDueDate.text.length)));
+              TextPosition(offset: _tecUrlProgress.text.length)));
+      _tecUrlProgress.value = TextEditingValue(
+          text: url_progress,
+          selection: TextSelection.fromPosition(
+              TextPosition(offset: _tecUrlProgress.text.length)));
     }
     showModalBottomSheet(
         context: context,
@@ -70,7 +79,7 @@ class ProgressModalBottom {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    tipe.toUpperCase(),
+                    tipe.toUpperCase() + " PROGRES",
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10.0),
@@ -78,32 +87,26 @@ class ProgressModalBottom {
                       controller: _tecKeterangan,
                       textCapitalization: TextCapitalization.characters,
                       decoration: InputDecoration(
-                          icon: Icon(Icons.cabin_rounded),
-                          labelText: 'Keterangan Progres',
+                          icon: Icon(Icons.description_rounded),
+                          labelText: 'Deskripsi Progres',
                           hintText: 'Masukkan Deskripsi',
+                          suffixIcon:
+                              Icon(Icons.check_circle_outline_outlined))),
+                  TextFormField(
+                      controller: _tecUrlProgress,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.web),
+                          labelText: 'Sematkan Url',
+                          hintText: 'Masukkan URL',
                           suffixIcon:
                               Icon(Icons.check_circle_outline_outlined))),
                   SizedBox(
                     height: 15.0,
                   ),
                   ElevatedButton(
-                      onPressed: () {
-                        print(
-                            'showmodalbottomsheet1 $token, $tipe, ${_tecKeterangan.text.toString()}, ${_dropdownValue.toString()}, ${_tecDueDate.text.toString()}, $idpermintaan');
-                        _modalKonfirmasi(
-                            context,
-                            token,
-                            tipe,
-                            _tecKeterangan.text.toString(),
-                            "",
-                            "",
-                            "0",
-                            "",
-                            "",
-                            idpermintaan.toString());
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                          elevation: 0.0, primary: Colors.white),
+                          elevation: 0.0, primary: backgroundcolor),
                       child: Ink(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18.0)),
@@ -113,8 +116,8 @@ class ProgressModalBottom {
                             alignment: Alignment.center,
                             child: Text('S I M P A N',
                                 style: TextStyle(
-                                  color: primarycolor,
-                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                  fontSize: 22.0,
                                   fontWeight: FontWeight.bold,
                                 )),
                           )))
@@ -125,46 +128,43 @@ class ProgressModalBottom {
         });
   }
 
+/**
+   * * parameter yang dikirim :
+   * * tipe yaitu insert update atau delete
+   * * token jwt yang di ambil dari shared preferences
+   * * keterangan adalah deskripsi progress
+   * * idpermintaan adalah idpermintaan yang dikirim dari listview
+   * * idnext_user apabila progress tersebut sudah selesai dan akan di lanjutkan ke user yang lain jika tidak yang dikirim ""
+   * * tipeinsert adalah tipe yang akan dikirim ke api sebagai filter, apabila tipeinsert berisi tambahprogress makan yang di simpan ke database adalah idpengguna yang membuat progress akan tetapi jika yang dikirim nextuser maka idpengguna yang disimpan ke database adalah idnext_user
+   * * idprogress dibutuhkan jika parameter tipe yang dikirim adalah update
+   * * flag_selesai berisi 0/1 untuk menentukan apakah progress yang dibuat sudah selesai atau belum
+   * * next_idpengguna adalah idpengguna yang dipilih user dari combobox halaman progress
+   * * keterangan_next user untuk memberikan deskripsi atau note kepada user yang dituju
+   * * url_progress untuk memberikan / menyematkan url jika diperlukan
+   */
+
   // ++ BOTTOM MODAL CONFIRMATION
   void _modalKonfirmasi(
       context,
-      String token,
       String tipe,
+      String token,
       String keterangan,
-      String kategori,
-      String duedate,
+      String idpermintaan,
+      String idnext_user,
+      String tipeinsert,
+      String idprogress,
       String flag_selesai,
-      String keterangan_selesai,
-      String tipeupdate,
-      String idpermintaan) {
-    if (tipe == "progres") {
-      print('idper? $idpermintaan');
-      if (keterangan == "") {
-        _modalbottomSite(
-            context,
-            "Tidak Valid!",
-            "Pastikan semua kolom terisi dengan benar",
-            'f405',
-            'assets/images/sorry.png');
-      }
-    } else {
-      if (keterangan == "" || duedate == "" || kategori == "") {
-        _modalbottomSite(
-            context,
-            "Tidak Valid!",
-            "Pastikan semua kolom terisi dengan benar",
-            'f405',
-            'assets/images/sorry.png');
-      }
+      String next_idpengguna,
+      String keterangan_nextuser,
+      String url_progress) {
+    if (keterangan == "") {
+      ReusableClasses().modalbottomWarning(
+          context,
+          "Tidak Valid!",
+          "Pastikan semua kolom terisi dengan benar",
+          'f405',
+          'assets/images/sorry.png');
     }
-    // if (keterangan == "" || duedate == "" || kategori == "") {
-    //   _modalbottomSite(
-    //       context,
-    //       "Tidak Valid!",
-    //       "Pastikan semua kolom terisi dengan benar",
-    //       'f405',
-    //       'assets/images/sorry.png');
-    // } else {
     showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -194,7 +194,7 @@ class ProgressModalBottom {
                     height: 20,
                   ),
                   tipe == 'hapus'
-                      ? Text('Apakah anda yakin akan menghapus permintaan ' +
+                      ? Text('Apakah anda yakin akan menghapus progress ? ' +
                           keterangan +
                           '?')
                       : Text('Apakah data yang anda masukkan sudah sesuai.?',
@@ -229,69 +229,43 @@ class ProgressModalBottom {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            // Navigator.of(context).pop();
-                            print("Will be Execute up" +
-                                tipe +
-                                token +
-                                keterangan +
-                                kategori +
-                                duedate +
-                                flag_selesai +
-                                idpermintaan.toString());
-                            if (tipe == 'progres') {
+                            if (tipe == 'tambah') {
                               Navigator.of(context).pop();
-                              _actiontoapiProgress(
+                              _actiontoApi(
                                   context,
                                   tipe,
                                   token,
                                   keterangan,
-                                  kategori,
-                                  duedate,
+                                  idpermintaan,
+                                  idnext_user,
+                                  tipeinsert,
+                                  idprogress,
                                   flag_selesai,
-                                  keterangan_selesai,
-                                  tipeupdate,
-                                  idpermintaan);
-                            }
-                            // else if (tipe == 'hapus'){
-                            // }
-                            else {
-                              Navigator.of(context).pop();
-                              _actiontoapi(
+                                  next_idpengguna,
+                                  keterangan_nextuser,
+                                  url_progress);
+                            } else if (tipe == 'ubah') {
+                              _actiontoApi(
                                   context,
                                   tipe,
                                   token,
                                   keterangan,
-                                  kategori,
-                                  duedate,
+                                  idpermintaan,
+                                  idnext_user,
+                                  tipeinsert,
+                                  idprogress,
                                   flag_selesai,
-                                  keterangan_selesai,
-                                  tipeupdate,
-                                  idpermintaan);
+                                  next_idpengguna,
+                                  keterangan_nextuser,
+                                  url_progress);
+                            } else {
+                              ReusableClasses().modalbottomWarning(
+                                  context,
+                                  "Tidak Valid!",
+                                  "Harap refersh halaman ini.",
+                                  'f404',
+                                  'assets/images/sorry.png');
                             }
-                            // tipe == 'progres'
-                            // ? _actiontoapiProgress(
-                            //     context,
-                            //     tipe,
-                            //     token,
-                            //     keterangan,
-                            //     kategori,
-                            //     duedate,
-                            //     flag_selesai,
-                            //     keterangan_selesai,
-                            //     tipeupdate,
-                            //     idpermintaan)
-                            // : _actiontoapi(
-                            //     context,
-                            //     tipe,
-                            //     token,
-                            //     keterangan,
-                            //     kategori,
-                            //     duedate,
-                            //     flag_selesai,
-                            //     keterangan_selesai,
-                            //     tipeupdate,
-                            //     idpermintaan);
-                            Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0.0,
@@ -319,64 +293,49 @@ class ProgressModalBottom {
   }
 
   // ++ UNTUK MELAKUKAN TRANSAKSI KE API SESUAI DENGAN PARAMETER TIPE YANG DIKIRIM
-  void _actiontoapi(
+  void _actiontoApi(
       context,
       String tipe,
       String token,
       String keterangan,
-      String kategori,
-      String duedate,
+      String idpermintaan,
+      String idnext_user,
+      String tipeinsert,
+      String idprogress,
       String flag_selesai,
-      String keterangan_selesai,
-      String tipeupdate,
-      String idpermintaan) {
-    print('here? $tipe');
-    print("Will be Execute act to api " +
-        tipe +
-        token +
-        keterangan +
-        idpermintaan);
-    if (keterangan == "" || duedate == "" || kategori == "") {
-      print('mosok masuk sini?');
-      _modalbottomSite(
+      String next_idpengguna,
+      String keterangan_nextuser,
+      String url_progress) {
+    if (keterangan == "") {
+      ReusableClasses().modalbottomWarning(
           context,
           "Tidak Valid!",
           "Pastikan semua kolom terisi dengan benar",
           'f405',
           'assets/images/sorry.png');
     } else {
-      print('heres?? $tipe ~ $idpermintaan');
-      ProgressModelAdd dataprogress =
-          ProgressModelAdd(keterangan: keterangan, idpermintaan: idpermintaan);
-
-      RequestModelEdit dataEdit = RequestModelEdit(
+      ProgressModel dataprogress = ProgressModel(
           keterangan: keterangan,
-          kategori: kategori,
-          due_date: duedate,
+          idpermintaan: idpermintaan,
+          next_idpengguna: idnext_user,
+          tipe: tipeinsert,
           flag_selesai: flag_selesai,
-          keterangan_selesai: keterangan_selesai,
-          tipeupdate: tipeupdate);
-
-      RequestModel data = RequestModel(
-          keterangan: keterangan,
-          kategori: kategori,
-          due_date: duedate,
-          flag_selesai: flag_selesai);
-      print('model ?' + data.toString());
+          keterangan_selesai: keterangan_nextuser);
       if (tipe == 'tambah') {
-        _apiService.addRequest(token, data).then((isSuccess) {
-          print(
-              'ini tambah ya $token + $data + $isSuccess + ${_apiService.responseCode}');
+        _apiService.addProgres(token, dataprogress).then((isSuccess) {
           if (isSuccess) {
-            // Navigator.of(context).pop();
-            _modalbottomSite(
+            Navigator.of(context).pop();
+            _tecKeterangan.clear();
+            _tecKeteranganNextUser.clear();
+            _tecUrlProgress.clear();
+            ReusableClasses().modalbottomWarning(
                 context,
                 "Berhasil!",
                 "${_apiService.responseCode.messageApi}",
                 "f200",
                 "assets/images/congratulations.png");
           } else {
-            _modalbottomSite(
+            ReusableClasses().modalbottomWarning(
                 context,
                 "Gagal!",
                 "${_apiService.responseCode.messageApi}",
@@ -386,69 +345,22 @@ class ProgressModalBottom {
           return;
         });
       } else if (tipe == 'ubah') {
-        print('ubah belum kamu buat');
         _apiService
-            .ubahRequest(token, idpermintaan, dataEdit)
+            .ubahProgres(token, idprogress, dataprogress)
             .then((isSuccess) {
-          print('masuk edit? $token, - $idpermintaan, - $dataEdit');
           if (isSuccess) {
             Navigator.of(context).pop();
-            // _tecNama.clear();
-            // _tecKeterangan.clear();
-            _modalbottomSite(
+            _tecKeterangan.clear();
+            _tecKeteranganNextUser.clear();
+            _tecUrlProgress.clear();
+            ReusableClasses().modalbottomWarning(
                 context,
                 "Berhasil!",
                 "${_apiService.responseCode.messageApi}",
                 "f200",
                 "assets/images/congratulations.png");
           } else {
-            _modalbottomSite(
-                context,
-                "Gagal!",
-                "${_apiService.responseCode.messageApi}",
-                "f400",
-                "assets/images/sorry.png");
-          }
-          return;
-        });
-      } else if (tipe == 'hapus') {
-        print('hapus belum kamu buat');
-        _apiService.hapusRequest(token, idpermintaan).then((isSuccess) {
-          if (isSuccess) {
-            _modalbottomSite(
-                context,
-                "Berhasil!",
-                "${_apiService.responseCode.messageApi}",
-                "f200",
-                "assets/images/congratulations.png");
-          } else {
-            _modalbottomSite(
-                context,
-                "Gagal!",
-                "${_apiService.responseCode.messageApi}",
-                "f400",
-                "assets/images/sorry.png");
-          }
-          return;
-        });
-      } else if (tipe == 'progres') {
-        print('ini tambah progres lho');
-        _apiService.addProgres(token, dataprogress).then((isSuccess) {
-          print('tambah progress $token, $dataprogress');
-          if (isSuccess) {
-            Navigator.of(context).pop();
-            Fluttertoast.showToast(
-                msg: "Berhasil tambah data progres",
-                backgroundColor: Colors.black,
-                textColor: Colors.white);
-            // _modalbottomSite(
-            //     context,
-            //     "Berhasil!",
-            //     "${_apiService.responseCode.messageApi}",
-            //     "f200",
-            //     "assets/images/congratulations.png");
-          } else {
-            _modalbottomSite(
+            ReusableClasses().modalbottomWarning(
                 context,
                 "Gagal!",
                 "${_apiService.responseCode.messageApi}",
@@ -458,244 +370,9 @@ class ProgressModalBottom {
           return;
         });
       } else {
-        _modalbottomSite(context, "Tidak Valid!", "Action anda tidak sesuai",
-            'f404', 'assets/images/sorry.png');
+        ReusableClasses().modalbottomWarning(context, "Tidak Valid!",
+            "Action anda tidak sesuai", 'f404', 'assets/images/sorry.png');
       }
     }
-  }
-
-  void _actiontoapiProgress(
-      context,
-      String tipe,
-      String token,
-      String keterangan,
-      String kategori,
-      String duedate,
-      String flag_selesai,
-      String keterangan_selesai,
-      String tipeupdate,
-      String idpermintaan) {
-    print('here? $tipe');
-    print("Will be Execute act to api " +
-        tipe +
-        token +
-        keterangan +
-        idpermintaan);
-    if (keterangan == "") {
-      print('mosok masuk sini?');
-      _modalbottomSite(
-          context,
-          "Tidak Valid!",
-          "Pastikan semua kolom terisi dengan benar",
-          'f405',
-          'assets/images/sorry.png');
-    } else {
-      print('heres?? $tipe ~ $idpermintaan');
-      ProgressModelAdd dataprogress =
-          ProgressModelAdd(keterangan: keterangan, idpermintaan: idpermintaan);
-      if (tipe == 'progres') {
-        print('ini tambah progres lho');
-        _apiService.addProgres(token, dataprogress).then((isSuccess) {
-          print('tambah progress $token, $dataprogress');
-          if (isSuccess) {
-            Navigator.of(context).pop();
-            Fluttertoast.showToast(
-                msg: "Berhasil tambah data progres",
-                backgroundColor: Colors.black,
-                textColor: Colors.white);
-            // _modalbottomSite(
-            //     context,
-            //     "Berhasil!",
-            //     "${_apiService.responseCode.messageApi}",
-            //     "f200",
-            //     "assets/images/congratulations.png");
-          } else {
-            _modalbottomSite(
-                context,
-                "Gagal!",
-                "${_apiService.responseCode.messageApi}",
-                "f400",
-                "assets/images/sorry.png");
-          }
-          return;
-        });
-      } else {
-        _modalbottomSite(context, "Tidak Valid!", "Action anda tidak sesuai",
-            'f404', 'assets/images/sorry.png');
-      }
-    }
-  }
-
-  // ++ BOTTOM MODAL ACTION ITEM
-  void modalActionItem(context, token, String keterangan, String duedate,
-      String kategori, String idpermintaan) {
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0))),
-        builder: (BuildContext context) {
-          return Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: Container(
-              padding: EdgeInsets.all(15.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('DETAIL PROGRES',
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Deskripsi : ' + keterangan,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text('Kategori: ' + kategori, style: TextStyle(fontSize: 16)),
-                  Text('Due Date: ' + duedate.toString(),
-                      style: TextStyle(fontSize: 16)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TimelinePage(
-                                      idpermintaan: idpermintaan,
-                                    )));
-                      },
-                      style: ElevatedButton.styleFrom(
-                          side: BorderSide(width: 2, color: Colors.orange),
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          primary: Colors.white),
-                      child: Ink(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18.0)),
-                          child: Container(
-                            width: 325,
-                            height: 45,
-                            alignment: Alignment.center,
-                            child: Text('LIHAT TIMELINE',
-                                style: TextStyle(
-                                  color: Colors.orange,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ))),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Divider(
-                    height: 5,
-                  ),
-                  TextFormField(
-                      controller: _tecKeterangan,
-                      textCapitalization: TextCapitalization.characters,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.cabin_rounded),
-                          labelText: 'Keterangan Progres',
-                          hintText: 'Masukkan Deskripsi',
-                          suffixIcon:
-                              Icon(Icons.check_circle_outline_outlined))),
-                  SizedBox(
-                    height: 15.0,
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        modalAddSite(context, 'progres', token, keterangan, '',
-                            '', '0', idpermintaan.toString(), '', 'data');
-                      },
-                      style: ElevatedButton.styleFrom(
-                          side: BorderSide(width: 2, color: Colors.blue),
-                          elevation: 0.0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          primary: Colors.white),
-                      child: Ink(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18.0)),
-                          child: Container(
-                            width: 325,
-                            height: 45,
-                            alignment: Alignment.center,
-                            child: Text('TAMBAH PROGRESS',
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ))),
-                  SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-  _modalbottomSite(context, String title, String message, String kode,
-      String imagelocation) {
-    print('Yash im show');
-    // dynamic navigation;
-    showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0))),
-        builder: (BuildContext context) {
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      title.toUpperCase(),
-                      style: TextStyle(
-                          fontSize: 22.0, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "[ " + kode.toUpperCase() + " ]",
-                      style: TextStyle(fontSize: 11.0),
-                    )
-                  ],
-                ),
-                SizedBox(height: 10.0),
-                Image.asset(
-                  imagelocation,
-                  height: 150,
-                  width: 250,
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  message.toString(),
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(
-                  height: 10.0,
-                )
-              ],
-            ),
-          );
-        });
   }
 }

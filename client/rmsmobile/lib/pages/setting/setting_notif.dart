@@ -57,7 +57,7 @@ class _SettingNotifikasiState extends State<SettingNotifikasi> {
                     setState(() {
                       notifpermintaan = values;
                       ReusableClasses().setFirebaseConfiguration(
-                          'RMSPERMINTAAN', 'notif_permintaan', values);
+                          'RMSPERMINTAANdebug', 'notif_permintaan', values);
                     });
                   },
                   value: notifpermintaan,
@@ -74,7 +74,7 @@ class _SettingNotifikasiState extends State<SettingNotifikasi> {
                     setState(() {
                       notifprogress = values;
                       ReusableClasses().setFirebaseConfiguration(
-                          'RMSPROGRESS', 'notif_progress', values);
+                          'RMSPROGRESSdebug', 'notif_progress', values);
                     });
                   },
                   value: notifprogress,

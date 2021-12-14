@@ -63,8 +63,8 @@ class ReusableClasses {
     late FirebaseMessaging messaging;
     // * adding firebase configuration setup
     messaging = FirebaseMessaging.instance;
-    messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-    messaging.unsubscribeFromTopic('RMSPROGRESS');
+    messaging.unsubscribeFromTopic('RMSPERMINTAANdebug');
+    messaging.unsubscribeFromTopic('RMSPROGRESSdebug');
   }
 
   setFirebaseConfiguration(String topicname, String spname, bool value) async {

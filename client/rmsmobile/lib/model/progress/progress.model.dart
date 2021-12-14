@@ -12,7 +12,9 @@ class ProgressModel {
       permintaan,
       kategori,
       due_date,
-      nama;
+      nama,
+      tipe,
+      keterangan_selesai;
 
   ProgressModel(
       {this.idprogress,
@@ -26,7 +28,9 @@ class ProgressModel {
       this.permintaan,
       this.kategori,
       this.due_date,
-      this.nama});
+      this.nama,
+      this.tipe,
+      this.keterangan_selesai});
 
   factory ProgressModel.fromJson(Map<dynamic, dynamic> map) {
     return ProgressModel(
@@ -41,15 +45,24 @@ class ProgressModel {
         permintaan: map["permintaan"],
         kategori: map["kategori"],
         due_date: map["due_date"],
-        nama: map["nama"]
-        );
+        nama: map["nama"]);
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> addToJson() {
     return {
       "keterangan": keterangan,
       "idpermintaan": idpermintaan,
-      // "tipe": tipe
+      "idnextuser": next_idpengguna,
+      "tipe": tipe,
+      "keterangan_selesai": keterangan_selesai
+    };
+  }
+
+  Map<String, dynamic> updatetoJson() {
+    return {
+      "keterangan": keterangan,
+      "flag_selesai": flag_selesai,
+      "next_idpengguna": next_idpengguna,
     };
   }
 
@@ -65,7 +78,12 @@ List<ProgressModel> ProgressModelFromJson(String dataJson) {
       data["data"].map((item) => ProgressModel.fromJson(item)));
 }
 
-String ProgressModelToJson(ProgressModel data) {
-  final jsonData = data.toJson();
+String ProgressModelAddToJson(ProgressModel data) {
+  final jsonData = data.addToJson();
+  return json.encode(jsonData);
+}
+
+String ProgressModelUpdateToJson(ProgressModel data) {
+  final jsonData = data.updatetoJson();
   return json.encode(jsonData);
 }

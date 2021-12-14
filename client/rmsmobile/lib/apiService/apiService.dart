@@ -5,8 +5,6 @@ import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/model/login/loginResult.model.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.gantipassword.dart';
-import 'package:rmsmobile/model/progress/progress.edit.selesai.model.dart';
-import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
@@ -15,7 +13,7 @@ import 'package:rmsmobile/model/timeline/timeline.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  final String baseUrl = "http://server.bnl.id:9990/api/v1/";
+  final String baseUrl = "http://192.168.1.207:9990/api/v1/";
   Client client = Client();
   String? token = "";
 
@@ -130,7 +128,7 @@ class ApiService {
   ///////////////////// END MODEL ALL REQUEST : GET, PUT, POST, DEL ////////////////////////////////
 
   // ! Add Data Request
-  Future<bool> addProgres(String token, ProgressModelAdd data) async {
+  Future<bool> addProgres(String token, ProgressModel data) async {
     print("addprogress1");
     var url = Uri.parse(baseUrl + 'progress');
     var response = await client.post(url,
@@ -168,8 +166,8 @@ class ApiService {
     }
   }
 
-  Future<bool> ubahProgresJadiSelesai(
-      String token, String idprogress, ProgressModelEdit data) async {
+  Future<bool> ubahProgres(
+      String token, String idprogress, ProgressModel data) async {
     var url = Uri.parse(baseUrl + 'progress' + '/' + idprogress);
     print('hasilurl $url idprogress $idprogress');
     var response = await client.put(url,
@@ -177,7 +175,7 @@ class ApiService {
           'content-type': 'application/json',
           'Authorization': 'Bearer ${token}'
         },
-        body: ProgressModelEditToJson(data));
+        body: ProgressModelUpdateToJson(data));
     print(response.toString());
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);

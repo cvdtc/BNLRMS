@@ -284,7 +284,7 @@ async function addPermintaan(req, res) {
                                                     }
                                                 }
                                                 // * sending notification topic RMSPERMINTAAN
-                                                fcmadmin.messaging().sendToTopic('RMSPERMINTAAN', notificationMessage)
+                                                fcmadmin.messaging().sendToTopic(process.env.NOTIFIKASI_PERMINTAAN, notificationMessage)
                                                     .then(function (response) {
                                                         return res.status(201).send({
                                                             message: "Done!,  Data has been stored!",

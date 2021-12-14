@@ -7,12 +7,12 @@ class AkunBottomModal {
   void exit(BuildContext context) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();
-    print(preferences.toString());
+    print(preferences.getString('access_token'));
     late FirebaseMessaging messaging;
     // * adding firebase configuration setup
     messaging = FirebaseMessaging.instance;
-    messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-    messaging.unsubscribeFromTopic('RMSPROGRESS');
+    messaging.unsubscribeFromTopic('RMSPERMINTAANdebug');
+    messaging.unsubscribeFromTopic('RMSPROGRESSdebug');
     // print('preference $preferences');
     Navigator.pushReplacement(
         context,

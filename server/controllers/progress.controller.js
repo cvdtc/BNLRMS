@@ -435,7 +435,7 @@ async function ubahProgress(req, res) {
                                                             }
                                                         }
                                                         // * sending notification topic RMSPERMINTAAN
-                                                        fcmadmin.messaging().sendToTopic('RMSPROGRESS', notificationMessage)
+                                                        fcmadmin.messaging().sendToTopic(process.env.NOTIFIKASI_PROGRESS, notificationMessage)
                                                             .then(function (response) {
                                                                 return res.status(200).send({
                                                                     message: "Done!,  Data has been stored!",

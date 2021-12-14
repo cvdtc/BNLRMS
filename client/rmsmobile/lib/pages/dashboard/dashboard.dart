@@ -85,14 +85,14 @@ class _DahsboardState extends State<Dahsboard> {
     print(notifprogress);
     messaging = FirebaseMessaging.instance;
     if (notifprogress == true) {
-      messaging.subscribeToTopic('RMSPERMINTAAN');
+      messaging.subscribeToTopic('RMSPERMINTAANdebug');
     } else {
-      messaging.unsubscribeFromTopic('RMSPERMINTAAN');
+      messaging.unsubscribeFromTopic('RMSPERMINTAANdebug');
     }
     if (notifpermintaan == true) {
-      messaging.subscribeToTopic('RMSPROGRESS');
+      messaging.subscribeToTopic('RMSPROGRESSdebug');
     } else {
-      messaging.unsubscribeFromTopic('RMSPROGRESS');
+      messaging.unsubscribeFromTopic('RMSPROGRESSdebug');
     }
   }
 

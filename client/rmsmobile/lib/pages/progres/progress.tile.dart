@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
-import 'package:rmsmobile/model/progress/progress.edit.selesai.model.dart';
-import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:http/http.dart' as client;
 import 'package:rmsmobile/pages/timeline/timeline.dart';
@@ -220,226 +218,226 @@ class _ProgressTileState extends State<ProgressTile> {
                                 ),
                                 ElevatedButton(
                                     onPressed: () {
-                                      print(
-                                          'heyyuuu $_mypengguna $keterangan ${_tecKeterangan.text}');
-                                      if (_tecKeterangan.text.toString() ==
-                                          "") {
-                                        _modalbottomSite(
-                                            context,
-                                            "Tidak Valid!",
-                                            "Pastikan semua kolom terisi dengan benar",
-                                            'f405',
-                                            'assets/images/sorry.png');
-                                      } else {
-                                        showModalBottomSheet(
-                                            context: context,
-                                            isScrollControlled: true,
-                                            backgroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(15.0),
-                                                    topRight:
-                                                        Radius.circular(15.0))),
-                                            builder: (BuildContext context) {
-                                              return Padding(
-                                                padding: MediaQuery.of(context)
-                                                    .viewInsets,
-                                                child: Container(
-                                                  padding: EdgeInsets.all(15.0),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Text(
-                                                        'Konfirmasi Selesai',
-                                                        style: TextStyle(
-                                                            fontSize: 22,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Text(
-                                                          'Apakah anda yakin akan menyelesaikan tugas ini ? ',
-                                                          style: TextStyle(
-                                                              fontSize: 16)),
-                                                      SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          ElevatedButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              style:
-                                                                  ElevatedButton
-                                                                      .styleFrom(
-                                                                elevation: 0.0,
-                                                                primary:
-                                                                    Colors.red,
-                                                              ),
-                                                              child: Ink(
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            18)),
-                                                                child:
-                                                                    Container(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  child: Text(
-                                                                    "Batal",
-                                                                  ),
-                                                                ),
-                                                              )),
-                                                          SizedBox(
-                                                            width: 55,
-                                                          ),
-                                                          ElevatedButton(
-                                                              onPressed: () {
-                                                                print(
-                                                                    'keterangannya ${_tecKeterangan.text} $token');
-                                                                ProgressModelEdit modeledit = ProgressModelEdit(
-                                                                    keterangan:
-                                                                        _tecKeterangan
-                                                                            .text
-                                                                            .toString(),
-                                                                    flag_selesai:
-                                                                        '1',
-                                                                    next_idpengguna:
-                                                                        _mypengguna);
+                                      //   print(
+                                      //       'heyyuuu $_mypengguna $keterangan ${_tecKeterangan.text}');
+                                      //   if (_tecKeterangan.text.toString() ==
+                                      //       "") {
+                                      //     _modalbottomSite(
+                                      //         context,
+                                      //         "Tidak Valid!",
+                                      //         "Pastikan semua kolom terisi dengan benar",
+                                      //         'f405',
+                                      //         'assets/images/sorry.png');
+                                      //   } else {
+                                      //     showModalBottomSheet(
+                                      //         context: context,
+                                      //         isScrollControlled: true,
+                                      //         backgroundColor: Colors.white,
+                                      //         shape: RoundedRectangleBorder(
+                                      //             borderRadius: BorderRadius.only(
+                                      //                 topLeft:
+                                      //                     Radius.circular(15.0),
+                                      //                 topRight:
+                                      //                     Radius.circular(15.0))),
+                                      //         builder: (BuildContext context) {
+                                      //           return Padding(
+                                      //             padding: MediaQuery.of(context)
+                                      //                 .viewInsets,
+                                      //             child: Container(
+                                      //               padding: EdgeInsets.all(15.0),
+                                      //               child: Column(
+                                      //                 mainAxisAlignment:
+                                      //                     MainAxisAlignment
+                                      //                         .center,
+                                      //                 crossAxisAlignment:
+                                      //                     CrossAxisAlignment
+                                      //                         .center,
+                                      //                 mainAxisSize:
+                                      //                     MainAxisSize.min,
+                                      //                 children: [
+                                      //                   SizedBox(
+                                      //                     height: 10,
+                                      //                   ),
+                                      //                   Text(
+                                      //                     'Konfirmasi Selesai',
+                                      //                     style: TextStyle(
+                                      //                         fontSize: 22,
+                                      //                         fontWeight:
+                                      //                             FontWeight
+                                      //                                 .bold),
+                                      //                   ),
+                                      //                   SizedBox(
+                                      //                     height: 20,
+                                      //                   ),
+                                      //                   Text(
+                                      //                       'Apakah anda yakin akan menyelesaikan tugas ini ? ',
+                                      //                       style: TextStyle(
+                                      //                           fontSize: 16)),
+                                      //                   SizedBox(
+                                      //                     height: 20,
+                                      //                   ),
+                                      //                   Row(
+                                      //                     mainAxisAlignment:
+                                      //                         MainAxisAlignment
+                                      //                             .center,
+                                      //                     crossAxisAlignment:
+                                      //                         CrossAxisAlignment
+                                      //                             .center,
+                                      //                     children: [
+                                      //                       ElevatedButton(
+                                      //                           onPressed: () {
+                                      //                             Navigator.of(
+                                      //                                     context)
+                                      //                                 .pop();
+                                      //                           },
+                                      //                           style:
+                                      //                               ElevatedButton
+                                      //                                   .styleFrom(
+                                      //                             elevation: 0.0,
+                                      //                             primary:
+                                      //                                 Colors.red,
+                                      //                           ),
+                                      //                           child: Ink(
+                                      //                             decoration: BoxDecoration(
+                                      //                                 borderRadius:
+                                      //                                     BorderRadius.circular(
+                                      //                                         18)),
+                                      //                             child:
+                                      //                                 Container(
+                                      //                               alignment:
+                                      //                                   Alignment
+                                      //                                       .center,
+                                      //                               child: Text(
+                                      //                                 "Batal",
+                                      //                               ),
+                                      //                             ),
+                                      //                           )),
+                                      //                       SizedBox(
+                                      //                         width: 55,
+                                      //                       ),
+                                      //                       ElevatedButton(
+                                      //                           onPressed: () {
+                                      //                             print(
+                                      //                                 'keterangannya ${_tecKeterangan.text} $token');
+                                      //                             ProgressModelEdit modeledit = ProgressModelEdit(
+                                      //                                 keterangan:
+                                      //                                     _tecKeterangan
+                                      //                                         .text
+                                      //                                         .toString(),
+                                      //                                 flag_selesai:
+                                      //                                     '1',
+                                      //                                 next_idpengguna:
+                                      //                                     _mypengguna);
 
-                                                                ProgressModelAdd modelAdd = ProgressModelAdd(
-                                                                    keterangan: _tecKeteranganNext
-                                                                        .text
-                                                                        .toString(),
-                                                                    idpermintaan: widget
-                                                                        .progress
-                                                                        .idpermintaan,
-                                                                    idnextuser:
-                                                                        _mypengguna,
-                                                                    tipe:
-                                                                        'nextuser');
-                                                                print(
-                                                                    'dataselesai $modeledit idprogress $idprogress modeladd $modelAdd');
-                                                                _apiService
-                                                                    .ubahProgresJadiSelesai(
-                                                                        token
-                                                                            .toString(),
-                                                                        idprogress
-                                                                            .toString(),
-                                                                        modeledit)
-                                                                    .then(
-                                                                        (isSuccess) {
-                                                                  print(
-                                                                      'disini sukses nggak ?');
-                                                                  if (isSuccess) {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                    Fluttertoast.showToast(
-                                                                        msg:
-                                                                            "Berhasil ubah data progres selesai",
-                                                                        backgroundColor:
-                                                                            Colors
-                                                                                .black,
-                                                                        textColor:
-                                                                            Colors.white);
-                                                                    _tecKeterangan
-                                                                        .clear();
-                                                                    _apiService
-                                                                        .addProgres(
-                                                                            token
-                                                                                .toString(),
-                                                                            modelAdd)
-                                                                        .then(
-                                                                            (value) {
-                                                                      print(
-                                                                          'tes progres piye ? $modeledit $modelAdd');
-                                                                      print(
-                                                                          'disini sukses nggak1 ?');
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .pop();
-                                                                      Fluttertoast.showToast(
-                                                                          msg:
-                                                                              "Berhasil ubah data progres ke next user",
-                                                                          backgroundColor: Colors
-                                                                              .black,
-                                                                          textColor:
-                                                                              Colors.white);
-                                                                    });
-                                                                  } else {
-                                                                    _modalbottomSite(
-                                                                        context,
-                                                                        "Gagal!",
-                                                                        "${_apiService.responseCode.messageApi}",
-                                                                        "f400",
-                                                                        "assets/images/sorry.png");
-                                                                  }
-                                                                  return;
-                                                                }).onError((error,
-                                                                        stackTrace) {
-                                                                  print("ERROR PROGRESS" +
-                                                                      error
-                                                                          .toString());
-                                                                });
-                                                              },
-                                                              style:
-                                                                  ElevatedButton
-                                                                      .styleFrom(
-                                                                elevation: 0.0,
-                                                                primary: Colors
-                                                                    .white,
-                                                              ),
-                                                              child: Ink(
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            18)),
-                                                                child:
-                                                                    Container(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  child: Text(
-                                                                    "Submit",
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                            primarycolor),
-                                                                  ),
-                                                                ),
-                                                              )),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            });
-                                      }
+                                      //                             ProgressModelAdd modelAdd = ProgressModelAdd(
+                                      //                                 keterangan: _tecKeteranganNext
+                                      //                                     .text
+                                      //                                     .toString(),
+                                      //                                 idpermintaan: widget
+                                      //                                     .progress
+                                      //                                     .idpermintaan,
+                                      //                                 idnextuser:
+                                      //                                     _mypengguna,
+                                      //                                 tipe:
+                                      //                                     'nextuser');
+                                      //                             print(
+                                      //                                 'dataselesai $modeledit idprogress $idprogress modeladd $modelAdd');
+                                      //                             _apiService
+                                      //                                 .ubahProgresJadiSelesai(
+                                      //                                     token
+                                      //                                         .toString(),
+                                      //                                     idprogress
+                                      //                                         .toString(),
+                                      //                                     modeledit)
+                                      //                                 .then(
+                                      //                                     (isSuccess) {
+                                      //                               print(
+                                      //                                   'disini sukses nggak ?');
+                                      //                               if (isSuccess) {
+                                      //                                 Navigator.of(
+                                      //                                         context)
+                                      //                                     .pop();
+                                      //                                 Fluttertoast.showToast(
+                                      //                                     msg:
+                                      //                                         "Berhasil ubah data progres selesai",
+                                      //                                     backgroundColor:
+                                      //                                         Colors
+                                      //                                             .black,
+                                      //                                     textColor:
+                                      //                                         Colors.white);
+                                      //                                 _tecKeterangan
+                                      //                                     .clear();
+                                      //                                 _apiService
+                                      //                                     .addProgres(
+                                      //                                         token
+                                      //                                             .toString(),
+                                      //                                         modelAdd)
+                                      //                                     .then(
+                                      //                                         (value) {
+                                      //                                   print(
+                                      //                                       'tes progres piye ? $modeledit $modelAdd');
+                                      //                                   print(
+                                      //                                       'disini sukses nggak1 ?');
+                                      //                                   Navigator.of(
+                                      //                                           context)
+                                      //                                       .pop();
+                                      //                                   Fluttertoast.showToast(
+                                      //                                       msg:
+                                      //                                           "Berhasil ubah data progres ke next user",
+                                      //                                       backgroundColor: Colors
+                                      //                                           .black,
+                                      //                                       textColor:
+                                      //                                           Colors.white);
+                                      //                                 });
+                                      //                               } else {
+                                      //                                 _modalbottomSite(
+                                      //                                     context,
+                                      //                                     "Gagal!",
+                                      //                                     "${_apiService.responseCode.messageApi}",
+                                      //                                     "f400",
+                                      //                                     "assets/images/sorry.png");
+                                      //                               }
+                                      //                               return;
+                                      //                             }).onError((error,
+                                      //                                     stackTrace) {
+                                      //                               print("ERROR PROGRESS" +
+                                      //                                   error
+                                      //                                       .toString());
+                                      //                             });
+                                      //                           },
+                                      //                           style:
+                                      //                               ElevatedButton
+                                      //                                   .styleFrom(
+                                      //                             elevation: 0.0,
+                                      //                             primary: Colors
+                                      //                                 .white,
+                                      //                           ),
+                                      //                           child: Ink(
+                                      //                             decoration: BoxDecoration(
+                                      //                                 borderRadius:
+                                      //                                     BorderRadius.circular(
+                                      //                                         18)),
+                                      //                             child:
+                                      //                                 Container(
+                                      //                               alignment:
+                                      //                                   Alignment
+                                      //                                       .center,
+                                      //                               child: Text(
+                                      //                                 "Submit",
+                                      //                                 style: TextStyle(
+                                      //                                     color:
+                                      //                                         primarycolor),
+                                      //                               ),
+                                      //                             ),
+                                      //                           )),
+                                      //                     ],
+                                      //                   ),
+                                      //                 ],
+                                      //               ),
+                                      //             ),
+                                      //           );
+                                      //         });
+                                      //   }
                                     },
                                     style: ElevatedButton.styleFrom(
                                         side: BorderSide(

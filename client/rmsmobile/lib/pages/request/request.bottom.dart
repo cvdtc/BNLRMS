@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
-import 'package:rmsmobile/model/progress/progress.model.add.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/request/request.model.edit.dart';
+import 'package:rmsmobile/pages/progres/progress.bottom.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
@@ -500,18 +500,9 @@ class RequestModalBottom {
                           (BuildContext context, StateSetter setState) {
                         return ElevatedButton(
                             onPressed: () {
-                              print("Will be Execute up" +
-                                  tipe +
-                                  token +
-                                  keterangan +
-                                  kategori +
-                                  duedate +
-                                  flag_selesai.toString() +
-                                  keterangan_selesai +
-                                  idpermintaan.toString());
-                              if (tipe == 'progres') {
+                              if (tipe == 'tambah') {
                                 Navigator.of(context).pop();
-                                _actiontoapiProgress(
+                                _actiontoapi(
                                     context,
                                     tipe,
                                     token,
@@ -519,9 +510,9 @@ class RequestModalBottom {
                                     kategori,
                                     duedate,
                                     flag_selesai,
-                                    keterangan_selesai,
+                                    "",
                                     tipeupdate,
-                                    idpermintaan);
+                                    "");
                               } else if (tipe == 'hapus') {
                                 _actiontoapiHapusReq(
                                     context,
@@ -534,25 +525,6 @@ class RequestModalBottom {
                                     keterangan_selesai,
                                     tipeupdate,
                                     idpermintaan);
-                              } else if (tipe == 'tambah') {
-                                Navigator.of(context).pop();
-                                // _apiService.getListRequest(token).then((value){
-                                //     setState((){
-                                //       this._requestDisplay= value!;
-                                //       print('valuenya $value');
-                                //     });
-                                //   });
-                                _actiontoapi(
-                                    context,
-                                    tipe,
-                                    token,
-                                    keterangan,
-                                    kategori,
-                                    duedate,
-                                    flag_selesai,
-                                    "",
-                                    tipeupdate,
-                                    "");
                               } else if (tipe == 'ubah') {
                                 Navigator.of(context).pop();
                                 _actiontoapi(
@@ -567,29 +539,6 @@ class RequestModalBottom {
                                     tipeupdate,
                                     idpermintaan.toString());
                               }
-                              // tipe == 'progres'
-                              // ? _actiontoapiProgress(
-                              //     context,
-                              //     tipe,
-                              //     token,
-                              //     keterangan,
-                              //     kategori,
-                              //     duedate,
-                              //     flag_selesai,
-                              //     keterangan_selesai,
-                              //     tipeupdate,
-                              //     idpermintaan)
-                              // : _actiontoapi(
-                              //     context,
-                              //     tipe,
-                              //     token,
-                              //     keterangan,
-                              //     kategori,
-                              //     duedate,
-                              //     flag_selesai,
-                              //     keterangan_selesai,
-                              //     tipeupdate,
-                              //     idpermintaan);
                               Navigator.of(context).pop();
                             },
                             style: ElevatedButton.styleFrom(
@@ -650,10 +599,6 @@ class RequestModalBottom {
           'f405',
           'assets/images/sorry.png');
     } else {
-      print('heres?? $tipe ~ $idpermintaan');
-      ProgressModelAdd dataprogress =
-          ProgressModelAdd(keterangan: keterangan, idpermintaan: idpermintaan);
-
       RequestModelEdit dataEdit = RequestModelEdit(
           keterangan: keterangan,
           kategori: kategori,
@@ -761,34 +706,6 @@ class RequestModalBottom {
           }
           return;
         });
-      } else if (tipe == 'progres') {
-        print('ini tambah progres lho');
-        _apiService
-            .addProgres(token.toString(), dataprogress)
-            .then((isSuccess) {
-          print('tambah progress $token, $dataprogress');
-          if (isSuccess) {
-            Fluttertoast.showToast(
-                msg: "Berhasil tambah data progres",
-                backgroundColor: Colors.black,
-                textColor: Colors.white);
-            // Navigator.of(context).pop();
-            // _modalbottomSite(
-            //     context,
-            //     "Berhasil!",
-            //     "${_apiService.responseCode.messageApi}",
-            //     "f200",
-            //     "assets/images/congratulations.png");
-          } else {
-            _modalbottomSite(
-                context,
-                "Gagal!",
-                "${_apiService.responseCode.messageApi}",
-                "f400",
-                "assets/images/sorry.png");
-          }
-          return;
-        });
       } else {
         _modalbottomSite(context, "Tidak Valid!", "Action anda tidak sesuai",
             'f404', 'assets/images/sorry.png');
@@ -796,71 +713,71 @@ class RequestModalBottom {
     }
   }
 
-  void _actiontoapiProgress(
-      context,
-      String tipe,
-      String token,
-      String keterangan,
-      String kategori,
-      String duedate,
-      int flag_selesai,
-      String keterangan_selesai,
-      String tipeupdate,
-      String idpermintaan) {
-    print('here? $tipe');
-    print("Will be Execute act to api " +
-        tipe +
-        token +
-        keterangan +
-        idpermintaan);
-    if (keterangan == "") {
-      print('mosok masuk sini?');
-      _modalbottomSite(
-          context,
-          "Tidak Valid!",
-          "Pastikan semua kolom terisi dengan benar",
-          'f405',
-          'assets/images/sorry.png');
-    } else {
-      print('heres?? $tipe ~ $idpermintaan');
-      ProgressModelAdd dataprogress = ProgressModelAdd(
-          keterangan: keterangan,
-          idpermintaan: idpermintaan,
-          idnextuser: flag_selesai,
-          tipe: tipeupdate);
-      print('act to api progress $dataprogress');
-      if (tipe == 'progres') {
-        print('ini tambah progres lho');
-        _apiService.addProgres(token, dataprogress).then((isSuccess) {
-          print('tambah progress $token, $dataprogress');
-          if (isSuccess) {
-            Fluttertoast.showToast(
-                msg: "Berhasil tambah data progres",
-                backgroundColor: Colors.black,
-                textColor: Colors.white);
-            // Navigator.of(context).pop();
-            // _modalbottomSite(
-            //     context,
-            //     "Berhasil!",
-            //     "${_apiService.responseCode.messageApi}",
-            //     "f200",
-            //     "assets/images/congratulations.png");
-          } else {
-            _modalbottomSite(
-                context,
-                "Gagal!",
-                "${_apiService.responseCode.messageApi}",
-                "f400",
-                "assets/images/sorry.png");
-          }
-          return;
-        });
-      } else {
-        _modalbottomSite(context, "Tidak Valid!", "Action anda tidak sesuai",
-            'f404', 'assets/images/sorry.png');
-      }
-    }
-  }
+  // void _actiontoapiProgress(
+  //     context,
+  //     String tipe,
+  //     String token,
+  //     String keterangan,
+  //     String kategori,
+  //     String duedate,
+  //     int flag_selesai,
+  //     String keterangan_selesai,
+  //     String tipeupdate,
+  //     String idpermintaan) {
+  //   print('here? $tipe');
+  //   print("Will be Execute act to api " +
+  //       tipe +
+  //       token +
+  //       keterangan +
+  //       idpermintaan);
+  //   if (keterangan == "") {
+  //     print('mosok masuk sini?');
+  //     _modalbottomSite(
+  //         context,
+  //         "Tidak Valid!",
+  //         "Pastikan semua kolom terisi dengan benar",
+  //         'f405',
+  //         'assets/images/sorry.png');
+  //   } else {
+  //     print('heres?? $tipe ~ $idpermintaan');
+  //     ProgressModelAdd dataprogress = ProgressModelAdd(
+  //         keterangan: keterangan,
+  //         idpermintaan: idpermintaan,
+  //         idnextuser: flag_selesai,
+  //         tipe: tipeupdate);
+  //     print('act to api progress $dataprogress');
+  //     if (tipe == 'progres') {
+  //       print('ini tambah progres lho');
+  //       _apiService.addProgres(token, dataprogress).then((isSuccess) {
+  //         print('tambah progress $token, $dataprogress');
+  //         if (isSuccess) {
+  //           Fluttertoast.showToast(
+  //               msg: "Berhasil tambah data progres",
+  //               backgroundColor: Colors.black,
+  //               textColor: Colors.white);
+  //           // Navigator.of(context).pop();
+  //           // _modalbottomSite(
+  //           //     context,
+  //           //     "Berhasil!",
+  //           //     "${_apiService.responseCode.messageApi}",
+  //           //     "f200",
+  //           //     "assets/images/congratulations.png");
+  //         } else {
+  //           _modalbottomSite(
+  //               context,
+  //               "Gagal!",
+  //               "${_apiService.responseCode.messageApi}",
+  //               "f400",
+  //               "assets/images/sorry.png");
+  //         }
+  //         return;
+  //       });
+  //     } else {
+  //       _modalbottomSite(context, "Tidak Valid!", "Action anda tidak sesuai",
+  //           'f404', 'assets/images/sorry.png');
+  //     }
+  //   }
+  // }
 
   void _actiontoapiHapusReq(
       context,
@@ -976,17 +893,19 @@ class RequestModalBottom {
                       ? ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            modalAddSite(
+                            ProgressModalBottom().modalAddProgress(
                                 context,
-                                'progres',
+                                'tambah',
                                 token,
-                                keterangan,
-                                '',
-                                '',
-                                '0',
-                                idpermintaan.toString(),
-                                '',
-                                tipeupdate);
+                                "",
+                                idpermintaan,
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "");
                           },
                           style: ElevatedButton.styleFrom(
                               side: BorderSide(width: 2, color: Colors.blue),
