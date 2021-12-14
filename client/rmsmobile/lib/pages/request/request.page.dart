@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/request/request.bottom.dart';
@@ -115,7 +114,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
         centerTitle: true,
         backgroundColor: thirdcolor,
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           RequestModalBottom().modalAddSite(
               context,
@@ -130,13 +129,9 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
               tipeupdate!);
         },
         backgroundColor: thirdcolor,
-        icon: Icon(
+        child: Icon(
           Icons.add,
           color: Colors.white,
-        ),
-        label: Text(
-          'Tambah Permintaan',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: RefreshIndicator(

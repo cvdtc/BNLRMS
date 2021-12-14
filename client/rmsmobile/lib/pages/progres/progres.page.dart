@@ -56,6 +56,18 @@ class _ProgressPageState extends State<ProgressPage> {
     super.initState();
   }
 
+  Future refreshPage() async {
+    _progressDisplay.clear();
+    await Future.delayed(Duration(seconds: 2));
+    Fluttertoast.showToast(
+        msg: "Data Berhasil diperbarui",
+        backgroundColor: Colors.black,
+        textColor: Colors.white);
+    setState(() {
+      cekToken();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,25 +80,28 @@ class _ProgressPageState extends State<ProgressPage> {
         centerTitle: true,
         backgroundColor: thirdcolor,
       ),
-      body: SafeArea(
-        child: Container(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              print("Values??" + index.toString());
-              if (!_isLoading) {
-                return index == 0
-                    ? _searchBar()
-                    : ProgressTile(
-                        progress: this._progressDisplay[index - 1],
-                        token: token!,
-                      );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-            itemCount: _progressDisplay.length + 1,
+      body: RefreshIndicator(
+        onRefresh: refreshPage,
+        child: SafeArea(
+          child: Container(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                print("Values??" + index.toString());
+                if (!_isLoading) {
+                  return index == 0
+                      ? _searchBar()
+                      : ProgressTile(
+                          progress: this._progressDisplay[index - 1],
+                          token: token!,
+                        );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+              itemCount: _progressDisplay.length + 1,
+            ),
           ),
         ),
       ),

@@ -13,21 +13,35 @@ class ProgressModalBottom {
   TextEditingController _tecDueDate = TextEditingController(text: "");
   String _dropdownValue = "Merek";
 
+  /**
+   * * parameter yang dikirim :
+   * * tipe yaitu insert update atau delete
+   * * token jwt yang di ambil dari shared preferences
+   * keterangan adalah deskripsi progress
+   * idpermintaan adalah idpermintaan yang dikirim dari listview
+   * idnext_user apabila progress tersebut sudah selesai dan akan di lanjutkan ke user yang lain jika tidak yang dikirim ""
+   * tipeinsert adalah tipe yang akan dikirim ke api sebagai filter, apabila tipeinsert berisi tambahprogress makan yang di simpan ke database adalah idpengguna yang membuat progress akan tetapi jika yang dikirim nextuser maka idpengguna yang disimpan ke database adalah idnext_user
+   * idprogress dibutuhkan jika parameter tipe yang dikirim adalah update
+   * flag_selesai berisi 0/1 untuk menentukan apakah progress yang dibuat sudah selesai atau belum
+   * next_idpengguna adalah idpengguna yang dipilih user dari combobox halaman progress
+   * 
+   */
+
   // ++ BOTTOM MODAL INPUT FORM
-  void modalAddSite(
+  void modalAddProgress(
       context,
       String tipe,
       String token,
       String keterangan,
-      String kategori,
-      String duedate,
+      String idpermintaan,
+      String idnext_user,
+      String tipeinsert,
+      String idprogress,
       String flag_selesai,
-      idpermintaan,
-      String keterangan_selesai,
-      String tipeupdate) {
+      String next_idpengguna,
+      String keterangan_nextuser) {
     // * setting value text form field if action is edit
-
-    if (tipe == 'ubah') {
+    if (tipe == 'ubah' && idprogress != "") {
       _tecKeterangan.value = TextEditingValue(
           text: keterangan,
           selection: TextSelection.fromPosition(

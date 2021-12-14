@@ -72,6 +72,10 @@ var nows = {
  *              description: kesalahan pada query sql
  */
 
+/**
+ * * [1] 14 Des 2021 tambah query untuk menampilkan url_web tabel progress dan tabel permintaan
+ */
+
 async function getAllProgress(req, res) {
     const token = req.headers.authorization;
     if (token != null) {
@@ -92,7 +96,7 @@ async function getAllProgress(req, res) {
                                 data: null
                             })
                         } else {
-                            var sqlquery = `SELECT pr.idprogress, pr.keterangan, DATE_FORMAT(pr.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(pr.edited, "%Y-%m-%d %H:%i") as edited, pr.flag_selesai, pr.next_idpengguna, pr.idpengguna, pr.idpermintaan, pe.keterangan as permintaan, pe.kategori, DATE_FORMAT(pe.due_date, "%Y-%m-%d") as due_date, p.nama FROM permintaan pe, progress pr, pengguna p WHERE pr.idpermintaan=pe.idpermintaan AND pe.idpengguna=p.idpengguna AND pr.idpengguna = ? AND pr.flag_selesai=0`
+                            var sqlquery = `SELECT pr.idprogress, pr.keterangan, DATE_FORMAT(pr.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(pr.edited, "%Y-%m-%d %H:%i") as edited, pr.flag_selesai, pr.next_idpengguna, pr.idpengguna, pr.idpermintaan, pe.keterangan as permintaan, pe.kategori, DATE_FORMAT(pe.due_date, "%Y-%m-%d") as due_date, p.nama, pe.url_web as url_permintaan, pr.url_web as url_perogress FROM permintaan pe, progress pr, pengguna p WHERE pr.idpermintaan=pe.idpermintaan AND pe.idpengguna=p.idpengguna AND pr.idpengguna = ? AND pr.flag_selesai=0` //[1]
                             database.query(sqlquery, [jwtresult.idpengguna], (error, rows) => {
                                 database.release()
                                 if (error) {
@@ -171,6 +175,9 @@ async function getAllProgress(req, res) {
  *                  tipe:
  *                      type: string
  *                      description: tipe menentukan idpengguna yang akan disimpan di database, tipe hanya ada tambahprogress dan nextuser jika tipe tambahprogress idyang disimpan idpengguna yang membuat progress tapi jika nextuser maka yang di simpan idpengguna user yang dituju
+ *                  url_web:
+ *                      type: string
+ *                      description: untuk menyimpan alamat url jika diperlukan oleh user
  *      responses:
  *          201:
  *              description: jika data berhasil di simpan
@@ -188,14 +195,19 @@ async function getAllProgress(req, res) {
  *              description: kesalahan pada query sql
  */
 
+/**
+ * * [1] 14 Des 2021 add field url_web
+ */
+
 async function addProgress(req, res) {
     var keterangan = req.body.keterangan
     var idpermintaan = req.body.idpermintaan
     var idnextuser = req.body.idnextuser
     var tipe = req.body.tipe
+    var url_web = req.body.url_web//[1]
     const token = req.headers.authorization
     console.log('ada yang mencoba menambah progress', keterangan, idpermintaan, token);
-    if (Object.keys(req.body).length != 4) {
+    if (Object.keys(req.body).length != 5) {
         return res.status(405).send({
             message: "Sorry,  parameters not match",
             error: null,
@@ -224,6 +236,7 @@ async function addProgress(req, res) {
                                 flag_selesai: 0,
                                 idpermintaan: idpermintaan,
                                 created: nows,
+                                url_web: url_web,//[1]
                                 idpengguna: jwtresult.idpengguna
                             }
                             let dataprogressnext = {
@@ -231,6 +244,7 @@ async function addProgress(req, res) {
                                 flag_selesai: 0,
                                 idpermintaan: idpermintaan,
                                 created: nows,
+                                url_web: url_web,//[1]
                                 idpengguna: idnextuser
                             }
                             var sqlquery = "INSERT INTO progress SET ?"
@@ -317,6 +331,9 @@ async function addProgress(req, res) {
  *                  next_idpengguna:
  *                      type: int
  *                      description: (opsional) untuk menentukan apakah progress ini mau diteruskan ke idpengguna lain atau tidak. jika tidak defaultnya adalah `0` jika iya maka `diisi sesuai idpengguna yang dituju`
+ *                  url_web:
+ *                      type: string
+ *                      description: untuk menyimpan alamat url jika diperlukan oleh user
  *      responses:
  *          200:
  *              description: jika data berhasil di fetch
@@ -334,13 +351,18 @@ async function addProgress(req, res) {
  *              description: kesalahan pada query sql
  */
 
+/**
+ * * [1] 14 desember add table url_web
+ */
+
 async function ubahProgress(req, res) {
     var keterangan = req.body.keterangan
     var flag_selesai = req.body.flag_selesai
     var next_idpengguna = req.body.next_idpengguna
+    var url_web = req.body.url_web // [1]
     var idprogress = req.params.idprogress
     const token = req.headers.authorization
-    if (Object.keys(req.body).length != 3) {
+    if (Object.keys(req.body).length != 4) {
         return res.status(405).send({
             message: "Sorry,  parameters not match",
             error: null,
@@ -368,8 +390,9 @@ async function ubahProgress(req, res) {
                                 let updateprogress = {
                                     keterangan: keterangan,
                                     flag_selesai: flag_selesai,
-                                    next_idpengguna: next_idpengguna, // * wiil be change to next_idpengguna if database successfull sync
+                                    next_idpengguna: next_idpengguna, 
                                     edited: nows,
+                                    url_web: url_web, // [1]
                                     idpengguna: jwtresult.idpengguna
                                 }
                                 var sqlquery = "UPDATE progress SET ? WHERE idprogress = ?"

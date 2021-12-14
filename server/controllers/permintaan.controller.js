@@ -72,6 +72,10 @@ var nows = {
  *              description: kesalahan pada query sql
  */
 
+/**
+ * * [1] 11 Des 2021 tambah filter Marketing hanya keluar requestnya sendiri
+ */
+
 async function getAllPermintaan(req, res) {
     const token = req.headers.authorization;
     console.log('Akses Permintaan...')
@@ -93,7 +97,8 @@ async function getAllPermintaan(req, res) {
                                 data: null
                             })
                         } else {
-                            var sqlquery = `SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna ORDER BY p.flag_selesai ASC, p.due_date ASC`
+                            var filter = (jwtresult.jabatan == "Marketing") ? (" where idpengguna=" + jwtresult.idpengguna) : (""); //[1]
+                            var sqlquery = `select a.*, ifnull(b.jml,0) as jmlprogress from (SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request, p.idpengguna FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna)a left join (select idpermintaan, count(*) as jml from progress GROUP BY idpermintaan)b ON a.idpermintaan=b.idpermintaan ` + filter + ` ORDER BY flag_selesai ASC, due_date ASC`
                             database.query(sqlquery, (error, rows) => {
                                 database.release()
                                 if (error) {
@@ -172,6 +177,9 @@ async function getAllPermintaan(req, res) {
  *                  flag_selesai:
  *                      type: int
  *                      description: untuk menentukan flag permintaan/request apakah sudah selesai atau belum
+ *                  url_web:
+ *                      type: string
+ *                      description: untuk menyimpan alamat url jika diperlukan oleh user
  *      responses:
  *          201:
  *              description: jika data berhasil di fetch
@@ -191,8 +199,9 @@ async function getAllPermintaan(req, res) {
 
 /**
  * NOTE!
- * [03-12-2021] add firebase notification
- * [04-12-2021] memberikan nama penambah permintaan pada notifikasi
+ * * [1] 03 Des 2021 add firebase notification {s}
+ * * [2] 04 Des 2021 memberikan nama penambah permintaan pada notifikasi {s}
+ * * [3] 14 Des 2021 add field url_web
  */
 
 async function addPermintaan(req, res) {
@@ -200,8 +209,9 @@ async function addPermintaan(req, res) {
     var kategori = req.body.kategori
     var due_date = req.body.due_date
     var flag_selesai = req.body.flag_selesai
+    var url_web = req.body.url_web //[3]
     const token = req.headers.authorization
-    if (Object.keys(req.body).length != 4) {
+    if (Object.keys(req.body).length != 5) {
         return res.status(405).send({
             message: "Sorry,  parameters not match",
             error: null,
@@ -231,13 +241,14 @@ async function addPermintaan(req, res) {
                                 due_date: due_date,
                                 flag_selesai: flag_selesai,
                                 created: nows,
+                                url_web: url_web, // [3]
                                 idpengguna: jwtresult.idpengguna
                             }
                             var sqlquery = "INSERT INTO permintaan SET ?"
                             database.query(sqlquery, datapermintaan, (error, result) => {
-                                // database.release()
                                 if (error) {
                                     database.rollback(function () {
+                                        database.release()
                                         return res.status(407).send({
                                             message: "Sorry,  query has error!",
                                             error: error,
@@ -248,6 +259,7 @@ async function addPermintaan(req, res) {
                                     database.commit(function (errcommit) {
                                         if (errcommit) {
                                             database.rollback(function () {
+                                                database.release()
                                                 return res.status(407).send({
                                                     message: "Sorry,  fail to store data!",
                                                     error: errcommit,
@@ -256,7 +268,7 @@ async function addPermintaan(req, res) {
                                             })
                                         } else {
                                             var getnameuser = "SELECT nama FROM pengguna WHERE idpengguna = ?"
-                                            database.query(getnameuser, jwtresult.idpengguna, (error, result)=>{
+                                            database.query(getnameuser, jwtresult.idpengguna, (error, result) => {
                                                 database.release()
                                                 // * set firebase notification message 
                                                 let notificationMessage = {
@@ -266,26 +278,26 @@ async function addPermintaan(req, res) {
                                                         sound: 'default',
                                                         'click_action': 'FCM_PLUGIN_ACTIVITY'
                                                     },
-                                                    data:{
+                                                    data: {
                                                         "judul": `Permintaan baru dari ${result[0].nama}`,
                                                         "isi": keterangan
                                                     }
                                                 }
                                                 // * sending notification topic RMSPERMINTAAN
                                                 fcmadmin.messaging().sendToTopic('RMSPERMINTAAN', notificationMessage)
-                                                .then(function (response) {
-                                                    return res.status(201).send({
-                                                        message: "Done!,  Data has been stored!",
-                                                        error: null,
-                                                        data: response
+                                                    .then(function (response) {
+                                                        return res.status(201).send({
+                                                            message: "Done!,  Data has been stored!",
+                                                            error: null,
+                                                            data: response
+                                                        })
+                                                    }).catch(function (error) {
+                                                        return res.status(201).send({
+                                                            message: "Done!,  Data has been stored!",
+                                                            error: error,
+                                                            data: null
+                                                        })
                                                     })
-                                                }).catch(function (error) {
-                                                    return res.status(201).send({
-                                                        message: "Done!,  Data has been stored!",
-                                                        error: error,
-                                                        data: null
-                                                    })
-                                                })
                                             })
                                         }
                                     })
@@ -353,6 +365,9 @@ async function addPermintaan(req, res) {
  *                  tipeupdate:
  *                      type: string
  *                      description: untuk menentukan tipe update data apakah update permintaan atau update selesai. tipe update hanya ada 2 yaitu `data` untuk mengupdate data permintaan/request atau `selesai` untuk mengupdate data permintaan menjadi selesai
+ *                  url_web:
+ *                      type: string
+ *                      description: untuk menyimpan alamat url jika diperlukan oleh user
  *      responses:
  *          200:
  *              description: jika data berhasil di fetch
@@ -370,6 +385,12 @@ async function addPermintaan(req, res) {
  *              description: kesalahan pada query sql
  */
 
+/**
+ * *[1] 11 Des 2021 tidak perlu update id pengguna {pj}
+ * *[2] 14 Des 2021 add field url_web {s}
+ * *[3] 11 Des 2012 hanya pengguna yang buat permintaan yang bisa update permintaannya sendiri {pj}
+ */
+
 async function ubahPermintaan(req, res) {
     var keterangan = req.body.keterangan
     var kategori = req.body.kategori
@@ -377,9 +398,10 @@ async function ubahPermintaan(req, res) {
     var flag_selesai = req.body.flag_selesai
     var keterangan_selesai = req.body.keterangan_selesai
     var tipeupdate = req.body.tipeupdate
+    var url_web = req.body.url_web
     var idpermintaan = req.params.idpermintaan
     const token = req.headers.authorization
-    if (Object.keys(req.body).length != 6) {
+    if (Object.keys(req.body).length != 7) {
         return res.status(405).send({
             message: "Sorry,  parameters not match",
             error: null,
@@ -411,7 +433,8 @@ async function ubahPermintaan(req, res) {
                                     flag_selesai: flag_selesai,
                                     keterangan_selesai: keterangan_selesai,
                                     edited: nows,
-                                    idpengguna: jwtresult.idpengguna
+                                    url_web: url_web // [2]
+                                    // idpengguna: jwtresult.idpengguna // [1]
                                 }
                                 let selesaidatapermintaan = {
                                     keterangan: keterangan,
@@ -420,10 +443,12 @@ async function ubahPermintaan(req, res) {
                                     flag_selesai: flag_selesai,
                                     keterangan_selesai: keterangan_selesai,
                                     date_selesai: nows,
-                                    idpengguna_close_permintaan: jwtresult.idpengguna // * doesn't work bcz database failed to sync
+                                    url_web: url_web, //[2]
+                                    idpengguna_close_permintaan: jwtresult.idpengguna
                                 }
-                                var sqlquery = "UPDATE permintaan SET ? WHERE idpermintaan = ?"
-                                database.query(sqlquery, [tipeupdate == 'selesai' ? selesaidatapermintaan : updatedatapermintaan, idpermintaan], (error, result) => {
+                                
+                                var sqlquery = "UPDATE permintaan SET ? WHERE idpengguna=? and idpermintaan = ?" // [3]
+                                database.query(sqlquery, [tipeupdate == 'selesai' ? selesaidatapermintaan : updatedatapermintaan, jwtresult.idpengguna, idpermintaan], (error, result) => {
                                     database.release()
                                     if (error) {
                                         database.rollback(function () {
@@ -438,7 +463,7 @@ async function ubahPermintaan(req, res) {
                                             if (errcommit) {
                                                 database.rollback(function () {
                                                     return res.status(407).send({
-                                                        message: "Sorry,  fail to change data pengguna",
+                                                        message: "Sorry,  fail to change data permintaan",
                                                         error: errcommit,
                                                         data: null
                                                     })
