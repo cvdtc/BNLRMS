@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
-import 'package:rmsmobile/model/request/request.model.dart';
-import 'package:rmsmobile/model/request/request.model.edit.dart';
-import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
@@ -15,14 +11,14 @@ class ProgressModalBottom {
       TextEditingController(text: "");
   TextEditingController _tecUrlProgress = TextEditingController(text: "");
   String _dropdownValue = "Merek";
-
+  // * for edit progress
+  bool flagswitchnextuser = false;
   /**
    * * parameter yang dikirim :
    * * tipe yaitu insert update atau delete
    * * token jwt yang di ambil dari shared preferences
    * * keterangan adalah deskripsi progress
    * * idpermintaan adalah idpermintaan yang dikirim dari listview
-   * * idnext_user apabila progress tersebut sudah selesai dan akan di lanjutkan ke user yang lain jika tidak yang dikirim ""
    * * tipeinsert adalah tipe yang akan dikirim ke api sebagai filter, apabila tipeinsert berisi tambahprogress makan yang di simpan ke database adalah idpengguna yang membuat progress akan tetapi jika yang dikirim nextuser maka idpengguna yang disimpan ke database adalah idnext_user
    * * idprogress dibutuhkan jika parameter tipe yang dikirim adalah update
    * * flag_selesai berisi 0/1 untuk menentukan apakah progress yang dibuat sudah selesai atau belum
@@ -38,7 +34,6 @@ class ProgressModalBottom {
       String token,
       String keterangan,
       String idpermintaan,
-      String idnext_user,
       String tipeinsert,
       String idprogress,
       String flag_selesai,
@@ -85,7 +80,6 @@ class ProgressModalBottom {
                   SizedBox(height: 10.0),
                   TextFormField(
                       controller: _tecKeterangan,
-                      textCapitalization: TextCapitalization.characters,
                       decoration: InputDecoration(
                           icon: Icon(Icons.description_rounded),
                           labelText: 'Deskripsi Progres',
@@ -95,16 +89,63 @@ class ProgressModalBottom {
                   TextFormField(
                       controller: _tecUrlProgress,
                       decoration: InputDecoration(
-                          icon: Icon(Icons.web),
-                          labelText: 'Sematkan Url',
+                          icon: Icon(Icons.link_rounded),
+                          labelText: 'Sematkan URL',
                           hintText: 'Masukkan URL',
                           suffixIcon:
                               Icon(Icons.check_circle_outline_outlined))),
                   SizedBox(
                     height: 15.0,
                   ),
+                  tipe == "ubah"
+                      ? Row(
+                          children: [
+                            Text('Assign To : '),
+                            Switch(
+                              onChanged: (bool value) {
+                                // setState(() {
+                                flagswitchnextuser = value;
+                                // });
+                              },
+                              activeTrackColor: thirdcolor,
+                              activeColor: Colors.green,
+                              value: flagswitchnextuser,
+                            ),
+                            flagswitchnextuser == true
+                                ? TextFormField(
+                                    controller: _tecKeteranganNextUser,
+                                    textCapitalization:
+                                        TextCapitalization.characters,
+                                    decoration: InputDecoration(
+                                        icon: Icon(Icons.cabin_rounded),
+                                        labelText: 'Keterangan Next Progress',
+                                        hintText: 'Masukkan Deskripsi',
+                                        suffixIcon: Icon(Icons
+                                            .check_circle_outline_outlined)))
+                                : SizedBox(
+                                    height: 0,
+                                  ),
+                          ],
+                        )
+                      : Container(),
+                  SizedBox(
+                    height: 10,
+                  ),
                   ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _modalKonfirmasi(
+                            context,
+                            tipe,
+                            token,
+                            _tecKeterangan.text.toString(),
+                            idpermintaan,
+                            tipeinsert,
+                            idprogress,
+                            flag_selesai,
+                            next_idpengguna,
+                            _tecKeteranganNextUser.text.toString(),
+                            _tecUrlProgress.text.toString());
+                      },
                       style: ElevatedButton.styleFrom(
                           elevation: 0.0, primary: backgroundcolor),
                       child: Ink(
@@ -150,7 +191,6 @@ class ProgressModalBottom {
       String token,
       String keterangan,
       String idpermintaan,
-      String idnext_user,
       String tipeinsert,
       String idprogress,
       String flag_selesai,
@@ -237,7 +277,6 @@ class ProgressModalBottom {
                                   token,
                                   keterangan,
                                   idpermintaan,
-                                  idnext_user,
                                   tipeinsert,
                                   idprogress,
                                   flag_selesai,
@@ -251,7 +290,6 @@ class ProgressModalBottom {
                                   token,
                                   keterangan,
                                   idpermintaan,
-                                  idnext_user,
                                   tipeinsert,
                                   idprogress,
                                   flag_selesai,
@@ -299,7 +337,6 @@ class ProgressModalBottom {
       String token,
       String keterangan,
       String idpermintaan,
-      String idnext_user,
       String tipeinsert,
       String idprogress,
       String flag_selesai,
@@ -317,10 +354,11 @@ class ProgressModalBottom {
       ProgressModel dataprogress = ProgressModel(
           keterangan: keterangan,
           idpermintaan: idpermintaan,
-          next_idpengguna: idnext_user,
+          idnextuser: next_idpengguna,
           tipe: tipeinsert,
           flag_selesai: flag_selesai,
-          keterangan_selesai: keterangan_nextuser);
+          keterangan_selesai: keterangan_nextuser,
+          url_progress: url_progress);
       if (tipe == 'tambah') {
         _apiService.addProgres(token, dataprogress).then((isSuccess) {
           if (isSuccess) {
@@ -343,6 +381,13 @@ class ProgressModalBottom {
                 "assets/images/sorry.png");
           }
           return;
+        }).onError((error, stackTrace) {
+          ReusableClasses().modalbottomWarning(
+              context,
+              "Gagal!",
+              "${_apiService.responseCode.messageApi}",
+              "f407",
+              "assets/images/sorry.png");
         });
       } else if (tipe == 'ubah') {
         _apiService

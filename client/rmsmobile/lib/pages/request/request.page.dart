@@ -45,23 +45,25 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       username = sp.getString("username");
       jabatan = sp.getString("jabatan");
     });
-    fetchKomponen(token!).then((value) {
+    fetchPermintaan(token!).then((value) {
+      print("PERMINTAAN?" + value.toString());
       setState(() {
         _isLoading = false;
         _requests.addAll(value);
         _requestDisplay = _requests;
         print(_requestDisplay.length);
       });
-    }).onError((error, stackTrace) {
-      print("REQUEST STATUS CODE?" + error.toString());
-      ReusableClasses().clearSharedPreferences();
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Loginscreen(
-                    tipe: 'sesiberakhir',
-                  )));
     });
+    // .onError((error, stackTrace) {
+    //   print("REQUEST STATUS CODE?" + error.toString());
+    //   ReusableClasses().clearSharedPreferences();
+    //   Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (context) => Loginscreen(
+    //                 tipe: 'sesiberakhir',
+    //               )));
+    // });
   }
 
   Future refreshPage() async {
@@ -116,17 +118,8 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          RequestModalBottom().modalAddSite(
-              context,
-              'tambah',
-              token!,
-              keterangan!,
-              kategori!,
-              duedate!,
-              flag_selesai!,
-              idpermintaan!,
-              keterangan_selesai!,
-              tipeupdate!);
+          RequestModalBottom().modalAddRequest(
+              context, 'tambah', token!, "", "", "", "", "", "", "");
         },
         backgroundColor: thirdcolor,
         child: Icon(

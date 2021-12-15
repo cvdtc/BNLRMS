@@ -22,10 +22,10 @@ const pool = mysql.createPool({
 })
 
 var nows = {
-        toSqlString: function () {
-            return "NOW()";
-        },
-    };
+    toSqlString: function () {
+        return "NOW()";
+    },
+};
 
 /**
  * @swagger
@@ -96,7 +96,7 @@ async function getAllProgress(req, res) {
                                 data: null
                             })
                         } else {
-                            var sqlquery = `SELECT pr.idprogress, pr.keterangan, DATE_FORMAT(pr.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(pr.edited, "%Y-%m-%d %H:%i") as edited, pr.flag_selesai, pr.next_idpengguna, pr.idpengguna, pr.idpermintaan, pe.keterangan as permintaan, pe.kategori, DATE_FORMAT(pe.due_date, "%Y-%m-%d") as due_date, p.nama, pe.url_web as url_permintaan, pr.url_web as url_perogress FROM permintaan pe, progress pr, pengguna p WHERE pr.idpermintaan=pe.idpermintaan AND pe.idpengguna=p.idpengguna AND pr.idpengguna = ? AND pr.flag_selesai=0` //[1]
+                            var sqlquery = `SELECT pr.idprogress, pr.keterangan, DATE_FORMAT(pr.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(pr.edited, "%Y-%m-%d %H:%i") as edited, pr.flag_selesai, pr.next_idpengguna as idnextuser, pr.idpengguna, pr.idpermintaan, pe.keterangan as permintaan, pe.kategori, DATE_FORMAT(pe.due_date, "%Y-%m-%d") as due_date, p.nama, pe.url_web as url_permintaan, pr.url_web as url_progress FROM permintaan pe, progress pr, pengguna p WHERE pr.idpermintaan=pe.idpermintaan AND pe.idpengguna=p.idpengguna AND pr.idpengguna = ? AND pr.flag_selesai=0` //[1]
                             database.query(sqlquery, [jwtresult.idpengguna], (error, rows) => {
                                 database.release()
                                 if (error) {
@@ -175,7 +175,7 @@ async function getAllProgress(req, res) {
  *                  tipe:
  *                      type: string
  *                      description: tipe menentukan idpengguna yang akan disimpan di database, tipe hanya ada tambahprogress dan nextuser jika tipe tambahprogress idyang disimpan idpengguna yang membuat progress tapi jika nextuser maka yang di simpan idpengguna user yang dituju
- *                  url_web:
+ *                  url_progress:
  *                      type: string
  *                      description: untuk menyimpan alamat url jika diperlukan oleh user
  *      responses:
@@ -204,93 +204,95 @@ async function addProgress(req, res) {
     var idpermintaan = req.body.idpermintaan
     var idnextuser = req.body.idnextuser
     var tipe = req.body.tipe
-    var url_web = req.body.url_web//[1]
+    var url_web = req.body.url_progress//[1]
     const token = req.headers.authorization
     console.log('ada yang mencoba menambah progress', keterangan, idpermintaan, token);
-    if (Object.keys(req.body).length != 5) {
-        return res.status(405).send({
-            message: "Sorry,  parameters not match",
-            error: null,
-            data: null
-        })
-    } else {
-        try {
-            jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
-                if (!jwtresult) {
-                    return res.status(401).send({
-                        message: "Sorry,  Your token has expired!",
-                        error: jwterror,
-                        data: null
-                    });
-                } else {
-                    pool.getConnection(function (error, database) {
-                        if (error) {
-                            return res.status(400).send({
-                                message: "Sorry,  your connection has refused!",
-                                error: error,
-                                data: null
-                            });
-                        } else {
-                            let dataprogress = {
-                                keterangan: keterangan,
-                                flag_selesai: 0,
-                                idpermintaan: idpermintaan,
-                                created: nows,
-                                url_web: url_web,//[1]
-                                idpengguna: jwtresult.idpengguna
-                            }
-                            let dataprogressnext = {
-                                keterangan: keterangan,
-                                flag_selesai: 0,
-                                idpermintaan: idpermintaan,
-                                created: nows,
-                                url_web: url_web,//[1]
-                                idpengguna: idnextuser
-                            }
-                            var sqlquery = "INSERT INTO progress SET ?"
-                            // * ketika insert tipe akan menentukan apa yang di insert, ketika tipe next user maka idpengguna akan di insert idnext user selain tipe next user, idpengguna yang di insert berasal dari jwt
-                            database.query(sqlquery, tipe == 'nextuser' ? dataprogressnext : dataprogress, (error, result) => {
-                                database.release()
-                                if (error) {
-                                    database.rollback(function () {
-                                        return res.status(407).send({
-                                            message: "Sorry,  query has error!",
-                                            error: error,
-                                            data: null
-                                        })
+    // if (Object.keys(req.body).length != 5) {
+    //     return res.status(405).send({
+    //         message: "Sorry,  parameters not match",
+    //         error: null,
+    //         data: null
+    //     })
+    // } else {
+    try {
+        jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
+            if (!jwtresult) {
+                return res.status(401).send({
+                    message: "Sorry,  Your token has expired!",
+                    error: jwterror,
+                    data: null
+                });
+            } else {
+                pool.getConnection(function (error, database) {
+                    if (error) {
+                        return res.status(400).send({
+                            message: "Sorry,  your connection has refused!",
+                            error: error,
+                            data: null
+                        });
+                    } else {
+                        let dataprogress = {
+                            keterangan: keterangan,
+                            flag_selesai: 0,
+                            idpermintaan: idpermintaan,
+                            created: nows,
+                            url_web: url_web,//[1]
+                            next_idpengguna: 0,
+                            idpengguna: jwtresult.idpengguna
+                        }
+                        let dataprogressnext = {
+                            keterangan: keterangan,
+                            flag_selesai: 0,
+                            idpermintaan: idpermintaan,
+                            created: nows,
+                            url_web: url_web,//[1]
+                            idpengguna: idnextuser
+                        }
+                        var sqlquery = "INSERT INTO progress SET ?"
+                        // * ketika insert tipe akan menentukan apa yang di insert, ketika tipe next user maka idpengguna akan di insert idnext user selain tipe next user, idpengguna yang di insert berasal dari jwt
+                        database.query(sqlquery, tipe == 'nextuser' ? dataprogressnext : dataprogress, (error, result) => {
+                            database.release()
+                            if (error) {
+                                database.rollback(function () {
+                                    console.log(dataprogress);
+                                    return res.status(407).send({
+                                        message: `Sorry,  query has error! ${error}`,
+                                        error: error,
+                                        data: null
                                     })
-                                } else {
-                                    database.commit(function (errcommit) {
-                                        if (errcommit) {
-                                            database.rollback(function () {
-                                                return res.status(407).send({
-                                                    message: "Sorry,  fail to store!",
-                                                    error: errcommit,
-                                                    data: null
-                                                })
-                                            })
-                                        } else {
-                                            return res.status(201).send({
-                                                message: "Done!,  Data has been stored!",
-                                                error: null,
+                                })
+                            } else {
+                                database.commit(function (errcommit) {
+                                    if (errcommit) {
+                                        database.rollback(function () {
+                                            return res.status(407).send({
+                                                message: "Sorry,  fail to store!",
+                                                error: errcommit,
                                                 data: null
                                             })
-                                        }
-                                    })
-                                }
-                            })
-                        }
-                    })
-                }
-            })
-        } catch (error) {
-            return res.status(403).send({
-                message: "forbiden!",
-                error: error,
-                data: null
-            })
-        }
+                                        })
+                                    } else {
+                                        return res.status(201).send({
+                                            message: "Done!,  Data has been stored!",
+                                            error: null,
+                                            data: null
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    } catch (error) {
+        return res.status(403).send({
+            message: "forbiden!",
+            error: error,
+            data: null
+        })
     }
+    // }
 }
 
 // * FUNCTION CHANGE DATA PROGRESS
@@ -331,7 +333,7 @@ async function addProgress(req, res) {
  *                  next_idpengguna:
  *                      type: int
  *                      description: (opsional) untuk menentukan apakah progress ini mau diteruskan ke idpengguna lain atau tidak. jika tidak defaultnya adalah `0` jika iya maka `diisi sesuai idpengguna yang dituju`
- *                  url_web:
+ *                  url_progress:
  *                      type: string
  *                      description: untuk menyimpan alamat url jika diperlukan oleh user
  *      responses:
@@ -359,7 +361,7 @@ async function ubahProgress(req, res) {
     var keterangan = req.body.keterangan
     var flag_selesai = req.body.flag_selesai
     var next_idpengguna = req.body.next_idpengguna
-    var url_web = req.body.url_web // [1]
+    var url_web = req.body.url_progress // [1]
     var idprogress = req.params.idprogress
     const token = req.headers.authorization
     if (Object.keys(req.body).length != 4) {
@@ -390,7 +392,7 @@ async function ubahProgress(req, res) {
                                 let updateprogress = {
                                     keterangan: keterangan,
                                     flag_selesai: flag_selesai,
-                                    next_idpengguna: next_idpengguna, 
+                                    next_idpengguna: next_idpengguna,
                                     edited: nows,
                                     url_web: url_web, // [1]
                                     idpengguna: jwtresult.idpengguna
@@ -425,7 +427,7 @@ async function ubahProgress(req, res) {
                                                         let notificationMessage = {
                                                             notification: {
                                                                 title: `Update progress dari ${result[0].nama}`,
-                                                                body: `Ada progress baru untuk `+result[0].permintaan,
+                                                                body: `Ada progress baru untuk ` + result[0].permintaan,
                                                                 sound: 'default',
                                                                 'click_action': 'FCM_PLUGIN_ACTIVITY'
                                                             },

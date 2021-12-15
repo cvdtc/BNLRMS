@@ -21,7 +21,7 @@ router.get('/pengguna', function (req, res) {
 router.post('/pengguna', function (req, res) {
     RouteToPengguna.addPengguna(req, res)
 })
-router.put('/pengguna/:idpengguna', function (req, res) {
+router.put('/pengguna', function (req, res) {
     RouteToPengguna.ubahPengguna(req, res)
 })
 
@@ -75,5 +75,8 @@ var RouteToReport = require('../controllers/report.controller')
 router.get('/timeline/:idpermintaan', function (req, res) {
     RouteToReport.getTimeline(req, res)
 });
+router.get('/dashboard', function (req, res) {
+    RouteToReport.getDashboard(req, res)
+});
 
-module.exports = router;
+module.exports = router

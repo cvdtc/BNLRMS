@@ -6,7 +6,7 @@ class ProgressModel {
       created,
       edited,
       flag_selesai,
-      next_idpengguna,
+      idnextuser,
       idpengguna,
       idpermintaan,
       permintaan,
@@ -14,7 +14,8 @@ class ProgressModel {
       due_date,
       nama,
       tipe,
-      keterangan_selesai;
+      keterangan_selesai,
+      url_progress;
 
   ProgressModel(
       {this.idprogress,
@@ -22,7 +23,7 @@ class ProgressModel {
       this.created,
       this.edited,
       this.flag_selesai,
-      this.next_idpengguna,
+      this.idnextuser,
       this.idpengguna,
       this.idpermintaan,
       this.permintaan,
@@ -30,7 +31,8 @@ class ProgressModel {
       this.due_date,
       this.nama,
       this.tipe,
-      this.keterangan_selesai});
+      this.keterangan_selesai,
+      this.url_progress});
 
   factory ProgressModel.fromJson(Map<dynamic, dynamic> map) {
     return ProgressModel(
@@ -39,22 +41,24 @@ class ProgressModel {
         created: map["created"],
         edited: map["edited"],
         flag_selesai: map["flag_selesai"],
-        next_idpengguna: map["next_idpengguna"],
+        idnextuser: map["idnextuser"],
         idpengguna: map["idpengguna"],
         idpermintaan: map["idpermintaan"],
         permintaan: map["permintaan"],
         kategori: map["kategori"],
         due_date: map["due_date"],
-        nama: map["nama"]);
+        nama: map["nama"],
+        url_progress: map["url_progress"]);
   }
 
   Map<String, dynamic> addToJson() {
     return {
       "keterangan": keterangan,
       "idpermintaan": idpermintaan,
-      "idnextuser": next_idpengguna,
+      "idnextuser": idnextuser,
       "tipe": tipe,
-      "keterangan_selesai": keterangan_selesai
+      "keterangan_selesai": keterangan_selesai,
+      "url_progress": url_progress
     };
   }
 
@@ -62,13 +66,14 @@ class ProgressModel {
     return {
       "keterangan": keterangan,
       "flag_selesai": flag_selesai,
-      "next_idpengguna": next_idpengguna,
+      "next_idpengguna": idnextuser,
+      "url_progress": url_progress,
     };
   }
 
   @override
   String toString() {
-    return 'idprogress: $idprogress, keterangan: $keterangan, created: $created, edited:$edited, flag_selesai: $flag_selesai, next_idpengguna: $next_idpengguna, due_date: $due_date, permintaan: $permintaan, kategori: $kategori, nama: $nama';
+    return 'idprogress: $idprogress, keterangan: $keterangan, created: $created, edited:$edited, flag_selesai: $flag_selesai, idnextuser: $idnextuser, due_date: $due_date, permintaan: $permintaan, kategori: $kategori, nama: $nama';
   }
 }
 

@@ -62,6 +62,7 @@ class _DahsboardState extends State<Dahsboard> {
       notifprogress = sp.getBool("notif_progress");
     });
     _apiService.getDashboard(token!).then((value) {
+      print("Dashboard?" + value.toString());
       setState(() {
         _dashboard.addAll(value!);
       });

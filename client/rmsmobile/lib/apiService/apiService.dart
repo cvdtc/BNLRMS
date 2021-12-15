@@ -7,13 +7,12 @@ import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.gantipassword.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
-import 'package:rmsmobile/model/request/request.model.edit.dart';
 import 'package:rmsmobile/model/response/responsecode.dart';
 import 'package:rmsmobile/model/timeline/timeline.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  final String baseUrl = "http://192.168.1.207:9990/api/v1/";
+  final String baseUrl = "http://192.168.4.78:9990/api/v1/";
   Client client = Client();
   String? token = "";
 
@@ -61,7 +60,7 @@ class ApiService {
     // ++ fyi : for getting response message from api
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
-    print("Data Komponen : " + response.body);
+    print("Data Request : " + response.body);
     if (response.statusCode == 200) {
       return RequestModelFromJson(response.body);
     } else {
@@ -90,7 +89,7 @@ class ApiService {
   }
 
   Future<bool> ubahRequest(
-      String token, String idpermintaan, RequestModelEdit data) async {
+      String token, String idpermintaan, RequestModel data) async {
     var url = Uri.parse(baseUrl + 'permintaan' + '/' + idpermintaan);
     print('hasilurl $url idpermintaannya $idpermintaan');
     var response = await client.put(url,
@@ -98,7 +97,7 @@ class ApiService {
           'content-type': 'application/json',
           'Authorization': 'Bearer ${token}'
         },
-        body: RequestModelEditToJson(data));
+        body: RequestModelToJson(data));
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
     if (response.statusCode == 200) {
@@ -234,7 +233,7 @@ class ApiService {
     // ++ fyi : for getting response message from api
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
-    print("Data Site : " + response.body);
+    print("Data Timeline : " + response.body);
     if (response.statusCode == 200) {
       return timelineFromJson(response.body);
     } else {

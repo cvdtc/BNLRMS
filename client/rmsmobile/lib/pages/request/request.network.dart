@@ -6,24 +6,23 @@ import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 
 final String _apiService = ApiService().baseUrl;
-List<RequestModel> parseSite(String responseBody) {
+List<RequestModel> parsePermintaan(String responseBody) {
   var listSite = json.decode(responseBody)['data'] as List<dynamic>;
   print(listSite);
   return listSite.map((e) => RequestModel.fromJson(e)).toList();
 }
 
-Future<List<RequestModel>> fetchKomponen(String token) async {
+Future<List<RequestModel>> fetchPermintaan(String token) async {
   var url = Uri.parse(_apiService + 'permintaan');
   var response = await http.get(url, headers: {
     'content-type': 'application/json',
     // ++ fyi : sending token with BEARER
     'Authorization': 'Bearer ' + token
   });
-  print("NETWORK permintaan? " + response.statusCode.toString());
+  print("NETWORK permintaan? " + response.body);
   // return compute(parseSite, response.body);
   if (response.statusCode == 200) {
-    print('Success?');
-    return compute(parseSite, response.body);
+    return compute(parsePermintaan, response.body);
   } else {
     print("REQUEST STATUS CODE?" + response.statusCode.toString());
     // return compute(null, null);

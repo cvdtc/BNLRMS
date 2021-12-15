@@ -44,18 +44,7 @@ class _PermintaanListState extends State<PermintaanList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _apiService
-          .getListRequest(token.toString())
-          .onError((error, stackTrace) {
-        print("List Permintaan Dashboard? " + error.toString());
-        ReusableClasses().clearSharedPreferences();
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Loginscreen(
-                      tipe: 'sesiberakhir',
-                    )));
-      }),
+      future: _apiService.getListRequest(token.toString()),
       builder: (context, AsyncSnapshot<List<RequestModel>?> snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -118,7 +107,6 @@ class _PermintaanListState extends State<PermintaanList> {
           itemCount: dataIndex!.length,
           itemBuilder: (context, index) {
             RequestModel? dataRequest = dataIndex[index];
-            print('flagselesainya ${dataRequest.flag_selesai}');
             return InkWell(
               onTap: () {
                 Navigator.push(

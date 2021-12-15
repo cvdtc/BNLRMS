@@ -181,6 +181,8 @@ class _LoginscreenState extends State<Loginscreen> {
       setState(() => isloading = false);
       // if login success page will be route to home page
       if (isSuccess) {
+        _controllerUsername.clear();
+        _controllerPassword.clear();
         print('sukses masuk');
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BottomNav()));

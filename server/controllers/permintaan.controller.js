@@ -98,7 +98,7 @@ async function getAllPermintaan(req, res) {
                             })
                         } else {
                             var filter = (jwtresult.jabatan == "Marketing") ? (" where idpengguna=" + jwtresult.idpengguna) : (""); //[1]
-                            var sqlquery = `select a.*, ifnull(b.jml,0) as jmlprogress from (SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request, p.idpengguna FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna)a left join (select idpermintaan, count(*) as jml from progress GROUP BY idpermintaan)b ON a.idpermintaan=b.idpermintaan ` + filter + ` ORDER BY flag_selesai ASC, due_date ASC`
+                            var sqlquery = `select a.*, ifnull(b.jml,0) as jmlprogress from (SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request, p.idpengguna, url_web as url_permintaan FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna)a left join (select idpermintaan, count(*) as jml from progress GROUP BY idpermintaan)b ON a.idpermintaan=b.idpermintaan ` + filter + ` ORDER BY flag_selesai ASC, due_date ASC`
                             database.query(sqlquery, (error, rows) => {
                                 database.release()
                                 if (error) {
@@ -209,15 +209,15 @@ async function addPermintaan(req, res) {
     var kategori = req.body.kategori
     var due_date = req.body.due_date
     var flag_selesai = req.body.flag_selesai
-    var url_web = req.body.url_web //[3]
+    var url_web = req.body.url_permintaan //[3]
     const token = req.headers.authorization
-    if (Object.keys(req.body).length != 5) {
-        return res.status(405).send({
-            message: "Sorry,  parameters not match",
-            error: null,
-            data: null
-        })
-    } else {
+    // if (Object.keys(req.body).length != 5) {
+    //     return res.status(405).send({
+    //         message: "Sorry,  parameters not match",
+    //         error: null,
+    //         data: null
+    //     })
+    // } else {
         try {
             jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
                 if (!jwtresult) {
@@ -284,7 +284,7 @@ async function addPermintaan(req, res) {
                                                     }
                                                 }
                                                 // * sending notification topic RMSPERMINTAAN
-                                                fcmadmin.messaging().sendToTopic(process.env.NOTIFIKASI_PERMINTAAN, notificationMessage)
+                                                fcmadmin.messaging().sendToTopic("RMSPERMINTAANdebug", notificationMessage)
                                                     .then(function (response) {
                                                         return res.status(201).send({
                                                             message: "Done!,  Data has been stored!",
@@ -315,7 +315,7 @@ async function addPermintaan(req, res) {
                 data: null
             })
         }
-    }
+    // }
 }
 
 // * FUNCTION CHANGE DATA PERMINTAAN
@@ -362,10 +362,7 @@ async function addPermintaan(req, res) {
  *                  keterangan_selesai:
  *                      type: string
  *                      description: untuk menyimpan data keterangan selesai apabila permintaan/request benar2 selesai
- *                  tipeupdate:
- *                      type: string
- *                      description: untuk menentukan tipe update data apakah update permintaan atau update selesai. tipe update hanya ada 2 yaitu `data` untuk mengupdate data permintaan/request atau `selesai` untuk mengupdate data permintaan menjadi selesai
- *                  url_web:
+ *                  url_permintaan:
  *                      type: string
  *                      description: untuk menyimpan alamat url jika diperlukan oleh user
  *      responses:
@@ -397,17 +394,16 @@ async function ubahPermintaan(req, res) {
     var due_date = req.body.due_date
     var flag_selesai = req.body.flag_selesai
     var keterangan_selesai = req.body.keterangan_selesai
-    var tipeupdate = req.body.tipeupdate
-    var url_web = req.body.url_web
+    var url_web = req.body.url_permintaan
     var idpermintaan = req.params.idpermintaan
     const token = req.headers.authorization
-    if (Object.keys(req.body).length != 7) {
-        return res.status(405).send({
-            message: "Sorry,  parameters not match",
-            error: null,
-            data: null
-        })
-    } else {
+    // if (Object.keys(req.body).length != 7) {
+    //     return res.status(405).send({
+    //         message: "Sorry,  parameters not match",
+    //         error: null,
+    //         data: null
+    //     })
+    // } else {
         try {
             jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
                 if (!jwtresult) {
@@ -436,20 +432,11 @@ async function ubahPermintaan(req, res) {
                                     url_web: url_web // [2]
                                     // idpengguna: jwtresult.idpengguna // [1]
                                 }
-                                let selesaidatapermintaan = {
-                                    keterangan: keterangan,
-                                    kategori: kategori,
-                                    due_date: due_date,
-                                    flag_selesai: flag_selesai,
-                                    keterangan_selesai: keterangan_selesai,
-                                    date_selesai: nows,
-                                    url_web: url_web, //[2]
-                                    idpengguna_close_permintaan: jwtresult.idpengguna
-                                }
                                 
                                 var sqlquery = "UPDATE permintaan SET ? WHERE idpengguna=? and idpermintaan = ?" // [3]
-                                database.query(sqlquery, [tipeupdate == 'selesai' ? selesaidatapermintaan : updatedatapermintaan, jwtresult.idpengguna, idpermintaan], (error, result) => {
+                                database.query(sqlquery, [updatedatapermintaan, jwtresult.idpengguna, idpermintaan], (error, result) => {
                                     database.release()
+                                    console.log(updatedatapermintaan)
                                     if (error) {
                                         database.rollback(function () {
                                             return res.status(407).send({
@@ -490,7 +477,7 @@ async function ubahPermintaan(req, res) {
                 data: null
             })
         }
-    }
+    // }
 }
 
 // * FUNCTION CHANGE DATA PERMINTAAN

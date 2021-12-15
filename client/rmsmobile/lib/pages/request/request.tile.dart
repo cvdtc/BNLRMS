@@ -42,8 +42,9 @@ class _RequestTileState extends State<RequestTile> {
                   widget.request.kategori,
                   widget.request.idpermintaan.toString(),
                   widget.request.keterangan_selesai,
-                  widget.request.tipeupdate,
-                  widget.request.flag_selesai);
+                  widget.request.flag_selesai,
+                  widget.request.nama_request,
+                  widget.request.url_permintaan);
             });
           },
           child: Card(

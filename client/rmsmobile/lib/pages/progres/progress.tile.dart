@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:http/http.dart' as client;
+import 'package:rmsmobile/pages/progres/progress.bottom.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -100,410 +100,422 @@ class _ProgressTileState extends State<ProgressTile> {
               onTap: () {
                 setState(() {
                   // ! ???? WTF code
-                  showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (BuildContext context) {
-                        return Padding(
-                          padding: MediaQuery.of(context).viewInsets,
-                          child: Container(
-                            padding: EdgeInsets.all(15.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('DETAIL PROGRES',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold)),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  'Deskripsi : ' + widget.progress.keterangan,
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                                Text('Kategori: ' + widget.progress.kategori,
-                                    style: TextStyle(fontSize: 14)),
-                                Text('Due Date: ' + widget.progress.due_date,
-                                    style: TextStyle(fontSize: 14)),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Divider(
-                                  height: 5,
-                                ),
-                                TextFormField(
-                                    controller: _tecKeterangan,
-                                    textCapitalization:
-                                        TextCapitalization.characters,
-                                    decoration: InputDecoration(
-                                        icon: Icon(Icons.cabin_rounded),
-                                        labelText: 'Keterangan Progres',
-                                        hintText: 'Masukkan Deskripsi',
-                                        suffixIcon: Icon(Icons
-                                            .check_circle_outline_outlined))),
-                                SizedBox(
-                                  height: 15.0,
-                                ),
-                                StatefulBuilder(builder: (BuildContext context,
-                                    void Function(void Function()) setState) {
-                                  return Container(
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text('Next User ? '),
-                                            Switch(
-                                              onChanged: (bool value) {
-                                                // value == true ? 'selesai' : 'data';
-                                                setState(() {
-                                                  isSelesai = value;
-                                                });
-                                                print(
-                                                    'telah diswitch $value + $isSelesai');
-                                              },
-                                              activeTrackColor: thirdcolor,
-                                              activeColor: Colors.green,
-                                              value: isSelesai,
-                                            ),
-                                            isSelesai == true
-                                                ? Container(
-                                                    // padding: EdgeInsets.only(
-                                                    //     left: 15,
-                                                    //     right: 15,
-                                                    //     top: 5),
-                                                    color: Colors.white,
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        _buildKomboPengguna(
-                                                            _mypengguna
-                                                                .toString())
-                                                      ],
-                                                    ),
-                                                  )
-                                                : SizedBox(
-                                                    height: 0,
-                                                  ),
-                                          ],
-                                        ),
-                                        isSelesai == true
-                                            ? TextFormField(
-                                                controller: _tecKeteranganNext,
-                                                textCapitalization:
-                                                    TextCapitalization
-                                                        .characters,
-                                                decoration: InputDecoration(
-                                                    icon: Icon(
-                                                        Icons.cabin_rounded),
-                                                    labelText:
-                                                        'Keterangan Next Progress',
-                                                    hintText:
-                                                        'Masukkan Deskripsi',
-                                                    suffixIcon: Icon(Icons
-                                                        .check_circle_outline_outlined)))
-                                            : SizedBox(
-                                                height: 0,
-                                              ),
-                                      ],
-                                    ),
-                                  );
-                                }),
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      //   print(
-                                      //       'heyyuuu $_mypengguna $keterangan ${_tecKeterangan.text}');
-                                      //   if (_tecKeterangan.text.toString() ==
-                                      //       "") {
-                                      //     _modalbottomSite(
-                                      //         context,
-                                      //         "Tidak Valid!",
-                                      //         "Pastikan semua kolom terisi dengan benar",
-                                      //         'f405',
-                                      //         'assets/images/sorry.png');
-                                      //   } else {
-                                      //     showModalBottomSheet(
-                                      //         context: context,
-                                      //         isScrollControlled: true,
-                                      //         backgroundColor: Colors.white,
-                                      //         shape: RoundedRectangleBorder(
-                                      //             borderRadius: BorderRadius.only(
-                                      //                 topLeft:
-                                      //                     Radius.circular(15.0),
-                                      //                 topRight:
-                                      //                     Radius.circular(15.0))),
-                                      //         builder: (BuildContext context) {
-                                      //           return Padding(
-                                      //             padding: MediaQuery.of(context)
-                                      //                 .viewInsets,
-                                      //             child: Container(
-                                      //               padding: EdgeInsets.all(15.0),
-                                      //               child: Column(
-                                      //                 mainAxisAlignment:
-                                      //                     MainAxisAlignment
-                                      //                         .center,
-                                      //                 crossAxisAlignment:
-                                      //                     CrossAxisAlignment
-                                      //                         .center,
-                                      //                 mainAxisSize:
-                                      //                     MainAxisSize.min,
-                                      //                 children: [
-                                      //                   SizedBox(
-                                      //                     height: 10,
-                                      //                   ),
-                                      //                   Text(
-                                      //                     'Konfirmasi Selesai',
-                                      //                     style: TextStyle(
-                                      //                         fontSize: 22,
-                                      //                         fontWeight:
-                                      //                             FontWeight
-                                      //                                 .bold),
-                                      //                   ),
-                                      //                   SizedBox(
-                                      //                     height: 20,
-                                      //                   ),
-                                      //                   Text(
-                                      //                       'Apakah anda yakin akan menyelesaikan tugas ini ? ',
-                                      //                       style: TextStyle(
-                                      //                           fontSize: 16)),
-                                      //                   SizedBox(
-                                      //                     height: 20,
-                                      //                   ),
-                                      //                   Row(
-                                      //                     mainAxisAlignment:
-                                      //                         MainAxisAlignment
-                                      //                             .center,
-                                      //                     crossAxisAlignment:
-                                      //                         CrossAxisAlignment
-                                      //                             .center,
-                                      //                     children: [
-                                      //                       ElevatedButton(
-                                      //                           onPressed: () {
-                                      //                             Navigator.of(
-                                      //                                     context)
-                                      //                                 .pop();
-                                      //                           },
-                                      //                           style:
-                                      //                               ElevatedButton
-                                      //                                   .styleFrom(
-                                      //                             elevation: 0.0,
-                                      //                             primary:
-                                      //                                 Colors.red,
-                                      //                           ),
-                                      //                           child: Ink(
-                                      //                             decoration: BoxDecoration(
-                                      //                                 borderRadius:
-                                      //                                     BorderRadius.circular(
-                                      //                                         18)),
-                                      //                             child:
-                                      //                                 Container(
-                                      //                               alignment:
-                                      //                                   Alignment
-                                      //                                       .center,
-                                      //                               child: Text(
-                                      //                                 "Batal",
-                                      //                               ),
-                                      //                             ),
-                                      //                           )),
-                                      //                       SizedBox(
-                                      //                         width: 55,
-                                      //                       ),
-                                      //                       ElevatedButton(
-                                      //                           onPressed: () {
-                                      //                             print(
-                                      //                                 'keterangannya ${_tecKeterangan.text} $token');
-                                      //                             ProgressModelEdit modeledit = ProgressModelEdit(
-                                      //                                 keterangan:
-                                      //                                     _tecKeterangan
-                                      //                                         .text
-                                      //                                         .toString(),
-                                      //                                 flag_selesai:
-                                      //                                     '1',
-                                      //                                 next_idpengguna:
-                                      //                                     _mypengguna);
+                  ProgressModalBottom().modalAddProgress(
+                      context,
+                      'ubah',
+                      widget.token,
+                      widget.progress.keterangan,
+                      widget.progress.idpermintaan.toString(),
+                      "",
+                      widget.progress.idprogress.toString(),
+                      widget.progress.flag_selesai.toString(),
+                      widget.progress.idnextuser.toString(),
+                      "",
+                      widget.progress.url_progress);
+                  // showModalBottomSheet(
+                  //     context: context,
+                  //     isScrollControlled: true,
+                  //     builder: (BuildContext context) {
+                  //       return Padding(
+                  //         padding: MediaQuery.of(context).viewInsets,
+                  //         child: Container(
+                  //           padding: EdgeInsets.all(15.0),
+                  //           child: Column(
+                  //             mainAxisAlignment: MainAxisAlignment.start,
+                  //             crossAxisAlignment: CrossAxisAlignment.start,
+                  //             mainAxisSize: MainAxisSize.min,
+                  //             children: [
+                  //               Text('DETAIL PROGRES',
+                  //                   style: TextStyle(
+                  //                       fontSize: 18,
+                  //                       fontWeight: FontWeight.bold)),
+                  //               SizedBox(
+                  //                 height: 5,
+                  //               ),
+                  //               Text(
+                  //                 'Deskripsi : ' + widget.progress.keterangan,
+                  //                 style: TextStyle(fontSize: 14),
+                  //               ),
+                  //               Text('Kategori: ' + widget.progress.kategori,
+                  //                   style: TextStyle(fontSize: 14)),
+                  //               Text('Due Date: ' + widget.progress.due_date,
+                  //                   style: TextStyle(fontSize: 14)),
+                  //               SizedBox(
+                  //                 height: 10,
+                  //               ),
+                  //               Divider(
+                  //                 height: 5,
+                  //               ),
+                  //               TextFormField(
+                  //                   controller: _tecKeterangan,
+                  //                   textCapitalization:
+                  //                       TextCapitalization.characters,
+                  //                   decoration: InputDecoration(
+                  //                       icon: Icon(Icons.cabin_rounded),
+                  //                       labelText: 'Keterangan Progres',
+                  //                       hintText: 'Masukkan Deskripsi',
+                  //                       suffixIcon: Icon(Icons
+                  //                           .check_circle_outline_outlined))),
+                  //               SizedBox(
+                  //                 height: 15.0,
+                  //               ),
+                  //               StatefulBuilder(builder: (BuildContext context,
+                  //                   void Function(void Function()) setState) {
+                  //                 return Container(
+                  //                   child: Column(
+                  //                     children: [
+                  //                       Row(
+                  //                         children: [
+                  //                           Text('Next User ? '),
+                  //                           Switch(
+                  //                             onChanged: (bool value) {
+                  //                               // value == true ? 'selesai' : 'data';
+                  //                               setState(() {
+                  //                                 isSelesai = value;
+                  //                               });
+                  //                               print(
+                  //                                   'telah diswitch $value + $isSelesai');
+                  //                             },
+                  //                             activeTrackColor: thirdcolor,
+                  //                             activeColor: Colors.green,
+                  //                             value: isSelesai,
+                  //                           ),
+                  //                           isSelesai == true
+                  //                               ? Container(
+                  //                                   // padding: EdgeInsets.only(
+                  //                                   //     left: 15,
+                  //                                   //     right: 15,
+                  //                                   //     top: 5),
+                  //                                   color: Colors.white,
+                  //                                   child: Row(
+                  //                                     mainAxisAlignment:
+                  //                                         MainAxisAlignment
+                  //                                             .spaceBetween,
+                  //                                     children: [
+                  //                                       _buildKomboPengguna(
+                  //                                           _mypengguna
+                  //                                               .toString())
+                  //                                     ],
+                  //                                   ),
+                  //                                 )
+                  //                               : SizedBox(
+                  //                                   height: 0,
+                  //                                 ),
+                  //                         ],
+                  //                       ),
+                  //                       isSelesai == true
+                  //                           ? TextFormField(
+                  //                               controller: _tecKeteranganNext,
+                  //                               textCapitalization:
+                  //                                   TextCapitalization
+                  //                                       .characters,
+                  //                               decoration: InputDecoration(
+                  //                                   icon: Icon(
+                  //                                       Icons.cabin_rounded),
+                  //                                   labelText:
+                  //                                       'Keterangan Next Progress',
+                  //                                   hintText:
+                  //                                       'Masukkan Deskripsi',
+                  //                                   suffixIcon: Icon(Icons
+                  //                                       .check_circle_outline_outlined)))
+                  //                           : SizedBox(
+                  //                               height: 0,
+                  //                             ),
+                  //                     ],
+                  //                   ),
+                  //                 );
+                  //               }),
+                  //               SizedBox(
+                  //                 height: 10.0,
+                  //               ),
+                  //               ElevatedButton(
+                  //                   onPressed: () {
+                  //                     //   print(
+                  //                     //       'heyyuuu $_mypengguna $keterangan ${_tecKeterangan.text}');
+                  //                     //   if (_tecKeterangan.text.toString() ==
+                  //                     //       "") {
+                  //                     //     _modalbottomSite(
+                  //                     //         context,
+                  //                     //         "Tidak Valid!",
+                  //                     //         "Pastikan semua kolom terisi dengan benar",
+                  //                     //         'f405',
+                  //                     //         'assets/images/sorry.png');
+                  //                     //   } else {
+                  //                     //     showModalBottomSheet(
+                  //                     //         context: context,
+                  //                     //         isScrollControlled: true,
+                  //                     //         backgroundColor: Colors.white,
+                  //                     //         shape: RoundedRectangleBorder(
+                  //                     //             borderRadius: BorderRadius.only(
+                  //                     //                 topLeft:
+                  //                     //                     Radius.circular(15.0),
+                  //                     //                 topRight:
+                  //                     //                     Radius.circular(15.0))),
+                  //                     //         builder: (BuildContext context) {
+                  //                     //           return Padding(
+                  //                     //             padding: MediaQuery.of(context)
+                  //                     //                 .viewInsets,
+                  //                     //             child: Container(
+                  //                     //               padding: EdgeInsets.all(15.0),
+                  //                     //               child: Column(
+                  //                     //                 mainAxisAlignment:
+                  //                     //                     MainAxisAlignment
+                  //                     //                         .center,
+                  //                     //                 crossAxisAlignment:
+                  //                     //                     CrossAxisAlignment
+                  //                     //                         .center,
+                  //                     //                 mainAxisSize:
+                  //                     //                     MainAxisSize.min,
+                  //                     //                 children: [
+                  //                     //                   SizedBox(
+                  //                     //                     height: 10,
+                  //                     //                   ),
+                  //                     //                   Text(
+                  //                     //                     'Konfirmasi Selesai',
+                  //                     //                     style: TextStyle(
+                  //                     //                         fontSize: 22,
+                  //                     //                         fontWeight:
+                  //                     //                             FontWeight
+                  //                     //                                 .bold),
+                  //                     //                   ),
+                  //                     //                   SizedBox(
+                  //                     //                     height: 20,
+                  //                     //                   ),
+                  //                     //                   Text(
+                  //                     //                       'Apakah anda yakin akan menyelesaikan tugas ini ? ',
+                  //                     //                       style: TextStyle(
+                  //                     //                           fontSize: 16)),
+                  //                     //                   SizedBox(
+                  //                     //                     height: 20,
+                  //                     //                   ),
+                  //                     //                   Row(
+                  //                     //                     mainAxisAlignment:
+                  //                     //                         MainAxisAlignment
+                  //                     //                             .center,
+                  //                     //                     crossAxisAlignment:
+                  //                     //                         CrossAxisAlignment
+                  //                     //                             .center,
+                  //                     //                     children: [
+                  //                     //                       ElevatedButton(
+                  //                     //                           onPressed: () {
+                  //                     //                             Navigator.of(
+                  //                     //                                     context)
+                  //                     //                                 .pop();
+                  //                     //                           },
+                  //                     //                           style:
+                  //                     //                               ElevatedButton
+                  //                     //                                   .styleFrom(
+                  //                     //                             elevation: 0.0,
+                  //                     //                             primary:
+                  //                     //                                 Colors.red,
+                  //                     //                           ),
+                  //                     //                           child: Ink(
+                  //                     //                             decoration: BoxDecoration(
+                  //                     //                                 borderRadius:
+                  //                     //                                     BorderRadius.circular(
+                  //                     //                                         18)),
+                  //                     //                             child:
+                  //                     //                                 Container(
+                  //                     //                               alignment:
+                  //                     //                                   Alignment
+                  //                     //                                       .center,
+                  //                     //                               child: Text(
+                  //                     //                                 "Batal",
+                  //                     //                               ),
+                  //                     //                             ),
+                  //                     //                           )),
+                  //                     //                       SizedBox(
+                  //                     //                         width: 55,
+                  //                     //                       ),
+                  //                     //                       ElevatedButton(
+                  //                     //                           onPressed: () {
+                  //                     //                             print(
+                  //                     //                                 'keterangannya ${_tecKeterangan.text} $token');
+                  //                     //                             ProgressModelEdit modeledit = ProgressModelEdit(
+                  //                     //                                 keterangan:
+                  //                     //                                     _tecKeterangan
+                  //                     //                                         .text
+                  //                     //                                         .toString(),
+                  //                     //                                 flag_selesai:
+                  //                     //                                     '1',
+                  //                     //                                 next_idpengguna:
+                  //                     //                                     _mypengguna);
 
-                                      //                             ProgressModelAdd modelAdd = ProgressModelAdd(
-                                      //                                 keterangan: _tecKeteranganNext
-                                      //                                     .text
-                                      //                                     .toString(),
-                                      //                                 idpermintaan: widget
-                                      //                                     .progress
-                                      //                                     .idpermintaan,
-                                      //                                 idnextuser:
-                                      //                                     _mypengguna,
-                                      //                                 tipe:
-                                      //                                     'nextuser');
-                                      //                             print(
-                                      //                                 'dataselesai $modeledit idprogress $idprogress modeladd $modelAdd');
-                                      //                             _apiService
-                                      //                                 .ubahProgresJadiSelesai(
-                                      //                                     token
-                                      //                                         .toString(),
-                                      //                                     idprogress
-                                      //                                         .toString(),
-                                      //                                     modeledit)
-                                      //                                 .then(
-                                      //                                     (isSuccess) {
-                                      //                               print(
-                                      //                                   'disini sukses nggak ?');
-                                      //                               if (isSuccess) {
-                                      //                                 Navigator.of(
-                                      //                                         context)
-                                      //                                     .pop();
-                                      //                                 Fluttertoast.showToast(
-                                      //                                     msg:
-                                      //                                         "Berhasil ubah data progres selesai",
-                                      //                                     backgroundColor:
-                                      //                                         Colors
-                                      //                                             .black,
-                                      //                                     textColor:
-                                      //                                         Colors.white);
-                                      //                                 _tecKeterangan
-                                      //                                     .clear();
-                                      //                                 _apiService
-                                      //                                     .addProgres(
-                                      //                                         token
-                                      //                                             .toString(),
-                                      //                                         modelAdd)
-                                      //                                     .then(
-                                      //                                         (value) {
-                                      //                                   print(
-                                      //                                       'tes progres piye ? $modeledit $modelAdd');
-                                      //                                   print(
-                                      //                                       'disini sukses nggak1 ?');
-                                      //                                   Navigator.of(
-                                      //                                           context)
-                                      //                                       .pop();
-                                      //                                   Fluttertoast.showToast(
-                                      //                                       msg:
-                                      //                                           "Berhasil ubah data progres ke next user",
-                                      //                                       backgroundColor: Colors
-                                      //                                           .black,
-                                      //                                       textColor:
-                                      //                                           Colors.white);
-                                      //                                 });
-                                      //                               } else {
-                                      //                                 _modalbottomSite(
-                                      //                                     context,
-                                      //                                     "Gagal!",
-                                      //                                     "${_apiService.responseCode.messageApi}",
-                                      //                                     "f400",
-                                      //                                     "assets/images/sorry.png");
-                                      //                               }
-                                      //                               return;
-                                      //                             }).onError((error,
-                                      //                                     stackTrace) {
-                                      //                               print("ERROR PROGRESS" +
-                                      //                                   error
-                                      //                                       .toString());
-                                      //                             });
-                                      //                           },
-                                      //                           style:
-                                      //                               ElevatedButton
-                                      //                                   .styleFrom(
-                                      //                             elevation: 0.0,
-                                      //                             primary: Colors
-                                      //                                 .white,
-                                      //                           ),
-                                      //                           child: Ink(
-                                      //                             decoration: BoxDecoration(
-                                      //                                 borderRadius:
-                                      //                                     BorderRadius.circular(
-                                      //                                         18)),
-                                      //                             child:
-                                      //                                 Container(
-                                      //                               alignment:
-                                      //                                   Alignment
-                                      //                                       .center,
-                                      //                               child: Text(
-                                      //                                 "Submit",
-                                      //                                 style: TextStyle(
-                                      //                                     color:
-                                      //                                         primarycolor),
-                                      //                               ),
-                                      //                             ),
-                                      //                           )),
-                                      //                     ],
-                                      //                   ),
-                                      //                 ],
-                                      //               ),
-                                      //             ),
-                                      //           );
-                                      //         });
-                                      //   }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        side: BorderSide(
-                                            width: 2, color: Colors.blue),
-                                        elevation: 0.0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
-                                        primary: Colors.white),
-                                    child: Ink(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(18.0)),
-                                        child: Container(
-                                          width: 325,
-                                          height: 45,
-                                          alignment: Alignment.center,
-                                          child: Text('SELESAIKAN PROGRES',
-                                              style: TextStyle(
-                                                color: Colors.blue,
-                                                fontSize: 18.0,
-                                                fontWeight: FontWeight.bold,
-                                              )),
-                                        ))),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  TimelinePage(
-                                                    idpermintaan:
-                                                        idpermintaan.toString(),
-                                                  )));
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        side: BorderSide(
-                                            width: 2, color: Colors.orange),
-                                        elevation: 0.0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
-                                        primary: Colors.white),
-                                    child: Ink(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(18.0)),
-                                        child: Container(
-                                          width: 325,
-                                          height: 45,
-                                          alignment: Alignment.center,
-                                          child: Text('LIHAT TIMELINE',
-                                              style: TextStyle(
-                                                color: Colors.orange,
-                                                fontSize: 18.0,
-                                                fontWeight: FontWeight.bold,
-                                              )),
-                                        ))),
-                              ],
-                            ),
-                          ),
-                        );
-                      });
+                  //                     //                             ProgressModelAdd modelAdd = ProgressModelAdd(
+                  //                     //                                 keterangan: _tecKeteranganNext
+                  //                     //                                     .text
+                  //                     //                                     .toString(),
+                  //                     //                                 idpermintaan: widget
+                  //                     //                                     .progress
+                  //                     //                                     .idpermintaan,
+                  //                     //                                 idnextuser:
+                  //                     //                                     _mypengguna,
+                  //                     //                                 tipe:
+                  //                     //                                     'nextuser');
+                  //                     //                             print(
+                  //                     //                                 'dataselesai $modeledit idprogress $idprogress modeladd $modelAdd');
+                  //                     //                             _apiService
+                  //                     //                                 .ubahProgresJadiSelesai(
+                  //                     //                                     token
+                  //                     //                                         .toString(),
+                  //                     //                                     idprogress
+                  //                     //                                         .toString(),
+                  //                     //                                     modeledit)
+                  //                     //                                 .then(
+                  //                     //                                     (isSuccess) {
+                  //                     //                               print(
+                  //                     //                                   'disini sukses nggak ?');
+                  //                     //                               if (isSuccess) {
+                  //                     //                                 Navigator.of(
+                  //                     //                                         context)
+                  //                     //                                     .pop();
+                  //                     //                                 Fluttertoast.showToast(
+                  //                     //                                     msg:
+                  //                     //                                         "Berhasil ubah data progres selesai",
+                  //                     //                                     backgroundColor:
+                  //                     //                                         Colors
+                  //                     //                                             .black,
+                  //                     //                                     textColor:
+                  //                     //                                         Colors.white);
+                  //                     //                                 _tecKeterangan
+                  //                     //                                     .clear();
+                  //                     //                                 _apiService
+                  //                     //                                     .addProgres(
+                  //                     //                                         token
+                  //                     //                                             .toString(),
+                  //                     //                                         modelAdd)
+                  //                     //                                     .then(
+                  //                     //                                         (value) {
+                  //                     //                                   print(
+                  //                     //                                       'tes progres piye ? $modeledit $modelAdd');
+                  //                     //                                   print(
+                  //                     //                                       'disini sukses nggak1 ?');
+                  //                     //                                   Navigator.of(
+                  //                     //                                           context)
+                  //                     //                                       .pop();
+                  //                     //                                   Fluttertoast.showToast(
+                  //                     //                                       msg:
+                  //                     //                                           "Berhasil ubah data progres ke next user",
+                  //                     //                                       backgroundColor: Colors
+                  //                     //                                           .black,
+                  //                     //                                       textColor:
+                  //                     //                                           Colors.white);
+                  //                     //                                 });
+                  //                     //                               } else {
+                  //                     //                                 _modalbottomSite(
+                  //                     //                                     context,
+                  //                     //                                     "Gagal!",
+                  //                     //                                     "${_apiService.responseCode.messageApi}",
+                  //                     //                                     "f400",
+                  //                     //                                     "assets/images/sorry.png");
+                  //                     //                               }
+                  //                     //                               return;
+                  //                     //                             }).onError((error,
+                  //                     //                                     stackTrace) {
+                  //                     //                               print("ERROR PROGRESS" +
+                  //                     //                                   error
+                  //                     //                                       .toString());
+                  //                     //                             });
+                  //                     //                           },
+                  //                     //                           style:
+                  //                     //                               ElevatedButton
+                  //                     //                                   .styleFrom(
+                  //                     //                             elevation: 0.0,
+                  //                     //                             primary: Colors
+                  //                     //                                 .white,
+                  //                     //                           ),
+                  //                     //                           child: Ink(
+                  //                     //                             decoration: BoxDecoration(
+                  //                     //                                 borderRadius:
+                  //                     //                                     BorderRadius.circular(
+                  //                     //                                         18)),
+                  //                     //                             child:
+                  //                     //                                 Container(
+                  //                     //                               alignment:
+                  //                     //                                   Alignment
+                  //                     //                                       .center,
+                  //                     //                               child: Text(
+                  //                     //                                 "Submit",
+                  //                     //                                 style: TextStyle(
+                  //                     //                                     color:
+                  //                     //                                         primarycolor),
+                  //                     //                               ),
+                  //                     //                             ),
+                  //                     //                           )),
+                  //                     //                     ],
+                  //                     //                   ),
+                  //                     //                 ],
+                  //                     //               ),
+                  //                     //             ),
+                  //                     //           );
+                  //                     //         });
+                  //                     //   }
+                  //                   },
+                  //                   style: ElevatedButton.styleFrom(
+                  //                       side: BorderSide(
+                  //                           width: 2, color: Colors.blue),
+                  //                       elevation: 0.0,
+                  //                       shape: RoundedRectangleBorder(
+                  //                           borderRadius:
+                  //                               BorderRadius.circular(8)),
+                  //                       primary: Colors.white),
+                  //                   child: Ink(
+                  //                       decoration: BoxDecoration(
+                  //                           borderRadius:
+                  //                               BorderRadius.circular(18.0)),
+                  //                       child: Container(
+                  //                         width: 325,
+                  //                         height: 45,
+                  //                         alignment: Alignment.center,
+                  //                         child: Text('SELESAIKAN PROGRES',
+                  //                             style: TextStyle(
+                  //                               color: Colors.blue,
+                  //                               fontSize: 18.0,
+                  //                               fontWeight: FontWeight.bold,
+                  //                             )),
+                  //                       ))),
+                  //               SizedBox(
+                  //                 height: 10,
+                  //               ),
+                  //               ElevatedButton(
+                  //                   onPressed: () {
+                  //                     Navigator.push(
+                  //                         context,
+                  //                         MaterialPageRoute(
+                  //                             builder: (context) =>
+                  //                                 TimelinePage(
+                  //                                   idpermintaan:
+                  //                                       idpermintaan.toString(),
+                  //                                 )));
+                  //                   },
+                  //                   style: ElevatedButton.styleFrom(
+                  //                       side: BorderSide(
+                  //                           width: 2, color: Colors.orange),
+                  //                       elevation: 0.0,
+                  //                       shape: RoundedRectangleBorder(
+                  //                           borderRadius:
+                  //                               BorderRadius.circular(8)),
+                  //                       primary: Colors.white),
+                  //                   child: Ink(
+                  //                       decoration: BoxDecoration(
+                  //                           borderRadius:
+                  //                               BorderRadius.circular(18.0)),
+                  //                       child: Container(
+                  //                         width: 325,
+                  //                         height: 45,
+                  //                         alignment: Alignment.center,
+                  //                         child: Text('LIHAT TIMELINE',
+                  //                             style: TextStyle(
+                  //                               color: Colors.orange,
+                  //                               fontSize: 18.0,
+                  //                               fontWeight: FontWeight.bold,
+                  //                             )),
+                  //                       ))),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       );
+                  //     });
                 });
                 // ! END WTF CODE
                 // ReusableClassProgress().modalActionItem(
