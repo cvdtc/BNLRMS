@@ -58,22 +58,14 @@ class ProgressModel {
       "idnextuser": idnextuser,
       "tipe": tipe,
       "keterangan_selesai": keterangan_selesai,
-      "url_progress": url_progress
-    };
-  }
-
-  Map<String, dynamic> updatetoJson() {
-    return {
-      "keterangan": keterangan,
       "flag_selesai": flag_selesai,
-      "next_idpengguna": idnextuser,
-      "url_progress": url_progress,
+      "url_progress": url_progress
     };
   }
 
   @override
   String toString() {
-    return 'idprogress: $idprogress, keterangan: $keterangan, created: $created, edited:$edited, flag_selesai: $flag_selesai, idnextuser: $idnextuser, due_date: $due_date, permintaan: $permintaan, kategori: $kategori, nama: $nama';
+    return 'keterangan: $keterangan, idpermintaan: $permintaan, flag_selesai: $flag_selesai, idnextuser: $idnextuser, due_date: $due_date, permintaan: $permintaan, kategori: $kategori, nama: $nama';
   }
 }
 
@@ -83,12 +75,7 @@ List<ProgressModel> ProgressModelFromJson(String dataJson) {
       data["data"].map((item) => ProgressModel.fromJson(item)));
 }
 
-String ProgressModelAddToJson(ProgressModel data) {
+String ProgressToJson(ProgressModel data) {
   final jsonData = data.addToJson();
-  return json.encode(jsonData);
-}
-
-String ProgressModelUpdateToJson(ProgressModel data) {
-  final jsonData = data.updatetoJson();
   return json.encode(jsonData);
 }

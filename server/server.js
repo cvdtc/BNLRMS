@@ -15,12 +15,12 @@ const fs = require('fs')
 // gqlserver.listen(process.env.GQL_API_PORT).then(({url})=>{console.log('Api is reade to use...', url)})
 
 // * ADDING FIREBASE CONFIGURATION
-// var admin = require("firebase-admin");
+// var admin = require("firebase-admin")
 // var serviceAccount = require("./utils/bnlrms-firebase-token.json")
 // * ADDING CREDENTIAL FIREBASE ACCOUNT
 // admin.initializeApp({
 //   credential: admin.credential.cert(serviceAccount)
-// });
+// })
 
 
 // * setting up express or api to json type

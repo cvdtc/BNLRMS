@@ -23,9 +23,9 @@ const pool = mysql.createPool({
 
 var nows = {
     toSqlString: function () {
-        return "NOW()";
+        return "NOW()"
     },
-};
+}
 
 /**
  * @swagger
@@ -77,7 +77,7 @@ var nows = {
  */
 
 async function getAllPermintaan(req, res) {
-    const token = req.headers.authorization;
+    const token = req.headers.authorization
     console.log('Akses Permintaan...')
     if (token != null) {
         try {
@@ -97,7 +97,7 @@ async function getAllPermintaan(req, res) {
                                 data: null
                             })
                         } else {
-                            var filter = (jwtresult.jabatan == "Marketing") ? (" where idpengguna=" + jwtresult.idpengguna) : (""); //[1]
+                            var filter = (jwtresult.jabatan == "Marketing") ? (" where idpengguna=" + jwtresult.idpengguna) : ("") //[1]
                             var sqlquery = `select a.*, ifnull(b.jml,0) as jmlprogress from (SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request, p.idpengguna, url_web as url_permintaan FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna)a left join (select idpermintaan, count(*) as jml from progress GROUP BY idpermintaan)b ON a.idpermintaan=b.idpermintaan ` + filter + ` ORDER BY flag_selesai ASC, due_date ASC`
                             database.query(sqlquery, (error, rows) => {
                                 database.release()
@@ -106,20 +106,20 @@ async function getAllPermintaan(req, res) {
                                         message: "Sorry, query has error!",
                                         error: error,
                                         data: null
-                                    });
+                                    })
                                 } else {
                                     if (rows.length <= 0) {
                                         return res.status(200).send({
                                             message: "Sorry, data empty!",
                                             error: null,
                                             data: rows
-                                        });
+                                        })
                                     } else {
                                         return res.status(200).send({
                                             message: "Done!, data has fetched!",
                                             error: null,
                                             data: rows
-                                        });
+                                        })
                                     }
                                 }
                             })
@@ -131,7 +131,7 @@ async function getAllPermintaan(req, res) {
             return res.status(403).send({
                 message: "Forbidden.",
                 data: rows
-            });
+            })
         }
     } else {
         res.status(401).send({
@@ -202,6 +202,7 @@ async function getAllPermintaan(req, res) {
  * * [1] 03 Des 2021 add firebase notification {s}
  * * [2] 04 Des 2021 memberikan nama penambah permintaan pada notifikasi {s}
  * * [3] 14 Des 2021 add field url_web
+ * * [4] 15 Des 2021 Dihapus karena agar flutter bisa mengirim tambah ubah dalam 1 model
  */
 
 async function addPermintaan(req, res) {
@@ -211,13 +212,13 @@ async function addPermintaan(req, res) {
     var flag_selesai = req.body.flag_selesai
     var url_web = req.body.url_permintaan //[3]
     const token = req.headers.authorization
-    // if (Object.keys(req.body).length != 5) {
+    // if (Object.keys(req.body).length != 5) { // [4] -->
     //     return res.status(405).send({
     //         message: "Sorry,  parameters not match",
     //         error: null,
     //         data: null
     //     })
-    // } else {
+    // } else { //[4] <-- 
         try {
             jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
                 if (!jwtresult) {
@@ -225,7 +226,7 @@ async function addPermintaan(req, res) {
                         message: "Sorry,  Your token has expired!",
                         error: jwterror,
                         data: null
-                    });
+                    })
                 } else {
                     pool.getConnection(function (error, database) {
                         if (error) {
@@ -233,7 +234,7 @@ async function addPermintaan(req, res) {
                                 message: "Sorry,  your connection has refused!",
                                 error: error,
                                 data: null
-                            });
+                            })
                         } else {
                             let datapermintaan = {
                                 keterangan: keterangan,
@@ -284,7 +285,7 @@ async function addPermintaan(req, res) {
                                                     }
                                                 }
                                                 // * sending notification topic RMSPERMINTAAN
-                                                fcmadmin.messaging().sendToTopic("RMSPERMINTAANdebug", notificationMessage)
+                                                fcmadmin.messaging().sendToTopic("RMSPERMINTAAN", notificationMessage)
                                                     .then(function (response) {
                                                         return res.status(201).send({
                                                             message: "Done!,  Data has been stored!",
@@ -315,7 +316,7 @@ async function addPermintaan(req, res) {
                 data: null
             })
         }
-    // }
+    // } <-- [4]
 }
 
 // * FUNCTION CHANGE DATA PERMINTAAN
@@ -397,13 +398,13 @@ async function ubahPermintaan(req, res) {
     var url_web = req.body.url_permintaan
     var idpermintaan = req.params.idpermintaan
     const token = req.headers.authorization
-    // if (Object.keys(req.body).length != 7) {
+    // if (Object.keys(req.body).length != 7) { // [4] -->
     //     return res.status(405).send({
     //         message: "Sorry,  parameters not match",
     //         error: null,
     //         data: null
     //     })
-    // } else {
+    // } else { <-- [4]
         try {
             jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
                 if (!jwtresult) {
@@ -411,7 +412,7 @@ async function ubahPermintaan(req, res) {
                         message: "Sorry,  Your token has expired!",
                         error: jwterror,
                         data: null
-                    });
+                    })
                 } else {
                     pool.getConnection(function (error, database) {
                         if (error) {
@@ -419,7 +420,7 @@ async function ubahPermintaan(req, res) {
                                 message: "Sorry,  your connection has refused!",
                                 error: error,
                                 data: null
-                            });
+                            })
                         } else {
                             database.beginTransaction(function (error) {
                                 let updatedatapermintaan = {
@@ -432,7 +433,7 @@ async function ubahPermintaan(req, res) {
                                     url_web: url_web // [2]
                                     // idpengguna: jwtresult.idpengguna // [1]
                                 }
-                                
+                                console.log(updatedatapermintaan)
                                 var sqlquery = "UPDATE permintaan SET ? WHERE idpengguna=? and idpermintaan = ?" // [3]
                                 database.query(sqlquery, [updatedatapermintaan, jwtresult.idpengguna, idpermintaan], (error, result) => {
                                     database.release()
@@ -477,7 +478,7 @@ async function ubahPermintaan(req, res) {
                 data: null
             })
         }
-    // }
+    // } <-- [4]
 }
 
 // * FUNCTION CHANGE DATA PERMINTAAN
@@ -532,7 +533,7 @@ async function deletePermintaan(req, res) {
                     message: "Sorry,  Your token has expired!",
                     error: jwterror,
                     data: null
-                });
+                })
             } else {
                 pool.getConnection(function (error, database) {
                     if (error) {
@@ -540,7 +541,7 @@ async function deletePermintaan(req, res) {
                             message: "Sorry,  your connection has refused!",
                             error: error,
                             data: null
-                        });
+                        })
                     } else {
                         database.beginTransaction(function (error) {
                             var sqlquery = "DELETE FROM permintaan WHERE idpermintaan = ?"

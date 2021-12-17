@@ -49,7 +49,7 @@ class ProgressModalBottom {
       _tecKeteranganNextUser.value = TextEditingValue(
           text: keterangan_nextuser,
           selection: TextSelection.fromPosition(
-              TextPosition(offset: _tecUrlProgress.text.length)));
+              TextPosition(offset: _tecKeteranganNextUser.text.length)));
       _tecUrlProgress.value = TextEditingValue(
           text: url_progress,
           selection: TextSelection.fromPosition(
@@ -114,8 +114,6 @@ class ProgressModalBottom {
                             flagswitchnextuser == true
                                 ? TextFormField(
                                     controller: _tecKeteranganNextUser,
-                                    textCapitalization:
-                                        TextCapitalization.characters,
                                     decoration: InputDecoration(
                                         icon: Icon(Icons.cabin_rounded),
                                         labelText: 'Keterangan Next Progress',
@@ -133,7 +131,7 @@ class ProgressModalBottom {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        _modalKonfirmasi(
+                        modalKonfirmasi(
                             context,
                             tipe,
                             token,
@@ -185,7 +183,7 @@ class ProgressModalBottom {
    */
 
   // ++ BOTTOM MODAL CONFIRMATION
-  void _modalKonfirmasi(
+  void modalKonfirmasi(
       context,
       String tipe,
       String token,
@@ -269,41 +267,38 @@ class ProgressModalBottom {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            if (tipe == 'tambah') {
-                              Navigator.of(context).pop();
-                              _actiontoApi(
-                                  context,
-                                  tipe,
-                                  token,
-                                  keterangan,
-                                  idpermintaan,
-                                  tipeinsert,
-                                  idprogress,
-                                  flag_selesai,
-                                  next_idpengguna,
-                                  keterangan_nextuser,
-                                  url_progress);
-                            } else if (tipe == 'ubah') {
-                              _actiontoApi(
-                                  context,
-                                  tipe,
-                                  token,
-                                  keterangan,
-                                  idpermintaan,
-                                  tipeinsert,
-                                  idprogress,
-                                  flag_selesai,
-                                  next_idpengguna,
-                                  keterangan_nextuser,
-                                  url_progress);
-                            } else {
-                              ReusableClasses().modalbottomWarning(
-                                  context,
-                                  "Tidak Valid!",
-                                  "Harap refersh halaman ini.",
-                                  'f404',
-                                  'assets/images/sorry.png');
-                            }
+                            print(tipe +
+                                " ~ " +
+                                token +
+                                " ~ " +
+                                keterangan +
+                                " ~ " +
+                                idpermintaan +
+                                " ~ " +
+                                tipeinsert +
+                                " ~ " +
+                                idprogress +
+                                " ~ " +
+                                flag_selesai +
+                                " ~ " +
+                                next_idpengguna +
+                                " ~ " +
+                                keterangan_nextuser +
+                                " ~ " +
+                                url_progress);
+                            Navigator.of(context).pop();
+                            _actiontoApi(
+                                context,
+                                tipe,
+                                token,
+                                keterangan,
+                                idpermintaan,
+                                tipeinsert,
+                                idprogress,
+                                flag_selesai,
+                                next_idpengguna,
+                                keterangan_nextuser,
+                                url_progress);
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0.0,
@@ -343,6 +338,26 @@ class ProgressModalBottom {
       String next_idpengguna,
       String keterangan_nextuser,
       String url_progress) {
+    print("TOAPI?" +
+        tipe +
+        " ~ " +
+        token +
+        " ~ " +
+        keterangan +
+        " ~ " +
+        idpermintaan +
+        " ~ " +
+        tipeinsert +
+        " ~ " +
+        idprogress +
+        " ~ " +
+        flag_selesai +
+        " ~ " +
+        next_idpengguna +
+        " ~ " +
+        keterangan_nextuser +
+        " ~ " +
+        url_progress);
     if (keterangan == "") {
       ReusableClasses().modalbottomWarning(
           context,
@@ -359,7 +374,9 @@ class ProgressModalBottom {
           flag_selesai: flag_selesai,
           keterangan_selesai: keterangan_nextuser,
           url_progress: url_progress);
+
       if (tipe == 'tambah') {
+        print("PROGRESS TAMBAHr? " + dataprogress.toString());
         _apiService.addProgres(token, dataprogress).then((isSuccess) {
           if (isSuccess) {
             Navigator.of(context).pop();
@@ -390,14 +407,55 @@ class ProgressModalBottom {
               "assets/images/sorry.png");
         });
       } else if (tipe == 'ubah') {
+        print("PROGRESS UBAH? " + dataprogress.toString());
+        _apiService
+            .ubahProgres(token, idprogress, dataprogress)
+            .then((isSuccess) {
+          if (isSuccess) {
+            ProgressModel data = ProgressModel(
+                keterangan: keterangan,
+                idpermintaan: idpermintaan,
+                idnextuser: next_idpengguna,
+                tipe: tipeinsert,
+                flag_selesai: flag_selesai,
+                keterangan_selesai: keterangan_nextuser,
+                url_progress: url_progress);
+            print("addprogress" + data.toString());
+            _apiService.addProgres(token, data).then((progressSuccess) {
+              if (progressSuccess) {
+                Navigator.of(context).pop();
+                ReusableClasses().modalbottomWarning(
+                    context,
+                    "Berhasil!",
+                    "${_apiService.responseCode.messageApi}",
+                    "f200",
+                    "assets/images/congratulations.png");
+              } else {
+                ReusableClasses().modalbottomWarning(
+                    context,
+                    "Gagal!",
+                    "${_apiService.responseCode.messageApi}",
+                    "f400",
+                    "assets/images/sorry.png");
+              }
+            });
+          } else {
+            ReusableClasses().modalbottomWarning(
+                context,
+                "Gagal!",
+                "${_apiService.responseCode.messageApi}",
+                "f400",
+                "assets/images/sorry.png");
+          }
+          return;
+        });
+      } else if (tipe == 'selesai') {
+        print("PROGRESS SELESAI? " + dataprogress.toString());
         _apiService
             .ubahProgres(token, idprogress, dataprogress)
             .then((isSuccess) {
           if (isSuccess) {
             Navigator.of(context).pop();
-            _tecKeterangan.clear();
-            _tecKeteranganNextUser.clear();
-            _tecUrlProgress.clear();
             ReusableClasses().modalbottomWarning(
                 context,
                 "Berhasil!",

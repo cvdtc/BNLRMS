@@ -23,9 +23,9 @@ const pool = mysql.createPool({
 
 var nows = {
     toSqlString: function () {
-        return "NOW()";
+        return "NOW()"
     },
-};
+}
 
 /**
  * @swagger
@@ -77,7 +77,7 @@ var nows = {
  */
 
 async function getAllProgress(req, res) {
-    const token = req.headers.authorization;
+    const token = req.headers.authorization
     if (token != null) {
         try {
             jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
@@ -104,20 +104,20 @@ async function getAllProgress(req, res) {
                                         message: "Sorry, query has error!",
                                         error: error,
                                         data: null
-                                    });
+                                    })
                                 } else {
                                     if (rows.length <= 0) {
                                         return res.status(200).send({
                                             message: "Sorry, data empty!",
                                             error: null,
                                             data: rows
-                                        });
+                                        })
                                     } else {
                                         return res.status(200).send({
                                             message: "Done!, data has fetched!",
                                             error: null,
                                             data: rows
-                                        });
+                                        })
                                     }
                                 }
                             })
@@ -129,7 +129,7 @@ async function getAllProgress(req, res) {
             return res.status(403).send({
                 message: "Forbidden.",
                 data: rows
-            });
+            })
         }
     } else {
         res.status(401).send({
@@ -197,6 +197,7 @@ async function getAllProgress(req, res) {
 
 /**
  * * [1] 14 Des 2021 add field url_web
+ * * [2] 15 Des 2021 Dihapus karena agar flutter bisa mengirim tambah ubah dalam 1 model
  */
 
 async function addProgress(req, res) {
@@ -206,14 +207,14 @@ async function addProgress(req, res) {
     var tipe = req.body.tipe
     var url_web = req.body.url_progress//[1]
     const token = req.headers.authorization
-    console.log('ada yang mencoba menambah progress', keterangan, idpermintaan, token);
-    // if (Object.keys(req.body).length != 5) {
+    console.log('ada yang mencoba menambah progress', tipe, idnextuser)
+    // if (Object.keys(req.body).length != 5) { // [2] -->
     //     return res.status(405).send({
     //         message: "Sorry,  parameters not match",
     //         error: null,
     //         data: null
     //     })
-    // } else {
+    // } else { <-- [2]
     try {
         jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
             if (!jwtresult) {
@@ -221,7 +222,7 @@ async function addProgress(req, res) {
                     message: "Sorry,  Your token has expired!",
                     error: jwterror,
                     data: null
-                });
+                })
             } else {
                 pool.getConnection(function (error, database) {
                     if (error) {
@@ -229,7 +230,7 @@ async function addProgress(req, res) {
                             message: "Sorry,  your connection has refused!",
                             error: error,
                             data: null
-                        });
+                        })
                     } else {
                         let dataprogress = {
                             keterangan: keterangan,
@@ -254,9 +255,9 @@ async function addProgress(req, res) {
                             database.release()
                             if (error) {
                                 database.rollback(function () {
-                                    console.log(dataprogress);
+                                    console.log(dataprogress, dataprogressnext)
                                     return res.status(407).send({
-                                        message: `Sorry,  query has error! ${error}`,
+                                        message: `Sorry,  query tambah progress has error! ${error}`,
                                         error: error,
                                         data: null
                                     })
@@ -292,7 +293,7 @@ async function addProgress(req, res) {
             data: null
         })
     }
-    // }
+    // } <-- [2]
 }
 
 // * FUNCTION CHANGE DATA PROGRESS
@@ -355,22 +356,23 @@ async function addProgress(req, res) {
 
 /**
  * * [1] 14 desember add table url_web
+ * * [2] 15 Des 2021 Dihapus karena agar flutter bisa mengirim tambah ubah dalam 1 model
  */
 
 async function ubahProgress(req, res) {
     var keterangan = req.body.keterangan
     var flag_selesai = req.body.flag_selesai
-    var next_idpengguna = req.body.next_idpengguna
+    var idnextuser = req.body.idnextuser
     var url_web = req.body.url_progress // [1]
     var idprogress = req.params.idprogress
     const token = req.headers.authorization
-    if (Object.keys(req.body).length != 4) {
-        return res.status(405).send({
-            message: "Sorry,  parameters not match",
-            error: null,
-            data: null
-        })
-    } else {
+    // if (Object.keys(req.body).length != 4) { // [2] -->
+    //     return res.status(405).send({
+    //         message: "Sorry,  parameters not match",
+    //         error: null,
+    //         data: null
+    //     })
+    // } else { // <-- [2]
         try {
             jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
                 if (!jwtresult) {
@@ -378,7 +380,7 @@ async function ubahProgress(req, res) {
                         message: "Sorry,  Your token has expired!",
                         error: jwterror,
                         data: null
-                    });
+                    })
                 } else {
                     pool.getConnection(function (error, database) {
                         if (error) {
@@ -386,13 +388,13 @@ async function ubahProgress(req, res) {
                                 message: "Sorry,  your connection has refused!",
                                 error: error,
                                 data: null
-                            });
+                            })
                         } else {
                             database.beginTransaction(function (error) {
                                 let updateprogress = {
                                     keterangan: keterangan,
                                     flag_selesai: flag_selesai,
-                                    next_idpengguna: next_idpengguna,
+                                    next_idpengguna: idnextuser,
                                     edited: nows,
                                     url_web: url_web, // [1]
                                     idpengguna: jwtresult.idpengguna
@@ -402,8 +404,9 @@ async function ubahProgress(req, res) {
                                     // database.release()
                                     if (error) {
                                         database.rollback(function () {
+                                            console.log(updateprogress, error);
                                             return res.status(407).send({
-                                                message: "Sorry,  query has error!",
+                                                message: "Sorry,  query edit progress has error! ",
                                                 error: error,
                                                 data: null
                                             })
@@ -437,7 +440,7 @@ async function ubahProgress(req, res) {
                                                             }
                                                         }
                                                         // * sending notification topic RMSPERMINTAAN
-                                                        fcmadmin.messaging().sendToTopic(process.env.NOTIFIKASI_PROGRESS, notificationMessage)
+                                                        fcmadmin.messaging().sendToTopic("RMSPROGRESS", notificationMessage)
                                                             .then(function (response) {
                                                                 return res.status(200).send({
                                                                     message: "Done!,  Data has been stored!",
@@ -475,7 +478,7 @@ async function ubahProgress(req, res) {
                 data: null
             })
         }
-    }
+//    }// <-- [2]
 }
 
 // * FUNCTION CHANGE DATA PROGRESS
@@ -530,7 +533,7 @@ async function deleteProgress(req, res) {
                     message: "Sorry,  Your token has expired!",
                     error: jwterror,
                     data: null
-                });
+                })
             } else {
                 pool.getConnection(function (error, database) {
                     if (error) {
@@ -538,7 +541,7 @@ async function deleteProgress(req, res) {
                             message: "Sorry,  your connection has refused!",
                             error: error,
                             data: null
-                        });
+                        })
                     } else {
                         database.beginTransaction(function (error) {
                             var sqlquery = "DELETE FROM progress WHERE idprogress = ?"

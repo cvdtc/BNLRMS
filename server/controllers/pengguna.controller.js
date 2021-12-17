@@ -69,8 +69,8 @@ const pool = mysql.createPool({
  */
 
 async function getAllPengguna(req, res) {
-    const token = req.headers.authorization;
-    console.log(new Date());
+    const token = req.headers.authorization
+    console.log(new Date())
     if (token != null) {     try {
         jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
             if (!jwtresult) {
@@ -96,20 +96,20 @@ async function getAllPengguna(req, res) {
                                     message: "Sorry, query has error!",
                                     error: error,
                                     data: null
-                                });
+                                })
                             } else {
                                 if (rows.length <= 0) {
                                     return res.status(204).send({
                                         message: "Sorry, data empty!",
                                         error: null,
                                         data: rows
-                                    });
+                                    })
                                 } else {
                                     return res.status(200).send({
                                         message: "Done!, data has fetched!",
                                         error: null,
                                         data: rows
-                                    });
+                                    })
                                 }
                             }
                         })
@@ -121,7 +121,7 @@ async function getAllPengguna(req, res) {
         return res.status(403).send({
             message: "Forbidden.",
             data: rows
-        });
+        })
     } } else {
         res.status(401).send({
             message: "Sorry, Need Token Validation!",
@@ -211,7 +211,7 @@ async function addPengguna(req, res) {
                         message: "Sorry,  Your token has expired!",
                         error: jwterror,
                         data: null
-                    });
+                    })
                 } else {
                     pool.getConnection(function (error, database) {
                         if (error) {
@@ -219,7 +219,7 @@ async function addPengguna(req, res) {
                                 message: "Sorry,  your connection has refused!",
                                 error: error,
                                 data: null
-                            });
+                            })
                         } else {
                             database.beginTransaction(function (error) {
                                 bcrypt.hash(password, 10, (errorencrypt, encrypt) => {
@@ -228,7 +228,7 @@ async function addPengguna(req, res) {
                                             message: "Sorry,  password fail to generate!",
                                             error: errorencrypt,
                                             data: null
-                                        });
+                                        })
                                     } else {
                                         let datapengguna = {
                                             nama: nama,
@@ -368,7 +368,7 @@ async function addPengguna(req, res) {
                         message: "Sorry,  Your token has expired!",
                         error: jwterror,
                         data: null
-                    });
+                    })
                 } else {
                     pool.getConnection(function (error, database) {
                         if (error) {
@@ -376,7 +376,7 @@ async function addPengguna(req, res) {
                                 message: "Sorry,  your connection has refused!",
                                 error: error,
                                 data: null
-                            });
+                            })
                         } else {
                             database.beginTransaction(function (error) {
                                 bcrypt.hash(password, 10, (errorencrypt, encrypt) => {
@@ -385,7 +385,7 @@ async function addPengguna(req, res) {
                                             message: "Sorry,  password fail to generate!",
                                             error: errorencrypt,
                                             data: null
-                                        });
+                                        })
                                     } else {
                                         let datapengguna = {
                                             nama: nama,

@@ -179,8 +179,11 @@ class _TimelinePageState extends State<TimelinePage> {
       String url_permintaan,
       String url_progress) {
     double c_width = MediaQuery.of(context).size.width * 0.8;
-    print("xxxxx" + flag_selesai.toString());
     if (tipe == 1) {
+      // * url null handler
+      if (url_permintaan == null || url_permintaan == "") {
+        url_permintaan = "";
+      }
       // * show data masalah
       return InkWell(
         onDoubleTap: () {
@@ -298,7 +301,10 @@ class _TimelinePageState extends State<TimelinePage> {
         ),
       );
     } else if (tipe == 2) {
-      print(tipe);
+      print("URLPROGRESS?" + url_progress);
+      if (url_progress == null || url_progress == "") {
+        url_progress = '';
+      }
       // * show data progress
       return InkWell(
         onDoubleTap: () {
@@ -405,40 +411,74 @@ class _TimelinePageState extends State<TimelinePage> {
     } else if (tipe == 3) {
       print("x" + tipe.toString());
       // * show data penyelesaian
-      return Container(
-        color: Colors.blue[300],
-        child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Penyelesaian',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                Divider(
-                  thickness: 2,
-                  height: 8,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      return Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        color: Colors.blue[200],
+        elevation: 3.0,
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                child: Column(
                   children: [
-                    Text('Status : Selesai'),
-                    Text(nama_close_permintaan),
+                    Container(
+                      color: Colors.blue,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Penyelesaian',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              prg_created,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 12.0, right: 12.0, bottom: 12.0, top: 5.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Status : Selesai'),
+                              Text(nama_close_permintaan),
+                            ],
+                          ),
+                          Text('Keterangan: ' + keterangan_selesai),
+                          Divider(thickness: 1),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text('Tgl. Selesai : ' + date_selesai.toString())
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-                Flexible(
-                  child: Text(keterangan_selesai.toUpperCase()),
-                ),
-                Divider(thickness: 1),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [Text('Tgl. Selesai : ' + date_selesai.toString())],
-                ),
-              ],
-            )),
+              ),
+            ],
+          ),
+        ),
       );
     } else {
       return Container();

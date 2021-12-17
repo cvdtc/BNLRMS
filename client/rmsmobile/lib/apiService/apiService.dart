@@ -12,7 +12,7 @@ import 'package:rmsmobile/model/timeline/timeline.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  final String baseUrl = "http://192.168.4.78:9990/api/v1/";
+  final String baseUrl = "http://server.bnl.id:9990/api/v1/";
   Client client = Client();
   String? token = "";
 
@@ -135,7 +135,7 @@ class ApiService {
           'content-type': 'application/json',
           'Authorization': 'Bearer ${token}'
         },
-        body: ProgressModelAddToJson(data));
+        body: ProgressToJson(data));
     print("addprogress");
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
@@ -174,7 +174,7 @@ class ApiService {
           'content-type': 'application/json',
           'Authorization': 'Bearer ${token}'
         },
-        body: ProgressModelUpdateToJson(data));
+        body: ProgressToJson(data));
     print(response.toString());
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);

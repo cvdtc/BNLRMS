@@ -185,10 +185,7 @@ class _ProgresListState extends State<ProgresList> {
                             ),
                             SizedBox(
                                 height: MediaQuery.of(context).size.height / 10,
-                                child: Text(
-                                    dataprogress.keterangan
-                                        .toString()
-                                        .toUpperCase(),
+                                child: Text(dataprogress.keterangan.toString(),
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,

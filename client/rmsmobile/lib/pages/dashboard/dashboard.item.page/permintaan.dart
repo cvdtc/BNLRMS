@@ -169,10 +169,7 @@ class _PermintaanListState extends State<PermintaanList> {
                             ),
                             SizedBox(
                                 height: MediaQuery.of(context).size.height / 10,
-                                child: Text(
-                                    dataRequest.keterangan
-                                        .toString()
-                                        .toUpperCase(),
+                                child: Text(dataRequest.keterangan.toString(),
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,

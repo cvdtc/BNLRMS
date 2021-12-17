@@ -486,7 +486,7 @@ class RequestModalBottom {
               '${error}', 'f400', 'assets/images/sorry.png');
         });
       } else if (tipe == 'ubah') {
-        print('ubah belum kamu buat');
+        print('ubah belum kamu buat' + dataadd.toString());
         _apiService
             .ubahRequest(token.toString(), idpermintaan, dataadd)
             .then((isSuccess) {
@@ -539,7 +539,9 @@ class RequestModalBottom {
       String keterangan_selesai,
       int flag_selesai,
       String nama_request,
-      String url_permintaan) {
+      String url_permintaan,
+      int jmlprogress) {
+    print("PROGRESS?" + jmlprogress.toString());
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
