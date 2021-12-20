@@ -81,13 +81,9 @@ class _ProgresListState extends State<ProgresList> {
           );
         } else if (snapshot.connectionState == ConnectionState.done) {
           List<ProgressModel>? dataRequest = snapshot.data;
-          print('snapshote ${snapshot.data} $dataRequest');
           if (dataRequest!.isNotEmpty) {
-            print('masuk sini?');
             return _listRequest(dataRequest);
           } else {
-            print('masuk sini');
-            print('data request $dataRequest + ${snapshot.data}');
             return Container(
               child: Text('Data progres masih kosong'),
             );

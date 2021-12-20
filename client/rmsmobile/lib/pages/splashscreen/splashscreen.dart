@@ -25,7 +25,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     setState(() {
       token = sp.getString("access_token");
     });
-    print('tokenyya $token ${_apiService.responseCode.messageApi}');
     if (token == null) {
       Navigator.pushReplacement(
           context,
@@ -34,8 +33,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     tipe: 'splashscreen',
                   )));
     } else {
-      print(
-          'responsecode ${_apiService.responseCode.messageApi} ++ ${_apiService.responseCode} ++ ');
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BottomNav()));
     }
@@ -47,11 +44,10 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     // // * adding firebase configuration setup
     messaging = FirebaseMessaging.instance;
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      print("message recieved");
-      print(event.notification!.body);
+      print(event.toString());
     });
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Message clicked!');
+      print(message.toString());
     });
     Timer(Duration(seconds: 4), () {
       cekToken();

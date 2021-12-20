@@ -285,7 +285,7 @@ async function addPermintaan(req, res) {
                                                     }
                                                 }
                                                 // * sending notification topic RMSPERMINTAAN
-                                                fcmadmin.messaging().sendToTopic("RMSPERMINTAAN", notificationMessage)
+                                                fcmadmin.messaging().sendToTopic("RMSPERMINTAANdebug", notificationMessage)
                                                     .then(function (response) {
                                                         return res.status(201).send({
                                                             message: "Done!,  Data has been stored!",
@@ -433,11 +433,19 @@ async function ubahPermintaan(req, res) {
                                     url_web: url_web // [2]
                                     // idpengguna: jwtresult.idpengguna // [1]
                                 }
-                                console.log(updatedatapermintaan)
+                                let selesaidatapermintaan = {
+                                    keterangan: keterangan,
+                                    kategori: kategori,
+                                    due_date: due_date,
+                                    flag_selesai: flag_selesai,
+                                    keterangan_selesai: keterangan_selesai,
+                                    date_selesai: nows,
+                                    url_web: url_web // [2]
+                                    // idpengguna: jwtresult.idpengguna // [1]
+                                }
                                 var sqlquery = "UPDATE permintaan SET ? WHERE idpengguna=? and idpermintaan = ?" // [3]
-                                database.query(sqlquery, [updatedatapermintaan, jwtresult.idpengguna, idpermintaan], (error, result) => {
+                                database.query(sqlquery, [flag_selesai == 1 ? selesaidatapermintaan : updatedatapermintaan, jwtresult.idpengguna, idpermintaan], (error, result) => {
                                     database.release()
-                                    console.log(updatedatapermintaan)
                                     if (error) {
                                         database.rollback(function () {
                                             return res.status(407).send({
@@ -458,7 +466,7 @@ async function ubahPermintaan(req, res) {
                                                 })
                                             } else {
                                                 return res.status(200).send({
-                                                    message: "Done!,  Data has changed!",
+                                                    message: "Done!,  Data has changed! "+result,
                                                     error: null,
                                                     data: null
                                                 })

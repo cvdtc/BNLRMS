@@ -68,11 +68,8 @@ class _PermintaanListState extends State<PermintaanList> {
         } else if (snapshot.connectionState == ConnectionState.done) {
           List<RequestModel>? dataRequest = snapshot.data;
           if (dataRequest!.isNotEmpty) {
-            print('masuk sini?');
             return _listRequest(dataRequest);
           } else {
-            print('masuk sini');
-            print('data request $dataRequest + ${snapshot.data}');
             return Container(
               child: Text('Data Permintaan masih kosong'),
             );

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/progres/progress.network.dart';
@@ -17,7 +16,7 @@ class ProgressPage extends StatefulWidget {
 
 class _ProgressPageState extends State<ProgressPage> {
   late SharedPreferences sp;
-  String? token = "", username = "", jabatan = "";
+  String? token = "";
   List<ProgressModel> _progress = <ProgressModel>[];
   List<ProgressModel> _progressDisplay = <ProgressModel>[];
 
@@ -28,16 +27,12 @@ class _ProgressPageState extends State<ProgressPage> {
     sp = await SharedPreferences.getInstance();
     setState(() {
       token = sp.getString("access_token");
-      username = sp.getString("username");
-      jabatan = sp.getString("jabatan");
     });
     fetchProgress(token!).then((value) {
       setState(() {
         _isLoading = false;
         _progress.addAll(value);
         _progressDisplay = _progress;
-        print("progressdisplay? " + _progressDisplay.length.toString());
-        print("progress? " + value.toString());
       });
     }).onError((error, stackTrace) {
       ReusableClasses().clearSharedPreferences();
@@ -86,7 +81,6 @@ class _ProgressPageState extends State<ProgressPage> {
           child: Container(
             child: ListView.builder(
               itemBuilder: (context, index) {
-                print("Values??" + index.toString());
                 if (!_isLoading) {
                   return index == 0
                       ? _searchBar()

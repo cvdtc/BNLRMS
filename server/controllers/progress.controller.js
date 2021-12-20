@@ -206,6 +206,7 @@ async function addProgress(req, res) {
     var idnextuser = req.body.idnextuser
     var tipe = req.body.tipe
     var url_web = req.body.url_progress//[1]
+    var keterangan_selesai = req.body.keterangan_selesai
     const token = req.headers.authorization
     console.log('ada yang mencoba menambah progress', tipe, idnextuser)
     // if (Object.keys(req.body).length != 5) { // [2] -->
@@ -242,7 +243,7 @@ async function addProgress(req, res) {
                             idpengguna: jwtresult.idpengguna
                         }
                         let dataprogressnext = {
-                            keterangan: keterangan,
+                            keterangan: keterangan_selesai,
                             flag_selesai: 0,
                             idpermintaan: idpermintaan,
                             created: nows,
@@ -440,7 +441,7 @@ async function ubahProgress(req, res) {
                                                             }
                                                         }
                                                         // * sending notification topic RMSPERMINTAAN
-                                                        fcmadmin.messaging().sendToTopic("RMSPROGRESS", notificationMessage)
+                                                        fcmadmin.messaging().sendToTopic("RMSPROGRESSdebug", notificationMessage)
                                                             .then(function (response) {
                                                                 return res.status(200).send({
                                                                     message: "Done!,  Data has been stored!",

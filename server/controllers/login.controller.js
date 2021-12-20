@@ -84,6 +84,7 @@ async function Login(req, res) {
             data: null
         })
     } else {
+        console.log("Ada yang mencoba masuk...")
         try {
             pool.getConnection(function (error, database) {
                 if (error) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
@@ -9,14 +10,15 @@ import 'package:rmsmobile/pages/request/request.network.dart';
 import 'package:rmsmobile/pages/request/request.tile.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
+import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RequestPageSearch extends StatefulWidget {
   @override
-  _RequestPageSearchState createState() => _RequestPageSearchState();
+  RequestPageSearchState createState() => RequestPageSearchState();
 }
 
-class _RequestPageSearchState extends State<RequestPageSearch> {
+class RequestPageSearchState extends State<RequestPageSearch> {
   late SharedPreferences sp;
   String? defaultKategori = 'Merek';
   String? jenisKategori = 'Merek';
@@ -31,7 +33,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
   // dynamic cekid;
   int? pilihkategori;
   var dataKategori = ['Merek', 'Paten', 'Desain Industri', 'Lainnya'];
-  String? token = "", username = "", jabatan = "", flagcari = '0';
+  var token = "", flagcari = '0';
   List<RequestModel> _requests = <RequestModel>[];
   List<RequestModel> _requestDisplay = <RequestModel>[];
 
@@ -41,41 +43,35 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
   cekToken() async {
     sp = await SharedPreferences.getInstance();
     setState(() {
-      token = sp.getString("access_token");
-      username = sp.getString("username");
-      jabatan = sp.getString("jabatan");
+      token = sp.getString('access_token')!;
     });
-    fetchPermintaan(token!).then((value) {
-      print("PERMINTAAN?" + value.toString());
+    fetchPermintaan(token).then((value) {
       setState(() {
         _isLoading = false;
         _requests.addAll(value);
         _requestDisplay = _requests;
-        print(_requestDisplay.length);
       });
+    }).onError((error, stackTrace) {
+      ReusableClasses().clearSharedPreferences();
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Loginscreen(
+                    tipe: 'sesiberakhir',
+                  )));
     });
-    // .onError((error, stackTrace) {
-    //   print("REQUEST STATUS CODE?" + error.toString());
-    //   ReusableClasses().clearSharedPreferences();
-    //   Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (context) => Loginscreen(
-    //                 tipe: 'sesiberakhir',
-    //               )));
-    // });
   }
 
   Future refreshPage() async {
     _requestDisplay.clear();
-    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      cekToken();
+    });
+    // await Future.delayed(Duration(seconds: 2));
     Fluttertoast.showToast(
         msg: "Data Berhasil diperbarui",
         backgroundColor: Colors.black,
         textColor: Colors.white);
-    setState(() {
-      cekToken();
-    });
   }
 
   @override
@@ -101,10 +97,11 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
         actions: [
           IconButton(
               onPressed: () {
+                refreshPage();
                 // openFilterDialog(context);
               },
               icon: Icon(
-                Icons.filter_list_outlined,
+                Icons.refresh_outlined,
                 color: Colors.black87,
               ))
         ],
@@ -118,8 +115,14 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => BottomNav(
+          //               numberOfpage: 2,
+          //             )));
           RequestModalBottom().modalAddRequest(
-              context, 'tambah', token!, "", "", "", "", "", "", "");
+              context, 'tambah', token, "", "", "", "", "", "", "");
         },
         backgroundColor: thirdcolor,
         child: Icon(
@@ -140,7 +143,7 @@ class _RequestPageSearchState extends State<RequestPageSearch> {
                           (BuildContext context, StateSetter setState) {
                           return RequestTile(
                             request: this._requestDisplay[index - 1],
-                            token: token!,
+                            token: token,
                           );
                         });
                 } else {

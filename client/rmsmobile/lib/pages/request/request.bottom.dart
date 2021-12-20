@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
@@ -6,6 +7,7 @@ import 'package:rmsmobile/pages/progres/progress.bottom.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
+import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 
 class RequestModalBottom {
   ApiService _apiService = new ApiService();
@@ -121,7 +123,6 @@ class RequestModalBottom {
                                   textCapitalization: TextCapitalization.words,
                                   onSaved: (String? val) {
                                     tanggal = val.toString();
-                                    print('jos?');
                                   },
                                   decoration: InputDecoration(
                                       icon: Icon(Icons.date_range_rounded),
@@ -277,6 +278,7 @@ class RequestModalBottom {
                                   idpermintaan,
                                   _tecKeteranganSelesai.text.toString(),
                                   _tecUrlPermintaan.text.toString());
+                              Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                                 elevation: 0.0, primary: backgroundcolor),
@@ -305,7 +307,7 @@ class RequestModalBottom {
   }
 
   // ++ BOTTOM MODAL CONFIRMATION
-  void _modalKonfirmasi(
+  _modalKonfirmasi(
       context,
       String tipe,
       String token,
@@ -317,16 +319,18 @@ class RequestModalBottom {
       String keterangan_selesai,
       String url_permintaan) {
     if (keterangan == "" || duedate == "" || kategori == "") {
-      _modalbottomSite(
+      ReusableClasses().modalbottomWarning(
           context,
           "Tidak Valid!",
           "Pastikan semua kolom terisi dengan benar",
           'f405',
           'assets/images/sorry.png');
     } else {
-      showModalBottomSheet(
+      return showModalBottomSheet<void>(
           isScrollControlled: true,
           context: context,
+          elevation: 3.0,
+          useRootNavigator: true,
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -368,7 +372,7 @@ class RequestModalBottom {
                       children: [
                         ElevatedButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                               elevation: 0.0,
@@ -443,7 +447,7 @@ class RequestModalBottom {
       String keterangan_selesai,
       String url_permintaan) {
     if (keterangan == "" || duedate == "" || kategori == "") {
-      _modalbottomSite(
+      ReusableClasses().modalbottomWarning(
           context,
           "Tidak Valid!",
           "Pastikan semua kolom terisi dengan benar",
@@ -457,7 +461,6 @@ class RequestModalBottom {
           flag_selesai: flag_selesai,
           url_permintaan: url_permintaan,
           keterangan_selesai: keterangan_selesai);
-      print('model ?' + dataadd.toString());
       if (tipe == 'tambah') {
         _apiService.addRequest(token.toString(), dataadd).then((isSuccess) {
           if (isSuccess) {
@@ -465,13 +468,22 @@ class RequestModalBottom {
             _tecDueDate.clear();
             _tecKeteranganSelesai.clear();
             _tecUrlPermintaan.clear();
-            Navigator.pop(context);
-            ReusableClasses().modalbottomWarning(
-                context,
-                'Data Berhasil Disimpan!',
-                '${_apiService.responseCode.messageApi}',
-                'f201',
-                'assets/images/congratulations.png');
+            Fluttertoast.showToast(
+                msg: "${_apiService.responseCode.messageApi}",
+                backgroundColor: Colors.red,
+                textColor: Colors.white);
+            // Navigator.pushReplacement(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => BottomNav(
+            //               numberOfpage: 1,
+            //             )));
+            // ReusableClasses().modalbottomWarning(
+            //     context,
+            //     'Data Berhasil Disimpan!',
+            //     '${_apiService.responseCode.messageApi}',
+            //     'f201',
+            //     'assets/images/congratulations.png');
           } else {
             ReusableClasses().modalbottomWarning(
                 context,
@@ -482,16 +494,18 @@ class RequestModalBottom {
           }
           return;
         }).onError((error, stackTrace) {
-          ReusableClasses().modalbottomWarning(context, 'Data Gagal Disimpan!',
-              '${error}', 'f400', 'assets/images/sorry.png');
+          Fluttertoast.showToast(
+              msg: "${_apiService.responseCode.messageApi}",
+              backgroundColor: Colors.red,
+              textColor: Colors.red);
+          // ReusableClasses().modalbottomWarning(context, 'Data Gagal Disimpan!',
+          //     '${error}', 'f400', 'assets/images/sorry.png');
         });
       } else if (tipe == 'ubah') {
-        print('ubah belum kamu buat' + dataadd.toString());
         _apiService
             .ubahRequest(token.toString(), idpermintaan, dataadd)
             .then((isSuccess) {
           if (isSuccess) {
-            Navigator.pop(context);
             ReusableClasses().modalbottomWarning(
                 context,
                 'Data Berhasil Disimpan!',
@@ -512,8 +526,8 @@ class RequestModalBottom {
               '${error}', 'f400', 'assets/images/sorry.png');
         });
       } else {
-        _modalbottomSite(context, "Tidak Valid!", "Action anda tidak sesuai",
-            'f404', 'assets/images/sorry.png');
+        ReusableClasses().modalbottomWarning(context, "Tidak Valid!",
+            "Action anda tidak sesuai", 'f404', 'assets/images/sorry.png');
       }
     }
   }
@@ -541,7 +555,6 @@ class RequestModalBottom {
       String nama_request,
       String url_permintaan,
       int jmlprogress) {
-    print("PROGRESS?" + jmlprogress.toString());
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -679,6 +692,7 @@ class RequestModalBottom {
                   SizedBox(
                     height: 20,
                   ),
+                  // ++ add filter jika flag selesai 0 maka  data masih bisa di ubah
                   flag_selesai == 0
                       ? ElevatedButton(
                           onPressed: () {
@@ -748,59 +762,6 @@ class RequestModalBottom {
                   //         ))),
                 ],
               ),
-            ),
-          );
-        });
-  }
-
-  _modalbottomSite(context, String title, String message, String kode,
-      String imagelocation) {
-    print('Yash im show');
-    // dynamic navigation;
-    showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0))),
-        builder: (BuildContext context) {
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      title.toUpperCase(),
-                      style: TextStyle(
-                          fontSize: 22.0, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "[ " + kode.toUpperCase() + " ]",
-                      style: TextStyle(fontSize: 11.0),
-                    )
-                  ],
-                ),
-                SizedBox(height: 10.0),
-                Image.asset(
-                  imagelocation,
-                  height: 150,
-                  width: 250,
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  message.toString(),
-                  style: TextStyle(fontSize: 16.0),
-                ),
-                SizedBox(
-                  height: 10.0,
-                )
-              ],
             ),
           );
         });

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
@@ -131,6 +132,8 @@ class ProgressModalBottom {
                   ),
                   ElevatedButton(
                       onPressed: () {
+                        print('simpan clicked');
+                        Navigator.of(context).pop();
                         modalKonfirmasi(
                             context,
                             tipe,
@@ -202,126 +205,111 @@ class ProgressModalBottom {
           "Pastikan semua kolom terisi dengan benar",
           'f405',
           'assets/images/sorry.png');
-    }
-    showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0))),
-        builder: (BuildContext context) {
-          return Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: Container(
-              padding: EdgeInsets.all(15.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Konfirmasi ' + tipe,
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  tipe == 'hapus'
-                      ? Text('Apakah anda yakin akan menghapus progress ? ' +
-                          keterangan +
-                          '?')
-                      : Text('Apakah data yang anda masukkan sudah sesuai.?',
-                          style: TextStyle(fontSize: 16)),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0.0,
-                            primary: Colors.red,
-                          ),
-                          child: Ink(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(18)),
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Batal",
-                              ),
+    } else {
+      showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15.0),
+                  topRight: Radius.circular(15.0))),
+          builder: (BuildContext context) {
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: Container(
+                padding: EdgeInsets.all(15.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Konfirmasi ' + tipe,
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    tipe == 'hapus'
+                        ? Text('Apakah anda yakin akan menghapus progress ? ' +
+                            keterangan +
+                            '?')
+                        : Text('Apakah data yang anda masukkan sudah sesuai.?',
+                            style: TextStyle(fontSize: 16)),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0.0,
+                              primary: Colors.red,
                             ),
-                          )),
-                      SizedBox(
-                        width: 55,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {
-                            print(tipe +
-                                " ~ " +
-                                token +
-                                " ~ " +
-                                keterangan +
-                                " ~ " +
-                                idpermintaan +
-                                " ~ " +
-                                tipeinsert +
-                                " ~ " +
-                                idprogress +
-                                " ~ " +
-                                flag_selesai +
-                                " ~ " +
-                                next_idpengguna +
-                                " ~ " +
-                                keterangan_nextuser +
-                                " ~ " +
-                                url_progress);
-                            Navigator.of(context).pop();
-                            _actiontoApi(
-                                context,
-                                tipe,
-                                token,
-                                keterangan,
-                                idpermintaan,
-                                tipeinsert,
-                                idprogress,
-                                flag_selesai,
-                                next_idpengguna,
-                                keterangan_nextuser,
-                                url_progress);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0.0,
-                            primary: Colors.white,
-                          ),
-                          child: Ink(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(18)),
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Submit",
-                                style: TextStyle(color: primarycolor),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18)),
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Batal",
+                                ),
                               ),
+                            )),
+                        SizedBox(
+                          width: 55,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              // Navigator.pop(context);
+                              _actiontoApi(
+                                  context,
+                                  tipe,
+                                  token,
+                                  keterangan,
+                                  idpermintaan,
+                                  tipeinsert,
+                                  idprogress,
+                                  flag_selesai,
+                                  next_idpengguna,
+                                  keterangan_nextuser,
+                                  url_progress);
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0.0,
+                              primary: Colors.white,
                             ),
-                          )),
-                    ],
-                  ),
-                ],
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18)),
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Submit",
+                                  style: TextStyle(color: primarycolor),
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        });
+            );
+          });
+    }
+
     // }
   }
 
@@ -338,26 +326,6 @@ class ProgressModalBottom {
       String next_idpengguna,
       String keterangan_nextuser,
       String url_progress) {
-    print("TOAPI?" +
-        tipe +
-        " ~ " +
-        token +
-        " ~ " +
-        keterangan +
-        " ~ " +
-        idpermintaan +
-        " ~ " +
-        tipeinsert +
-        " ~ " +
-        idprogress +
-        " ~ " +
-        flag_selesai +
-        " ~ " +
-        next_idpengguna +
-        " ~ " +
-        keterangan_nextuser +
-        " ~ " +
-        url_progress);
     if (keterangan == "") {
       ReusableClasses().modalbottomWarning(
           context,
@@ -374,40 +342,48 @@ class ProgressModalBottom {
           flag_selesai: flag_selesai,
           keterangan_selesai: keterangan_nextuser,
           url_progress: url_progress);
-
       if (tipe == 'tambah') {
-        print("PROGRESS TAMBAHr? " + dataprogress.toString());
         _apiService.addProgres(token, dataprogress).then((isSuccess) {
           if (isSuccess) {
-            Navigator.of(context).pop();
             _tecKeterangan.clear();
             _tecKeteranganNextUser.clear();
             _tecUrlProgress.clear();
-            ReusableClasses().modalbottomWarning(
-                context,
-                "Berhasil!",
-                "${_apiService.responseCode.messageApi}",
-                "f200",
-                "assets/images/congratulations.png");
+            Fluttertoast.showToast(
+                msg: "${_apiService.responseCode.messageApi}",
+                backgroundColor: Colors.red,
+                textColor: Colors.white);
+            // ReusableClasses().modalbottomWarning(
+            //     context,
+            //     "Berhasil!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f200",
+            //     "assets/images/congratulations.png");
           } else {
-            ReusableClasses().modalbottomWarning(
-                context,
-                "Gagal!",
-                "${_apiService.responseCode.messageApi}",
-                "f400",
-                "assets/images/sorry.png");
+            Fluttertoast.showToast(
+                msg: "${_apiService.responseCode.messageApi}",
+                backgroundColor: Colors.red,
+                textColor: Colors.white);
+            // ReusableClasses().modalbottomWarning(
+            //     context,
+            //     "Gagal!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f400",
+            //     "assets/images/sorry.png");
           }
           return;
         }).onError((error, stackTrace) {
-          ReusableClasses().modalbottomWarning(
-              context,
-              "Gagal!",
-              "${_apiService.responseCode.messageApi}",
-              "f407",
-              "assets/images/sorry.png");
+          Fluttertoast.showToast(
+              msg: "${_apiService.responseCode.messageApi}",
+              backgroundColor: Colors.red,
+              textColor: Colors.white);
+          // ReusableClasses().modalbottomWarning(
+          //     context,
+          //     "Gagal!",
+          //     "${_apiService.responseCode.messageApi}",
+          //     "f407",
+          //     "assets/images/sorry.png");
         });
       } else if (tipe == 'ubah') {
-        print("PROGRESS UBAH? " + dataprogress.toString());
         _apiService
             .ubahProgres(token, idprogress, dataprogress)
             .then((isSuccess) {
@@ -420,55 +396,72 @@ class ProgressModalBottom {
                 flag_selesai: flag_selesai,
                 keterangan_selesai: keterangan_nextuser,
                 url_progress: url_progress);
-            print("addprogress" + data.toString());
             _apiService.addProgres(token, data).then((progressSuccess) {
               if (progressSuccess) {
-                Navigator.of(context).pop();
-                ReusableClasses().modalbottomWarning(
-                    context,
-                    "Berhasil!",
-                    "${_apiService.responseCode.messageApi}",
-                    "f200",
-                    "assets/images/congratulations.png");
+                Fluttertoast.showToast(
+                    msg: "${_apiService.responseCode.messageApi}",
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white);
+                // ReusableClasses().modalbottomWarning(
+                //     context,
+                //     "Berhasil!",
+                //     "${_apiService.responseCode.messageApi}",
+                //     "f200",
+                //     "assets/images/congratulations.png");
               } else {
-                ReusableClasses().modalbottomWarning(
-                    context,
-                    "Gagal!",
-                    "${_apiService.responseCode.messageApi}",
-                    "f400",
-                    "assets/images/sorry.png");
+                Fluttertoast.showToast(
+                    msg: "${_apiService.responseCode.messageApi}",
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white);
+                // ReusableClasses().modalbottomWarning(
+                //     context,
+                //     "Gagal!",
+                //     "${_apiService.responseCode.messageApi}",
+                //     "f400",
+                //     "assets/images/sorry.png");
               }
             });
           } else {
-            ReusableClasses().modalbottomWarning(
-                context,
-                "Gagal!",
-                "${_apiService.responseCode.messageApi}",
-                "f400",
-                "assets/images/sorry.png");
+            Fluttertoast.showToast(
+                msg: "${_apiService.responseCode.messageApi}",
+                backgroundColor: Colors.red,
+                textColor: Colors.white);
+            // ReusableClasses().modalbottomWarning(
+            //     context,
+            //     "Gagal!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f400",
+            //     "assets/images/sorry.png");
           }
           return;
         });
       } else if (tipe == 'selesai') {
-        print("PROGRESS SELESAI? " + dataprogress.toString());
         _apiService
             .ubahProgres(token, idprogress, dataprogress)
             .then((isSuccess) {
           if (isSuccess) {
-            Navigator.of(context).pop();
-            ReusableClasses().modalbottomWarning(
-                context,
-                "Berhasil!",
-                "${_apiService.responseCode.messageApi}",
-                "f200",
-                "assets/images/congratulations.png");
+            Fluttertoast.showToast(
+                msg: "${_apiService.responseCode.messageApi}",
+                backgroundColor: Colors.red,
+                textColor: Colors.white);
+            // Navigator.of(context).pop();
+            // ReusableClasses().modalbottomWarning(
+            //     context,
+            //     "Berhasil!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f200",
+            //     "assets/images/congratulations.png");
           } else {
-            ReusableClasses().modalbottomWarning(
-                context,
-                "Gagal!",
-                "${_apiService.responseCode.messageApi}",
-                "f400",
-                "assets/images/sorry.png");
+            Fluttertoast.showToast(
+                msg: "${_apiService.responseCode.messageApi}",
+                backgroundColor: Colors.red,
+                textColor: Colors.white);
+            // ReusableClasses().modalbottomWarning(
+            //     context,
+            //     "Gagal!",
+            //     "${_apiService.responseCode.messageApi}",
+            //     "f400",
+            //     "assets/images/sorry.png");
           }
           return;
         });

@@ -4,7 +4,6 @@ import 'package:rmsmobile/utils/warna.dart';
 
 class TimelineBottomModal {
   void actionTimeline(context, String urlweb) {
-    print("URL?" + urlweb);
     showModalBottomSheet(
         context: context,
         backgroundColor: Colors.white,

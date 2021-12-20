@@ -58,7 +58,6 @@ class _TimelinePageState extends State<TimelinePage> {
       body: FutureBuilder(
           future: _apiService.getListTimeline(token!, idpermintaan.toString()),
           builder: (context, AsyncSnapshot<List<TimelineModel>?> snapshot) {
-            print('SNAPSHOT? ' + snapshot.toString());
             if (snapshot.hasError) {
               return Center(
                 child: Column(
@@ -301,7 +300,6 @@ class _TimelinePageState extends State<TimelinePage> {
         ),
       );
     } else if (tipe == 2) {
-      print("URLPROGRESS?" + url_progress);
       if (url_progress == null || url_progress == "") {
         url_progress = '';
       }
@@ -409,7 +407,6 @@ class _TimelinePageState extends State<TimelinePage> {
         ),
       );
     } else if (tipe == 3) {
-      print("x" + tipe.toString());
       // * show data penyelesaian
       return Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

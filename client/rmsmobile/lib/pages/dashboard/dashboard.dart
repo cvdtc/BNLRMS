@@ -62,7 +62,6 @@ class _DahsboardState extends State<Dahsboard> {
       notifprogress = sp.getBool("notif_progress");
     });
     _apiService.getDashboard(token!).then((value) {
-      print("Dashboard?" + value.toString());
       setState(() {
         _dashboard.addAll(value!);
       });
@@ -83,7 +82,6 @@ class _DahsboardState extends State<Dahsboard> {
   initState() {
     super.initState();
     cekToken();
-    print(notifprogress);
     messaging = FirebaseMessaging.instance;
     if (notifprogress == true) {
       messaging.subscribeToTopic('RMSPERMINTAAN');

@@ -67,7 +67,6 @@ class _ProgressTileState extends State<ProgressTile> {
     //       'Pengguna tidak ke load', 'f404', 'assets/images/sorry');
     // });
     var dataz = json.decode(response.body);
-    print(dataz.toString());
     setState(() {
       pnggunaList = dataz['data'];
     });
@@ -176,7 +175,6 @@ class _ProgressTileState extends State<ProgressTile> {
               onChanged: (String? value) {
                 setState(() {
                   _mypengguna = value;
-                  print('penggunanya $_mypengguna');
                 });
               },
               items: pnggunaList?.map((item) {
@@ -223,6 +221,11 @@ class _ProgressTileState extends State<ProgressTile> {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0))),
         builder: (BuildContext context) {
           return Padding(
             padding: MediaQuery.of(context).viewInsets,
@@ -305,8 +308,6 @@ class _ProgressTileState extends State<ProgressTile> {
                                           'selesai'; // * sebagai flag untuk dikirim ke api
                                     }
                                   });
-                                  print(
-                                      'telah diswitch $value + $nextuser $tipeinsert');
                                 },
                                 activeTrackColor: thirdcolor,
                                 activeColor: Colors.green,
@@ -350,6 +351,7 @@ class _ProgressTileState extends State<ProgressTile> {
                   ),
                   ElevatedButton(
                       onPressed: () {
+                        Navigator.of(context).pop();
                         ProgressModalBottom().modalKonfirmasi(
                             context,
                             tipe,
@@ -362,6 +364,7 @@ class _ProgressTileState extends State<ProgressTile> {
                             _mypengguna == null ? "0" : _mypengguna.toString(),
                             _tecKeteranganNext.text.toString(),
                             _tecUrlProgress.text.toString());
+
                         _tecKeterangan.clear();
                         _tecUrlProgress.clear();
                         _tecKeteranganNext.clear();
