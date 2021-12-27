@@ -19,6 +19,7 @@ class _ProgressPageState extends State<ProgressPage> {
   String? token = "";
   List<ProgressModel> _progress = <ProgressModel>[];
   List<ProgressModel> _progressDisplay = <ProgressModel>[];
+  TextEditingController _textSearch = TextEditingController(text: "");
 
   bool _isLoading = true;
 
@@ -53,7 +54,7 @@ class _ProgressPageState extends State<ProgressPage> {
 
   Future refreshPage() async {
     _progressDisplay.clear();
-    await Future.delayed(Duration(seconds: 2));
+    _textSearch.clear();
     Fluttertoast.showToast(
         msg: "Data Berhasil diperbarui",
         backgroundColor: Colors.black,
@@ -67,6 +68,17 @@ class _ProgressPageState extends State<ProgressPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                refreshPage();
+                // openFilterDialog(context);
+              },
+              icon: Icon(
+                Icons.refresh_outlined,
+                color: Colors.black87,
+              ))
+        ],
         title: Text(
           'Daftar Progres',
           style: GoogleFonts.lato(
@@ -120,7 +132,7 @@ class _ProgressPageState extends State<ProgressPage> {
             }).toList();
           });
         },
-        // controller: _textController,
+        controller: _textSearch,
         decoration: InputDecoration(
           fillColor: thirdcolor,
           border: OutlineInputBorder(),

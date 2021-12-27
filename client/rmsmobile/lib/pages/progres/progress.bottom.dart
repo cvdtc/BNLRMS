@@ -4,6 +4,7 @@ import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
+import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 
 class ProgressModalBottom {
   ApiService _apiService = new ApiService();
@@ -239,7 +240,7 @@ class ProgressModalBottom {
                         ? Text('Apakah anda yakin akan menghapus progress ? ' +
                             keterangan +
                             '?')
-                        : Text('Apakah data yang anda masukkan sudah sesuai.?',
+                        : Text('Apakah data yang anda masukkan sudah sesuai.? *note: Harap Refresh setelah menekan tombol submit.',
                             style: TextStyle(fontSize: 16)),
                     SizedBox(
                       height: 20,
@@ -440,10 +441,17 @@ class ProgressModalBottom {
             .ubahProgres(token, idprogress, dataprogress)
             .then((isSuccess) {
           if (isSuccess) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BottomNav(
+                          numberOfpage: 1,
+                        )));
             Fluttertoast.showToast(
                 msg: "${_apiService.responseCode.messageApi}",
                 backgroundColor: Colors.red,
                 textColor: Colors.white);
+
             // Navigator.of(context).pop();
             // ReusableClasses().modalbottomWarning(
             //     context,
@@ -464,6 +472,11 @@ class ProgressModalBottom {
             //     "assets/images/sorry.png");
           }
           return;
+        }).onError((error, stackTrace) {
+          Fluttertoast.showToast(
+              msg: "${_apiService.responseCode.messageApi}",
+              backgroundColor: Colors.red,
+              textColor: Colors.white);
         });
       } else {
         ReusableClasses().modalbottomWarning(context, "Tidak Valid!",

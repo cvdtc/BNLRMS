@@ -19,6 +19,8 @@ double scaledWidth(BuildContext context, double baseSize) {
 }
 
 class BottomNav extends StatefulWidget {
+  int numberOfpage;
+  BottomNav({required this.numberOfpage});
   @override
   _BottomNavState createState() => _BottomNavState();
 }
@@ -58,6 +60,7 @@ class _BottomNavState extends State<BottomNav> {
   @override
   void initState() {
     super.initState();
+    _currentTab = widget.numberOfpage;
   }
 
   @override

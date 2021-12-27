@@ -182,7 +182,11 @@ class _LoginscreenState extends State<Loginscreen> {
         _controllerUsername.clear();
         _controllerPassword.clear();
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BottomNav()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BottomNav(
+                      numberOfpage: 0,
+                    )));
       } else {
         ReusableClasses().modalbottomWarning(
             context,

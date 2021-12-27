@@ -30,6 +30,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
   String? idpermintaan = "";
   String? keterangan_selesai = "";
   String? tipeupdate = "";
+  TextEditingController _textSearch = TextEditingController(text: "");
   // dynamic cekid;
   int? pilihkategori;
   var dataKategori = ['Merek', 'Paten', 'Desain Industri', 'Lainnya'];
@@ -45,9 +46,10 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     setState(() {
       token = sp.getString('access_token')!;
     });
-    fetchPermintaan(token).then((value) {
+    await fetchPermintaan(token).then((value) {
       setState(() {
         _isLoading = false;
+        _requests.clear();
         _requests.addAll(value);
         _requestDisplay = _requests;
       });
@@ -64,6 +66,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
 
   Future refreshPage() async {
     _requestDisplay.clear();
+    _textSearch.clear();
     setState(() {
       cekToken();
     });
@@ -178,7 +181,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
             }).toList();
           });
         },
-        // controller: _textController,
+        controller: _textSearch,
         decoration: InputDecoration(
           fillColor: thirdcolor,
           border: OutlineInputBorder(),

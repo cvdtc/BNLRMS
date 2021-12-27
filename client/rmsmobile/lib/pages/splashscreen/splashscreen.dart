@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/pages/login/login.dart';
@@ -34,7 +35,11 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                   )));
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BottomNav()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNav(
+                    numberOfpage: 0,
+                  )));
     }
   }
 
@@ -45,9 +50,23 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     messaging = FirebaseMessaging.instance;
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
       print(event.toString());
+      Fluttertoast.showToast(
+          msg: " Notifikasi : ${event}",
+          backgroundColor: Colors.red,
+          textColor: Colors.white);
     });
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print(message.toString());
+      Fluttertoast.showToast(
+          msg: " Notifikasi ${message}",
+          backgroundColor: Colors.red,
+          textColor: Colors.white);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNav(
+                    numberOfpage: 0,
+                  )));
     });
     Timer(Duration(seconds: 4), () {
       cekToken();

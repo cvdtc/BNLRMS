@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/pages/progres/progress.bottom.dart';
+import 'package:rmsmobile/pages/request/request.page.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
@@ -361,7 +362,8 @@ class RequestModalBottom {
                         ? Text('Apakah anda yakin akan menghapus permintaan ' +
                             keterangan +
                             '?')
-                        : Text('Apakah data yang anda masukkan sudah sesuai.?',
+                        : Text(
+                            'Apakah data yang anda masukkan sudah sesuai.?  *note: Harap Refresh setelah menekan tombol submit.',
                             style: TextStyle(fontSize: 16)),
                     SizedBox(
                       height: 20,
@@ -445,7 +447,7 @@ class RequestModalBottom {
       String flag_selesai,
       String idpermintaan,
       String keterangan_selesai,
-      String url_permintaan) {
+      String url_permintaan) async {
     if (keterangan == "" || duedate == "" || kategori == "") {
       ReusableClasses().modalbottomWarning(
           context,
@@ -476,7 +478,7 @@ class RequestModalBottom {
             //     context,
             //     MaterialPageRoute(
             //         builder: (context) => BottomNav(
-            //               numberOfpage: 1,
+            //               numberOfpage: 0,
             //             )));
             // ReusableClasses().modalbottomWarning(
             //     context,
