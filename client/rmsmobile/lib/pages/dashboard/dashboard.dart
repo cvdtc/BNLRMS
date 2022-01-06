@@ -1,9 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
-import 'package:rmsmobile/pages/dashboard/dashboard.item.page/dashboard.bottom.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/permintaan.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/progres.dart';
 import 'package:rmsmobile/pages/login/login.dart';
@@ -273,6 +271,16 @@ class _DahsboardState extends State<Dahsboard> {
                     ),
                     SizedBox(
                       height: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('Tidak Selesai'),
+                        PermintaanList(
+                          tipelist: 2,
+                        )
+                      ],
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

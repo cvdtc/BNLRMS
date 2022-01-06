@@ -133,6 +133,7 @@ async function Login(req, res) {
                                                 console.log("Login Berhasil")
                                                 const user = {
                                                     idpengguna: rows[0].idpengguna,
+                                                    username: rows[0].username,
                                                     jabatan: rows[0].jabatan,
                                                     tipe: tipe
                                                 }

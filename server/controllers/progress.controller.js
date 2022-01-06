@@ -243,7 +243,8 @@ async function addProgress(req, res) {
                             idpengguna: jwtresult.idpengguna
                         }
                         let dataprogressnext = {
-                            keterangan: keterangan_selesai,
+                            keterangan: 'from:'+jwtresult.username+' >>'+keterangan_selesai,		
+                            // keterangan: keterangan_selesai,
                             flag_selesai: 0,
                             idpermintaan: idpermintaan,
                             created: nows,

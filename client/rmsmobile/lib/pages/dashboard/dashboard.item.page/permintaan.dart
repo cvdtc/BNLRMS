@@ -149,14 +149,23 @@ class _PermintaanListState extends State<PermintaanList> {
                                                 Icons.check,
                                                 color: Colors.white,
                                               ))
-                                          : Container(
-                                              color: Colors.orange,
-                                              height: 30.0,
-                                              width: 30.0,
-                                              child: Icon(
-                                                Icons.priority_high_rounded,
-                                                color: Colors.white,
-                                              )),
+                                          : (dataRequest.flag_selesai == 0
+                                              ? Container(
+                                                  color: Colors.orange,
+                                                  height: 30.0,
+                                                  width: 30.0,
+                                                  child: Icon(
+                                                    Icons.priority_high_rounded,
+                                                    color: Colors.white,
+                                                  ))
+                                              : Container(
+                                                  color: Colors.black,
+                                                  height: 30.0,
+                                                  width: 30.0,
+                                                  child: Icon(
+                                                    Icons.close_rounded,
+                                                    color: Colors.white,
+                                                  ))),
                                     ),
                                     SizedBox(
                                       width: 5,
