@@ -7,7 +7,6 @@ class AkunBottomModal {
   void exit(BuildContext context) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();
-    print(preferences.toString());
     late FirebaseMessaging messaging;
     // * adding firebase configuration setup
     messaging = FirebaseMessaging.instance;

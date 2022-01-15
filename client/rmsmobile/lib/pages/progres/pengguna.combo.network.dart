@@ -8,7 +8,7 @@ import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
 final String _apiService = ApiService().baseUrl;
 List<PenggunaModel> parsePengguna(String responseBody) {
   var listSite = json.decode(responseBody)['data'] as List<dynamic>;
-  print(listSite);
+
   return listSite.map((e) => PenggunaModel.fromJson(e)).toList();
 }
 
@@ -19,9 +19,7 @@ Future<List<PenggunaModel>> fetchPengguna(String token) async {
     // ++ fyi : sending token with BEARER
     'Authorization': 'Bearer ' + token
   });
-  print("NETWORK permintaan? " + token);
   if (response.statusCode == 200) {
-    print('Success?');
     return compute(parsePengguna, response.body);
   } else {
     throw Exception(response.statusCode);

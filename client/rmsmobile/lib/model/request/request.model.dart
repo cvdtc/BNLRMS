@@ -11,9 +11,9 @@ class RequestModel {
       flag_selesai,
       keterangan_selesai,
       nama_request,
-      jmlprogress;
+      jmlprogress,
+      url_permintaan;
 // ++ addons json
-  var token, tipeupdate;
 
   RequestModel(
       {this.idpermintaan,
@@ -26,8 +26,7 @@ class RequestModel {
       this.keterangan_selesai,
       this.nama_request,
       this.jmlprogress,
-      this.token,
-      this.tipeupdate});
+      this.url_permintaan});
 
   factory RequestModel.fromJson(Map<dynamic, dynamic> map) {
     return RequestModel(
@@ -41,6 +40,7 @@ class RequestModel {
       keterangan_selesai: map["keterangan_selesai"],
       nama_request: map["nama_request"],
       jmlprogress: map["jmlprogress"],
+      url_permintaan: map["url_permintaan"],
     );
   }
 
@@ -50,14 +50,9 @@ class RequestModel {
       "kategori": kategori,
       "due_date": due_date,
       "flag_selesai": flag_selesai,
-      // "keterangan_selesai": keterangan_selesai,
-      // "tipeupdate": tipeupdate
+      "url_permintaan": url_permintaan,
+      "keterangan_selesai": keterangan_selesai,
     };
-  }
-
-  @override
-  String toString() {
-    return 'keterangan: $keterangan, kategori: $kategori, due_date: $due_date, flag_selesai: $flag_selesai';
   }
 }
 

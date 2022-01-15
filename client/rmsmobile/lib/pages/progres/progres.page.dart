@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/progres/progress.network.dart';
@@ -17,9 +16,10 @@ class ProgressPage extends StatefulWidget {
 
 class _ProgressPageState extends State<ProgressPage> {
   late SharedPreferences sp;
-  String? token = "", username = "", jabatan = "";
+  String? token = "";
   List<ProgressModel> _progress = <ProgressModel>[];
   List<ProgressModel> _progressDisplay = <ProgressModel>[];
+  TextEditingController _textSearch = TextEditingController(text: "");
 
   bool _isLoading = true;
 
@@ -28,16 +28,12 @@ class _ProgressPageState extends State<ProgressPage> {
     sp = await SharedPreferences.getInstance();
     setState(() {
       token = sp.getString("access_token");
-      username = sp.getString("username");
-      jabatan = sp.getString("jabatan");
     });
     fetchProgress(token!).then((value) {
       setState(() {
         _isLoading = false;
         _progress.addAll(value);
         _progressDisplay = _progress;
-        print("progressdisplay? " + _progressDisplay.length.toString());
-        print("progress? " + value.toString());
       });
     }).onError((error, stackTrace) {
       ReusableClasses().clearSharedPreferences();
@@ -56,10 +52,33 @@ class _ProgressPageState extends State<ProgressPage> {
     super.initState();
   }
 
+  Future refreshPage() async {
+    _progressDisplay.clear();
+    _textSearch.clear();
+    Fluttertoast.showToast(
+        msg: "Data Berhasil diperbarui",
+        backgroundColor: Colors.black,
+        textColor: Colors.white);
+    setState(() {
+      cekToken();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                refreshPage();
+                // openFilterDialog(context);
+              },
+              icon: Icon(
+                Icons.refresh_outlined,
+                color: Colors.black87,
+              ))
+        ],
         title: Text(
           'Daftar Progres',
           style: GoogleFonts.lato(
@@ -68,25 +87,27 @@ class _ProgressPageState extends State<ProgressPage> {
         centerTitle: true,
         backgroundColor: thirdcolor,
       ),
-      body: SafeArea(
-        child: Container(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              print("Values??" + index.toString());
-              if (!_isLoading) {
-                return index == 0
-                    ? _searchBar()
-                    : ProgressTile(
-                        progress: this._progressDisplay[index - 1],
-                        token: token!,
-                      );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-            itemCount: _progressDisplay.length + 1,
+      body: RefreshIndicator(
+        onRefresh: refreshPage,
+        child: SafeArea(
+          child: Container(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                if (!_isLoading) {
+                  return index == 0
+                      ? _searchBar()
+                      : ProgressTile(
+                          progress: this._progressDisplay[index - 1],
+                          token: token!,
+                        );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+              itemCount: _progressDisplay.length + 1,
+            ),
           ),
         ),
       ),
@@ -111,7 +132,7 @@ class _ProgressPageState extends State<ProgressPage> {
             }).toList();
           });
         },
-        // controller: _textController,
+        controller: _textSearch,
         decoration: InputDecoration(
           fillColor: thirdcolor,
           border: OutlineInputBorder(),

@@ -84,6 +84,7 @@ async function Login(req, res) {
             data: null
         })
     } else {
+        console.log("Ada yang mencoba masuk...")
         try {
             pool.getConnection(function (error, database) {
                 if (error) {
@@ -132,6 +133,7 @@ async function Login(req, res) {
                                                 console.log("Login Berhasil")
                                                 const user = {
                                                     idpengguna: rows[0].idpengguna,
+                                                    username: rows[0].username,
                                                     jabatan: rows[0].jabatan,
                                                     tipe: tipe
                                                 }

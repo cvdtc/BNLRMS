@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/pages/login/login.dart';
@@ -25,7 +26,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     setState(() {
       token = sp.getString("access_token");
     });
-    print('tokenyya $token ${_apiService.responseCode.messageApi}');
     if (token == null) {
       Navigator.pushReplacement(
           context,
@@ -34,10 +34,12 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     tipe: 'splashscreen',
                   )));
     } else {
-      print(
-          'responsecode ${_apiService.responseCode.messageApi} ++ ${_apiService.responseCode} ++ ');
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BottomNav()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNav(
+                    numberOfpage: 0,
+                  )));
     }
   }
 
@@ -47,11 +49,24 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     // // * adding firebase configuration setup
     messaging = FirebaseMessaging.instance;
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      print("message recieved");
-      print(event.notification!.body);
+      print(event.toString());
+      Fluttertoast.showToast(
+          msg: " Notifikasi : ${event}",
+          backgroundColor: Colors.red,
+          textColor: Colors.white);
     });
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Message clicked!');
+      print(message.toString());
+      Fluttertoast.showToast(
+          msg: " Notifikasi ${message}",
+          backgroundColor: Colors.red,
+          textColor: Colors.white);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNav(
+                    numberOfpage: 0,
+                  )));
     });
     Timer(Duration(seconds: 4), () {
       cekToken();

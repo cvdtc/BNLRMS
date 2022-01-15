@@ -84,7 +84,7 @@ class _AkunPageState extends State<AkunPage> {
             ],
           ),
           _option(context),
-          Text('v.1.0.5 debuging')
+          Text('v.1.3.0 (S)')
         ],
       ),
     ));
@@ -159,7 +159,6 @@ class _AkunPageState extends State<AkunPage> {
                           jabatan: jabatan,
                           notification_token: "",
                           aktif: 1);
-                      print('data pass yang ke kirim $gantipass');
                       if (_textFieldControllerGantipass.text.toString() == "" ||
                           _textFieldControllerGantipassretype.text.toString() ==
                               "") {
@@ -179,17 +178,14 @@ class _AkunPageState extends State<AkunPage> {
                         ApiService()
                             .ubahPassword(token.toString(), gantipass)
                             .then((isSuccess) {
-                          print('masuk1 $isSuccess');
                           if (isSuccess) {
-                            print('masuk2');
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
                             Fluttertoast.showToast(
                                 msg: "Berhasil Ubah Password",
                                 backgroundColor: Colors.black,
                                 textColor: Colors.white);
                           } else {
-                            print('masuk3');
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
                             Fluttertoast.showToast(
                                 msg: "Maaf, password gagal diubah",
                                 backgroundColor: Colors.red,
@@ -328,7 +324,7 @@ class _AkunPageState extends State<AkunPage> {
                     children: [
                       ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0.0,
@@ -349,7 +345,7 @@ class _AkunPageState extends State<AkunPage> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
                             AkunBottomModal().exit(context);
                           },
                           style: ElevatedButton.styleFrom(

@@ -81,13 +81,9 @@ class _ProgresListState extends State<ProgresList> {
           );
         } else if (snapshot.connectionState == ConnectionState.done) {
           List<ProgressModel>? dataRequest = snapshot.data;
-          print('snapshote ${snapshot.data} $dataRequest');
           if (dataRequest!.isNotEmpty) {
-            print('masuk sini?');
             return _listRequest(dataRequest);
           } else {
-            print('masuk sini');
-            print('data request $dataRequest + ${snapshot.data}');
             return Container(
               child: Text('Data progres masih kosong'),
             );
@@ -185,10 +181,7 @@ class _ProgresListState extends State<ProgresList> {
                             ),
                             SizedBox(
                                 height: MediaQuery.of(context).size.height / 10,
-                                child: Text(
-                                    dataprogress.keterangan
-                                        .toString()
-                                        .toUpperCase(),
+                                child: Text(dataprogress.keterangan.toString(),
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,

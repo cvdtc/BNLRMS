@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
@@ -20,8 +19,8 @@ double scaledWidth(BuildContext context, double baseSize) {
 }
 
 class BottomNav extends StatefulWidget {
-  const BottomNav({Key? key}) : super(key: key);
-
+  int numberOfpage;
+  BottomNav({required this.numberOfpage});
   @override
   _BottomNavState createState() => _BottomNavState();
 }
@@ -61,6 +60,7 @@ class _BottomNavState extends State<BottomNav> {
   @override
   void initState() {
     super.initState();
+    _currentTab = widget.numberOfpage;
   }
 
   @override

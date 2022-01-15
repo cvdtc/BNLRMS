@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
-import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
-import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PermintaanList extends StatefulWidget {
-  const PermintaanList({Key? key}) : super(key: key);
+  // * buat filter listview jika tipe list 1 maka data yang keluar sudah selesai, jika 0 data yang keluar yang belum selesai
+  int tipelist;
+  PermintaanList({required this.tipelist});
 
   @override
   _PermintaanListState createState() => _PermintaanListState();
@@ -20,6 +19,7 @@ class _PermintaanListState extends State<PermintaanList> {
   ApiService _apiService = ApiService();
   bool isSuccess = false;
   String? token = "";
+  int tipelist = 0;
 
   // * ceking token and getting dashboard value from api
   cekToken() async {
@@ -32,6 +32,7 @@ class _PermintaanListState extends State<PermintaanList> {
   @override
   initState() {
     super.initState();
+    tipelist = widget.tipelist;
     cekToken();
   }
 
@@ -44,18 +45,7 @@ class _PermintaanListState extends State<PermintaanList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _apiService
-          .getListRequest(token.toString())
-          .onError((error, stackTrace) {
-        print("List Permintaan Dashboard? " + error.toString());
-        ReusableClasses().clearSharedPreferences();
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Loginscreen(
-                      tipe: 'sesiberakhir',
-                    )));
-      }),
+      future: _apiService.getListRequest(token.toString()),
       builder: (context, AsyncSnapshot<List<RequestModel>?> snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -77,13 +67,12 @@ class _PermintaanListState extends State<PermintaanList> {
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.connectionState == ConnectionState.done) {
-          List<RequestModel>? dataRequest = snapshot.data;
-          if (dataRequest!.isNotEmpty) {
-            print('masuk sini?');
+          List<RequestModel>? dataRequest = snapshot.data!
+              .where((element) => element.flag_selesai == tipelist)
+              .toList();
+          if (dataRequest.isNotEmpty) {
             return _listRequest(dataRequest);
           } else {
-            print('masuk sini');
-            print('data request $dataRequest + ${snapshot.data}');
             return Container(
               child: Text('Data Permintaan masih kosong'),
             );
@@ -118,7 +107,6 @@ class _PermintaanListState extends State<PermintaanList> {
           itemCount: dataIndex!.length,
           itemBuilder: (context, index) {
             RequestModel? dataRequest = dataIndex[index];
-            print('flagselesainya ${dataRequest.flag_selesai}');
             return InkWell(
               onTap: () {
                 Navigator.push(
@@ -146,34 +134,54 @@ class _PermintaanListState extends State<PermintaanList> {
                         child: Column(
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                ClipOval(
-                                  child: dataRequest.flag_selesai == 1
-                                      ? Container(
-                                          color: Colors.green,
-                                          height: 30.0,
-                                          width: 30.0,
-                                          child: Icon(
-                                            Icons.check,
-                                            color: Colors.white,
-                                          ))
-                                      : Container(
-                                          color: Colors.orange,
-                                          height: 30.0,
-                                          width: 30.0,
-                                          child: Icon(
-                                            Icons.priority_high_rounded,
-                                            color: Colors.white,
-                                          )),
+                                Row(
+                                  children: [
+                                    ClipOval(
+                                      child: dataRequest.flag_selesai == 1
+                                          ? Container(
+                                              color: Colors.green,
+                                              height: 30.0,
+                                              width: 30.0,
+                                              child: Icon(
+                                                Icons.check,
+                                                color: Colors.white,
+                                              ))
+                                          : (dataRequest.flag_selesai == 0
+                                              ? Container(
+                                                  color: Colors.orange,
+                                                  height: 30.0,
+                                                  width: 30.0,
+                                                  child: Icon(
+                                                    Icons.priority_high_rounded,
+                                                    color: Colors.white,
+                                                  ))
+                                              : Container(
+                                                  color: Colors.black,
+                                                  height: 30.0,
+                                                  width: 30.0,
+                                                  child: Icon(
+                                                    Icons.close_rounded,
+                                                    color: Colors.white,
+                                                  ))),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(dataRequest.kategori.toString(),
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black45)),
+                                  ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: Text(dataRequest.kategori.toString(),
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black45)),
-                                ),
+                                Text("TR: " + dataRequest.created.toString(),
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black45)),
                               ],
                             ),
                             SizedBox(
@@ -181,10 +189,7 @@ class _PermintaanListState extends State<PermintaanList> {
                             ),
                             SizedBox(
                                 height: MediaQuery.of(context).size.height / 10,
-                                child: Text(
-                                    dataRequest.keterangan
-                                        .toString()
-                                        .toUpperCase(),
+                                child: Text(dataRequest.keterangan.toString(),
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,

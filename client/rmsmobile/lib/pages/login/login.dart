@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
-import 'package:rmsmobile/utils/TextFieldContainer.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 
@@ -176,14 +175,18 @@ class _LoginscreenState extends State<Loginscreen> {
     LoginModel pengguna =
         LoginModel(username: username, password: password, tipe: 'mobile');
     //execute sending json to api url
-    print("LOGIN? : " + pengguna.toString());
     _apiService.loginIn(pengguna).then((isSuccess) {
       setState(() => isloading = false);
       // if login success page will be route to home page
       if (isSuccess) {
-        print('sukses masuk');
+        _controllerUsername.clear();
+        _controllerPassword.clear();
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BottomNav()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BottomNav(
+                      numberOfpage: 0,
+                    )));
       } else {
         ReusableClasses().modalbottomWarning(
             context,

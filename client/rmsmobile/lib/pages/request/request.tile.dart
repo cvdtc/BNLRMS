@@ -42,8 +42,10 @@ class _RequestTileState extends State<RequestTile> {
                   widget.request.kategori,
                   widget.request.idpermintaan.toString(),
                   widget.request.keterangan_selesai,
-                  widget.request.tipeupdate,
-                  widget.request.flag_selesai);
+                  widget.request.flag_selesai,
+                  widget.request.nama_request,
+                  widget.request.url_permintaan,
+                  widget.request.jmlprogress);
             });
           },
           child: Card(
@@ -65,7 +67,9 @@ class _RequestTileState extends State<RequestTile> {
                         decoration: BoxDecoration(
                             color: widget.request.flag_selesai == 1
                                 ? Colors.green
-                                : Colors.red,
+                                : (widget.request.flag_selesai == 0
+                                    ? Colors.orange
+                                    : Colors.black),
                             borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(6.0),
                                 bottomLeft: Radius.circular(6.0))),
@@ -75,7 +79,9 @@ class _RequestTileState extends State<RequestTile> {
                           child: Text(
                             widget.request.flag_selesai == 1
                                 ? 'Selesai'
-                                : 'Belum Selesai',
+                                : (widget.request.flag_selesai == 0
+                                    ? 'Belum Selesai'
+                                    : 'Tidak Selesai'),
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -101,7 +107,10 @@ class _RequestTileState extends State<RequestTile> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Tenggat : " + widget.request.due_date,
+                          Text("TR : " + widget.request.created,
+                              style: TextStyle(
+                                  fontSize: 14.0, color: Colors.black38)),
+                          Text("JT : " + widget.request.due_date,
                               style: TextStyle(
                                   fontSize: 14.0, color: Colors.black38)),
                           Text(widget.request.nama_request,

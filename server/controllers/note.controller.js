@@ -72,7 +72,7 @@ const pool = mysql.createPool({
  */
 
 async function getAllNote(req, res) {
-    const token = req.headers.authorization;
+    const token = req.headers.authorization
     const filter = req.params.filter
     if (token != null) {
         try {
@@ -114,20 +114,20 @@ async function getAllNote(req, res) {
                                         message: "Sorry, query has error!",
                                         error: error,
                                         data: null
-                                    });
+                                    })
                                 } else {
                                     if (rows.length <= 0) {
                                         return res.status(200).send({
                                             message: "Sorry, data empty!",
                                             error: null,
                                             data: rows
-                                        });
+                                        })
                                     } else {
                                         return res.status(200).send({
                                             message: "Done!, data has fetched!",
                                             error: null,
                                             data: rows
-                                        });
+                                        })
                                     }
                                 }
                             })
@@ -139,7 +139,7 @@ async function getAllNote(req, res) {
             return res.status(403).send({
                 message: "Forbidden.",
                 data: rows
-            });
+            })
         }
     } else {
         res.status(401).send({
@@ -210,7 +210,7 @@ async function addNote(req, res) {
                         message: "Sorry,  Your token has expired!",
                         error: jwterror,
                         data: null
-                    });
+                    })
                 } else {
                     pool.getConnection(function (error, database) {
                         if (error) {
@@ -218,7 +218,7 @@ async function addNote(req, res) {
                                 message: "Sorry,  your connection has refused!",
                                 error: error,
                                 data: null
-                            });
+                            })
                         } else {
                             let datanote = {
                                 keterangan: keterangan,
@@ -342,7 +342,7 @@ async function ubahNote(req, res) {
                         message: "Sorry,  Your token has expired!",
                         error: jwterror,
                         data: null
-                    });
+                    })
                 } else {
                     pool.getConnection(function (error, database) {
                         if (error) {
@@ -350,7 +350,7 @@ async function ubahNote(req, res) {
                                 message: "Sorry,  your connection has refused!",
                                 error: error,
                                 data: null
-                            });
+                            })
                         } else {
                             database.beginTransaction(function (error) {
                                 let updatenote = {
@@ -456,7 +456,7 @@ async function deleteNote(req, res) {
                     message: "Sorry,  Your token has expired!",
                     error: jwterror,
                     data: null
-                });
+                })
             } else {
                 pool.getConnection(function (error, database) {
                     if (error) {
@@ -464,7 +464,7 @@ async function deleteNote(req, res) {
                             message: "Sorry,  your connection has refused!",
                             error: error,
                             data: null
-                        });
+                        })
                     } else {
                         database.beginTransaction(function (error) {
                             var sqlquery = "DELETE FROM note WHERE idreminder = ?" // * idreminder will be change to idnote
