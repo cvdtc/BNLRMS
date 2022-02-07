@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
-import 'package:rmsmobile/model/progress/progress.model.dart';
+import 'package:rmsmobile/model/perpanjangan/perpanjangan.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
-import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProgresList extends StatefulWidget {
-  const ProgresList({Key? key}) : super(key: key);
+class PerpanjanganList extends StatefulWidget {
+  const PerpanjanganList({Key? key}) : super(key: key);
 
   @override
-  _ProgresListState createState() => _ProgresListState();
+  _PerpanjanganListState createState() => _PerpanjanganListState();
 }
 
-class _ProgresListState extends State<ProgresList> {
+class _PerpanjanganListState extends State<PerpanjanganList> {
   late SharedPreferences sp;
   ApiService _apiService = ApiService();
   bool isSuccess = false;
@@ -48,7 +47,7 @@ class _ProgresListState extends State<ProgresList> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: _apiService
-          .getListProgres(token.toString())
+          .getListPerpanjangan(token.toString())
           .onError((error, stackTrace) {
         ReusableClasses().clearSharedPreferences();
         Navigator.pushReplacement(
@@ -58,7 +57,7 @@ class _ProgresListState extends State<ProgresList> {
                       tipe: 'sesiberakhir',
                     )));
       }),
-      builder: (context, AsyncSnapshot<List<ProgressModel>?> snapshot) {
+      builder: (context, AsyncSnapshot<List<PerpanjanganModel>?> snapshot) {
         if (snapshot.hasError) {
           return Center(
             child: Column(
@@ -79,12 +78,12 @@ class _ProgresListState extends State<ProgresList> {
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.connectionState == ConnectionState.done) {
-          List<ProgressModel>? dataRequest = snapshot.data;
-          if (dataRequest!.isNotEmpty) {
-            return _listRequest(dataRequest);
+          List<PerpanjanganModel>? dataPerpanjangan = snapshot.data;
+          if (dataPerpanjangan!.isNotEmpty) {
+            return _listPerpanjangan(dataPerpanjangan);
           } else {
             return Container(
-              child: Text('Data progres masih kosong'),
+              child: Text('Data Perpanjangan masih kosong'),
             );
           }
         } else {
@@ -108,25 +107,25 @@ class _ProgresListState extends State<ProgresList> {
   }
 
   // ++ DESIGN LIST COMPONENT
-  Widget _listRequest(List<ProgressModel>? dataIndex) {
+  Widget _listPerpanjangan(List<PerpanjanganModel>? dataIndex) {
     return Container(
-      height: MediaQuery.of(context).size.height / 4,
+      height: MediaQuery.of(context).size.height / 5.5,
       margin: EdgeInsets.only(left: 16, right: 16),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: dataIndex!.length,
           itemBuilder: (context, index) {
-            ProgressModel? dataprogress = dataIndex[index];
+            PerpanjanganModel? dataperpanjangan = dataIndex[index];
             return InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TimelinePage(
-                              idpermintaan:
-                                  dataprogress.idpermintaan.toString(),
-                            )));
-              },
+              // onTap: () {
+              //   Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => TimelinePage(
+              //                 idpermintaan:
+              //                     dataprogress.idpermintaan.toString(),
+              //               )));
+              // },
               child: Container(
                 padding: const EdgeInsets.all(8.0),
                 margin: EdgeInsets.all(8),
@@ -143,64 +142,70 @@ class _ProgresListState extends State<ProgresList> {
                       padding: const EdgeInsets.all(5.0),
                       child: Container(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                ClipOval(
-                                  child: dataprogress.flag_selesai == 1
-                                      ? Container(
-                                          color: Colors.green,
-                                          height: 30.0,
-                                          width: 30.0,
-                                          child: Icon(
-                                            Icons.check,
-                                            color: Colors.white,
-                                          ))
-                                      : Container(
-                                          color: Colors.orange,
-                                          height: 30.0,
-                                          width: 30.0,
-                                          child: Icon(
-                                            Icons.priority_high_rounded,
-                                            color: Colors.white,
-                                          )),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: Text(dataprogress.kategori.toString(),
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black45)),
-                                ),
-                              ],
-                            ),
+                            Text("TP: " + dataperpanjangan.tglperpanjangan,
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black45)),
+                            
+                            // Text("TS: " + dataperpanjangan.tglsertifikat,
+                            //     style: TextStyle(
+                            //         fontSize: 13,
+                            //         fontWeight: FontWeight.bold,
+                            //         color: Colors.black45)),
                             SizedBox(
                               height: 10,
                             ),
+                            // SizedBox(
+                            //     height: MediaQuery.of(context).size.height / 15,
+                            //     child: Text(
+                            //         "Produk: " +
+                            //             dataperpanjangan.produk.toString(),
+                            //         style: TextStyle(
+                            //             fontSize: 16,
+                            //             fontWeight: FontWeight.bold,
+                            //             color: Colors.black))),
+                            // SizedBox(
+                            //   height: 10,
+                            // ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.height / 10,
-                                child: Text(dataprogress.keterangan.toString(),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black))),
+                              height: MediaQuery.of(context).size.height / 20,
+                              child: Text(dataperpanjangan.produk.toString(),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black)),
+                            ),
+                            Text(dataperpanjangan.nama.toString(),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      // fontWeight: FontWeight.bold,
+                                      color: Colors.black)),
                             SizedBox(
-                              height: 10,
+                              height: 6,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                    "Update: " +
-                                        dataprogress.created.toString(),
+                                    "Kelas: " +
+                                        dataperpanjangan.kelas.toString(),
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black45)),
+                                Text(
+                                    "Sales: " +
+                                        dataperpanjangan.sales.toString(),
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black45))
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ),

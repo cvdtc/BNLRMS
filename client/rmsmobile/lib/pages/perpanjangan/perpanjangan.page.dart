@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rmsmobile/model/request/request.model.dart';
+import 'package:rmsmobile/model/perpanjangan/perpanjangan.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
-import 'package:rmsmobile/pages/request/request.bottom.dart';
-
-import 'package:rmsmobile/pages/request/request.network.dart';
-import 'package:rmsmobile/pages/request/request.tile.dart';
+import 'package:rmsmobile/pages/perpanjangan/perpanjangan.network.dart';
+import 'package:rmsmobile/pages/perpanjangan/perpanjangan.tile.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
-// import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RequestPageSearch extends StatefulWidget {
+class PerpanjanganPageSearch extends StatefulWidget {
   @override
-  RequestPageSearchState createState() => RequestPageSearchState();
+  PerpanjanganPageSearchState createState() => PerpanjanganPageSearchState();
 }
 
-class RequestPageSearchState extends State<RequestPageSearch> {
+class PerpanjanganPageSearchState extends State<PerpanjanganPageSearch> {
   late SharedPreferences sp;
   String? defaultKategori = 'Merek';
   String? jenisKategori = 'Merek';
@@ -35,8 +31,8 @@ class RequestPageSearchState extends State<RequestPageSearch> {
   int? pilihkategori;
   var dataKategori = ['Merek', 'Paten', 'Desain Industri', 'Lainnya'];
   var token = "", flagcari = '0';
-  List<RequestModel> _requests = <RequestModel>[];
-  List<RequestModel> _requestDisplay = <RequestModel>[];
+  List<PerpanjanganModel> _perpanjangan = <PerpanjanganModel>[];
+  List<PerpanjanganModel> _perpanjanganDisplay = <PerpanjanganModel>[];
 
   bool _isLoading = true;
 
@@ -46,12 +42,12 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     setState(() {
       token = sp.getString('access_token')!;
     });
-    await fetchPermintaan(token).then((value) {
+    await fetchPerpanjangan(token).then((value) {
       setState(() {
         _isLoading = false;
-        _requests.clear();
-        _requests.addAll(value);
-        _requestDisplay = _requests;
+        _perpanjangan.clear();
+        _perpanjangan.addAll(value);
+        _perpanjanganDisplay = _perpanjangan;
       });
     }).onError((error, stackTrace) {
       ReusableClasses().clearSharedPreferences();
@@ -65,7 +61,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
   }
 
   Future refreshPage() async {
-    _requestDisplay.clear();
+    _perpanjanganDisplay.clear();
     _textSearch.clear();
     setState(() {
       cekToken();
@@ -79,16 +75,6 @@ class RequestPageSearchState extends State<RequestPageSearch> {
 
   @override
   initState() {
-    defaultKategori = dataKategori[0];
-    if (defaultKategori == 'Merek') {
-      defaultKategori = dataKategori[0];
-    } else if (defaultKategori == 'Paten') {
-      defaultKategori = dataKategori[1];
-    } else if (defaultKategori == 'Desain Industri') {
-      defaultKategori = dataKategori[2];
-    } else if (defaultKategori == 'Hak Cipta') {
-      defaultKategori = dataKategori[3];
-    }
     cekToken();
     super.initState();
   }
@@ -109,30 +95,30 @@ class RequestPageSearchState extends State<RequestPageSearch> {
               ))
         ],
         title: Text(
-          'Daftar Permintaan',
+          'Daftar Perpanjangan',
           style: GoogleFonts.lato(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         centerTitle: true,
         backgroundColor: thirdcolor,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
           // Navigator.pushReplacement(
           //     context,
           //     MaterialPageRoute(
           //         builder: (context) => BottomNav(
           //               numberOfpage: 2,
           //             )));
-          RequestModalBottom().modalAddRequest(
-              context, 'tambah', token, "", "", "", "", "", "", "");
-        },
-        backgroundColor: thirdcolor,
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      //     RequestModalBottom().modalAddRequest(
+      //         context, 'tambah', token, "", "", "", "", "", "", "");
+      //   },
+      //   backgroundColor: thirdcolor,
+      //   child: Icon(
+      //     Icons.add,
+      //     color: Colors.white,
+      //   ),
+      // ),
       body: RefreshIndicator(
         onRefresh: refreshPage,
         child: SafeArea(
@@ -144,8 +130,8 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                       ? _searchBar()
                       : StatefulBuilder(builder:
                           (BuildContext context, StateSetter setState) {
-                          return RequestTile(
-                            request: this._requestDisplay[index - 1],
+                          return PerpanjanganTile(
+                            perpanjangan: this._perpanjanganDisplay[index - 1],
                             token: token,
                           );
                         });
@@ -155,7 +141,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                   );
                 }
               },
-              itemCount: _requestDisplay.length + 1,
+              itemCount: _perpanjanganDisplay.length + 1,
             ),
           ),
         ),
@@ -171,13 +157,12 @@ class RequestPageSearchState extends State<RequestPageSearch> {
         onChanged: (searchText) {
           searchText = searchText.toLowerCase();
           setState(() {
-            _requestDisplay = _requests.where((u) {
-              var fNama = u.nama_request.toLowerCase();
-              var fKeterangan = u.keterangan.toLowerCase();
-              var fkategori = u.kategori.toLowerCase();
+            _perpanjanganDisplay = _perpanjangan.where((u) {
+              var fNama = u.nama.toLowerCase();
+              var fproduk = u.produk.toLowerCase();
               return fNama.contains(searchText) ||
-                  fKeterangan.contains(searchText) ||
-                  fkategori.contains(searchText);
+                  fNama.contains(searchText) ||
+                  fproduk.contains(searchText);
             }).toList();
           });
         },
@@ -186,7 +171,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
           fillColor: thirdcolor,
           border: OutlineInputBorder(),
           prefixIcon: Icon(Icons.search),
-          hintText: 'Cari Permintaan',
+          hintText: 'Cari Perpanjangan',
         ),
       ),
     );

@@ -19,9 +19,10 @@ class _LoginscreenState extends State<Loginscreen> {
   ApiService _apiService = ApiService();
   TextEditingController _controllerUsername = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
-  bool _fieldEmail = false,
+  bool 
+  // _fieldEmail = false,
       _obsecureText = true,
-      _fieldPassword = false,
+      // _fieldPassword = false,
       isloading = false;
   var emailaccountselection, token = '', tipelogin;
 
@@ -66,33 +67,19 @@ class _LoginscreenState extends State<Loginscreen> {
               SizedBox(
                 height: 180,
               ),
-              Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: 40,
-                  ),
-                  Text(
-                    'Selamat Datang',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35),
-                  ),
-                ],
+              Text(
+                'Selamat Datang',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 35),
               ),
               SizedBox(
                 height: 10,
               ),
-              Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: 40,
-                  ),
-                  Text(
-                    'Masukkan username yang sudah terdaftar',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  )
-                ],
+              Text(
+                'Masukkan username yang sudah terdaftar',
+                style: TextStyle(color: Colors.white, fontSize: 14),
               ),
               SizedBox(
                 height: 65,
@@ -153,6 +140,7 @@ class _LoginscreenState extends State<Loginscreen> {
         cursorColor: thirdcolor,
         controller: _controllerPassword,
         obscureText: _obsecureText,
+        keyboardType: TextInputType.visiblePassword,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,

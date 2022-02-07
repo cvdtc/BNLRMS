@@ -12,7 +12,7 @@ class ProgressModalBottom {
   TextEditingController _tecKeteranganNextUser =
       TextEditingController(text: "");
   TextEditingController _tecUrlProgress = TextEditingController(text: "");
-  String _dropdownValue = "Merek";
+  // String _dropdownValue = "Merek";
   // * for edit progress
   bool flagswitchnextuser = false;
   /**

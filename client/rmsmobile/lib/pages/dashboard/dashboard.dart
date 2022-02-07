@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/permintaan.dart';
+import 'package:rmsmobile/pages/dashboard/dashboard.item.page/perpanjangan.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/progres.dart';
 import 'package:rmsmobile/pages/login/login.dart';
+import 'package:rmsmobile/pages/perpanjangan/perpanjangan.page.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 
 import 'package:rmsmobile/utils/warna.dart';
@@ -239,19 +241,42 @@ class _DahsboardState extends State<Dahsboard> {
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                
+                // DASHBOARD BAGIAN PROGRESS DITUTUP SEMENTARA DIGANTI PERPANJANGAN, REQ: PAK JIAN 15/01/21
+                // child: Column(
+                //   children: [
+                //     Row(
+                //       crossAxisAlignment: CrossAxisAlignment.center,
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: [
+                //         subheading('Progres'),
+                //       ],
+                //     ),
+                //     SizedBox(
+                //       height: 10,
+                //     ),
+                    // ProgresList()
+                //   ],
+                // ),
+
                 child: Column(
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        subheading('Progres'),
+                        subheading('Perpanjangan'),
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext)=>PerpanjanganPageSearch()));
+                          },
+                          child: Text('Selengkapnya...'))
                       ],
                     ),
                     SizedBox(
                       height: 10,
                     ),
-                    ProgresList()
+                    PerpanjanganList()
                   ],
                 ),
               ),

@@ -5,6 +5,7 @@ import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/model/login/loginResult.model.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.gantipassword.dart';
+import 'package:rmsmobile/model/perpanjangan/perpanjangan.model.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/model/response/responsecode.dart';
@@ -241,6 +242,24 @@ class ApiService {
     } else {
       return null;
       // throw Exception(response.statusCode);
+    }
+  }
+
+  Future<List<PerpanjanganModel>?> getListPerpanjangan(String token) async {
+    var url = Uri.parse(baseUrl + 'perpanjangan');
+    var response = await client.get(url, headers: {
+      'content-type': 'application/json',
+      // ++ fyi : sending token with BEARER
+      'Authorization': 'Bearer ' + token
+    });
+    // ++ fyi : for getting response message from api
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+
+    if (response.statusCode == 200) {
+      return PerpanjanganModelFromJson(response.body);
+    } else {
+      return null;
     }
   }
 }
