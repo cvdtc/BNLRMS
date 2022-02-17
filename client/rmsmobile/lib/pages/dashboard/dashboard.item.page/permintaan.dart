@@ -71,7 +71,16 @@ class _PermintaanListState extends State<PermintaanList> {
               .where((element) => element.flag_selesai == tipelist)
               .toList();
           if (dataRequest.isNotEmpty) {
+            tipelist == 2
+                ? dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date))
+                : dataRequest;
             return _listRequest(dataRequest);
+            // if (tipelist == 2) {
+            //   dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date));
+            //   return _listRequest(dataRequest);
+            // } else {
+            //   return _listRequest(dataRequest);
+            // }
           } else {
             return Container(
               child: Text('Data Permintaan masih kosong'),

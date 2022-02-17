@@ -144,12 +144,12 @@ class _PerpanjanganListState extends State<PerpanjanganList> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("TP: " + dataperpanjangan.tglperpanjangan,
+                            Text("FD: " + dataperpanjangan.tglperpanjangan,
                                 style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black45)),
-                            
+
                             // Text("TS: " + dataperpanjangan.tglsertifikat,
                             //     style: TextStyle(
                             //         fontSize: 13,
@@ -179,10 +179,10 @@ class _PerpanjanganListState extends State<PerpanjanganList> {
                                       color: Colors.black)),
                             ),
                             Text(dataperpanjangan.nama.toString(),
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      // fontWeight: FontWeight.bold,
-                                      color: Colors.black)),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    // fontWeight: FontWeight.bold,
+                                    color: Colors.black)),
                             SizedBox(
                               height: 6,
                             ),

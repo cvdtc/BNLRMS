@@ -43,9 +43,9 @@ class _PerpanjanganTileState extends State<PerpanjanganTile> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("TS: " + widget.perpanjangan.tglsertifikat,
-                          style: TextStyle(fontSize: 14.0)),
-                      Text("TP: " + widget.perpanjangan.tglperpanjangan,
+                      // Text("TS: " + widget.perpanjangan.tglsertifikat,
+                      //     style: TextStyle(fontSize: 14.0)),
+                      Text("FD: " + widget.perpanjangan.tglperpanjangan,
                           style: TextStyle(fontSize: 14.0)),
                     ],
                   ),
@@ -57,17 +57,16 @@ class _PerpanjanganTileState extends State<PerpanjanganTile> {
                   ),
                   Text("Produk : " + widget.perpanjangan.produk,
                       style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,)),
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      )),
                   SizedBox(
                     height: 5,
                   ),
                   Text(widget.perpanjangan.nama,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.black45
-                        // fontWeight: FontWeight.bold,
-                      )),
+                      style: TextStyle(fontSize: 14.0, color: Colors.black45
+                          // fontWeight: FontWeight.bold,
+                          )),
                   SizedBox(
                     height: 10,
                   ),
