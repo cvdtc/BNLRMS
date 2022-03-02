@@ -38,6 +38,9 @@ class RequestPageSearchState extends State<RequestPageSearch> {
   List<RequestModel> _requests = <RequestModel>[];
   List<RequestModel> _requestDisplay = <RequestModel>[];
 
+  /// for set value listview to this variable
+  var valuelistview;
+
   bool _isLoading = true;
 
   // * ceking token and getting dashboard value from Shared Preferences
@@ -50,7 +53,8 @@ class RequestPageSearchState extends State<RequestPageSearch> {
       setState(() {
         _isLoading = false;
         _requests.clear();
-        _requests.addAll(value);
+        valuelistview = value;
+        _requests.addAll(valuelistview);
         _requestDisplay = _requests;
       });
     }).onError((error, stackTrace) {
@@ -105,6 +109,14 @@ class RequestPageSearchState extends State<RequestPageSearch> {
               },
               icon: Icon(
                 Icons.refresh_outlined,
+                color: Colors.black87,
+              )),
+          IconButton(
+              onPressed: () {
+                filterBottom(context);
+              },
+              icon: Icon(
+                Icons.filter_list_alt,
                 color: Colors.black87,
               ))
         ],
@@ -189,6 +201,206 @@ class RequestPageSearchState extends State<RequestPageSearch> {
           hintText: 'Cari Permintaan',
         ),
       ),
+    );
+  }
+
+  void filterBottom(context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0))),
+      builder: (BuildContext context) {
+        return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Container(
+                padding: EdgeInsets.all(20.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'FILTER ',
+                        style: TextStyle(
+                            fontSize: 22.0, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Container(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Status : ',
+                                  style: TextStyle(fontSize: 18.0),
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      _requests.clear();
+                                      _requests.addAll(valuelistview);
+                                      setState(() {
+                                        _requests = _requestDisplay;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        side: BorderSide(
+                                            width: 2, color: Colors.orange),
+                                        elevation: 3.0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        primary: Colors.white),
+                                    child: Ink(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(18.0)),
+                                        child: Container(
+                                          width: 75,
+                                          height: 15,
+                                          alignment: Alignment.center,
+                                          child: Text('Semua',
+                                              style: TextStyle(
+                                                color: Colors.orange,
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                        ))),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      _requests.clear();
+                                      _requests.addAll(valuelistview);
+                                      _requestDisplay = _requests
+                                          .where((element) => element
+                                              .flag_selesai
+                                              .toString()
+                                              .contains('0'))
+                                          .toList();
+                                      setState(() {
+                                        _requests = _requestDisplay;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        side: BorderSide(
+                                            width: 2, color: Colors.blue),
+                                        elevation: 3.0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        primary: Colors.white),
+                                    child: Ink(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(18.0)),
+                                        child: Container(
+                                          width: 75,
+                                          height: 15,
+                                          alignment: Alignment.center,
+                                          child: Text('Belum Selesai',
+                                              style: TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                        ))),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      _requests.clear();
+                                      _requests.addAll(valuelistview);
+                                      _requestDisplay = _requests
+                                          .where((element) => element
+                                              .flag_selesai
+                                              .toString()
+                                              .contains('1'))
+                                          .toList();
+                                      setState(() {
+                                        _requests = _requestDisplay;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        side: BorderSide(
+                                            width: 2, color: Colors.green),
+                                        elevation: 3.0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        primary: Colors.white),
+                                    child: Ink(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(18.0)),
+                                        child: Container(
+                                          width: 75,
+                                          height: 15,
+                                          alignment: Alignment.center,
+                                          child: Text('Selesai',
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                        ))),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      _requests.clear();
+                                      _requests.addAll(valuelistview);
+                                      _requestDisplay = _requests
+                                          .where((element) => element
+                                              .flag_selesai
+                                              .toString()
+                                              .contains('2'))
+                                          .toList();
+                                      setState(() {
+                                        _requests = _requestDisplay;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        side: BorderSide(
+                                            width: 2, color: Colors.red),
+                                        elevation: 3.0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        primary: Colors.white),
+                                    child: Ink(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(18.0)),
+                                        child: Container(
+                                          width: 75,
+                                          height: 15,
+                                          alignment: Alignment.center,
+                                          child: Text('Tidak Selesai',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                        ))),
+                              ]),
+                        ),
+                      )
+                    ])));
+      },
     );
   }
 }
