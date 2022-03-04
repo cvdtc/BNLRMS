@@ -12,7 +12,8 @@ class RequestModel {
       keterangan_selesai,
       nama_request,
       jmlprogress,
-      url_permintaan;
+      url_permintaan,
+      date_selesai;
 // ++ addons json
 
   RequestModel(
@@ -26,7 +27,8 @@ class RequestModel {
       this.keterangan_selesai,
       this.nama_request,
       this.jmlprogress,
-      this.url_permintaan});
+      this.url_permintaan,
+      this.date_selesai});
 
   factory RequestModel.fromJson(Map<dynamic, dynamic> map) {
     return RequestModel(
@@ -41,6 +43,7 @@ class RequestModel {
       nama_request: map["nama_request"],
       jmlprogress: map["jmlprogress"],
       url_permintaan: map["url_permintaan"],
+      date_selesai: map["date_selesai"],
     );
   }
 
@@ -52,6 +55,7 @@ class RequestModel {
       "flag_selesai": flag_selesai,
       "url_permintaan": url_permintaan,
       "keterangan_selesai": keterangan_selesai,
+      "date_selesai": date_selesai,
     };
   }
 }

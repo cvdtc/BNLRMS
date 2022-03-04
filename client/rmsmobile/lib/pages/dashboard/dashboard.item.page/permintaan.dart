@@ -71,9 +71,17 @@ class _PermintaanListState extends State<PermintaanList> {
               .where((element) => element.flag_selesai == tipelist)
               .toList();
           if (dataRequest.isNotEmpty) {
-            (tipelist == 2 || tipelist == 1)
-                ? dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date))
-                : dataRequest;
+            // (tipelist == 2 || tipelist == 1)
+            //     ? dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date))
+            //     : dataRequest;
+            if (tipelist == 2) {
+              dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date));
+            } else if (tipelist == 1) {
+              dataRequest
+                  .sort((b, a) => a.date_selesai.compareTo(b.date_selesai));
+            } else {
+              dataRequest;
+            }
             return _listRequest(dataRequest);
             // if (tipelist == 2) {
             //   dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date));
