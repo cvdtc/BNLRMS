@@ -9,6 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/pages/splashscreen/splashscreen.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
+import 'utils/warna.dart';
+
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext context) {
@@ -29,7 +31,7 @@ void main() async {
   HttpOverrides.global = new MyHttpOverrides();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent, // navigation bar color
-    statusBarColor: thirdcolor, // status bar color
+    statusBarColor: backgroundcolor, // status bar color
   ));
   runApp(MyApp());
 }
@@ -40,7 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
-      title: 'RMS BNL',
+      title: 'JARVIS',
       theme: ThemeData.light().copyWith(
           scaffoldBackgroundColor: backgroundcolor,
           textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)

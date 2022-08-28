@@ -100,7 +100,7 @@ class PerpanjanganPageSearchState extends State<PerpanjanganPageSearch> {
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         centerTitle: true,
-        backgroundColor: thirdcolor,
+        backgroundColor: backgroundcolor,
       ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {

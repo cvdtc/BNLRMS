@@ -7,6 +7,8 @@ import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 
+import '../../utils/warna.dart';
+
 class Loginscreen extends StatefulWidget {
   var tipe;
   Loginscreen({this.tipe});
@@ -19,8 +21,8 @@ class _LoginscreenState extends State<Loginscreen> {
   ApiService _apiService = ApiService();
   TextEditingController _controllerUsername = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
-  bool 
-  // _fieldEmail = false,
+  bool
+      // _fieldEmail = false,
       _obsecureText = true,
       // _fieldPassword = false,
       isloading = false;
@@ -54,50 +56,62 @@ class _LoginscreenState extends State<Loginscreen> {
       body: Container(
         padding: EdgeInsets.all(25.0),
         decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/images/1.png'), fit: BoxFit.cover),
-          gradient: LinearGradient(
-              colors: [Color(0xffCCE9CC), thirdcolor],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter),
-        ),
+            image: DecorationImage(
+                image: AssetImage('assets/images/rmsbg.png'),
+                fit: BoxFit.cover),
+            color: backgroundcolor
+            // gradient: LinearGradient(
+            //     colors: [thirdcolor.withOpacity(0.6), thirdcolor],
+            //     begin: Alignment.bottomCenter,
+            //     end: Alignment.topCenter),
+            ),
         child: Center(
           child: Column(
             children: <Widget>[
               SizedBox(
                 height: 180,
               ),
-              Text(
-                'Selamat Datang',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 35),
+              Container(
+                height: 125,
+                width: 225,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(
+                          'assets/images/bnlnewlogoblack.png',
+                        ),
+                        fit: BoxFit.contain)),
               ),
+              // Text(
+              //   'Selamat Datang',
+              //   style: TextStyle(
+              //       color: Colors.white,
+              //       fontWeight: FontWeight.bold,
+              //       fontSize: 35),
+              // ),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              // Text(
+              //   'Masukkan username yang sudah terdaftar',
+              //   style: TextStyle(color: Colors.white, fontSize: 14),
+              // ),
               SizedBox(
-                height: 10,
-              ),
-              Text(
-                'Masukkan username yang sudah terdaftar',
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-              SizedBox(
-                height: 65,
+                height: 40,
               ),
               Container(child: _TextEditingUsername()),
               SizedBox(
-                height: 10,
+                height: 20,
               ),
               Container(child: _TextEditingPassword()),
               SizedBox(
-                height: 45,
+                height: 35,
               ),
               ElevatedButton(
                   onPressed: () {
                     loginClick();
                   },
                   style: ElevatedButton.styleFrom(
-                      elevation: 0.0, primary: Colors.blue),
+                      elevation: 0.0, primary: darkgreen),
                   child: Ink(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(18.0)),
@@ -108,7 +122,7 @@ class _LoginscreenState extends State<Loginscreen> {
                         child: Text('L O G I N',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 22.0,
+                              fontSize: 26.0,
                               fontWeight: FontWeight.bold,
                             )),
                       )))
@@ -122,35 +136,51 @@ class _LoginscreenState extends State<Loginscreen> {
   // * widget for text editing username
   Widget _TextEditingUsername() {
     return TextFormField(
+        style: TextStyle(color: darkgreen, fontSize: 22.0),
+        cursorColor: darkgreen,
         controller: _controllerUsername,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
-          focusColor: thirdcolor,
-          icon: Icon(Icons.people_alt_outlined),
+          hoverColor: darkgreen,
+          // border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
+          focusColor: darkgreen,
+          icon: Icon(
+            Icons.people_alt_outlined,
+            color: darkgreen,
+          ),
           hintText: 'Masukkan Username',
-          suffixIcon: Icon(Icons.check_circle),
+          suffixIcon: Icon(
+            Icons.check_circle,
+            color: darkgreen,
+          ),
         ));
   }
 
   // * widget for text editing password
   Widget _TextEditingPassword() {
     return TextFormField(
-        cursorColor: thirdcolor,
+        style: TextStyle(color: darkgreen, fontSize: 22.0),
+        cursorColor: darkgreen,
         controller: _controllerPassword,
         obscureText: _obsecureText,
         keyboardType: TextInputType.visiblePassword,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
-          icon: Icon(Icons.password),
+          hoverColor: darkgreen,
+          // border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
+          icon: Icon(
+            Icons.password,
+            color: darkgreen,
+          ),
           hintText: 'Masukkan Password',
           suffixIcon: IconButton(
             onPressed: _toggle,
             icon: new Icon(
-                _obsecureText ? Icons.remove_red_eye : Icons.visibility_off),
+              _obsecureText ? Icons.remove_red_eye : Icons.visibility_off,
+              color: darkgreen,
+            ),
           ),
         ));
   }

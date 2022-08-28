@@ -68,7 +68,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     numberOfpage: 0,
                   )));
     });
-    Timer(Duration(seconds: 4), () {
+    Timer(Duration(seconds: 20), () {
       cekToken();
     });
   }
@@ -80,11 +80,14 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       body: Container(
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/images/1.png'), fit: BoxFit.cover),
-            gradient: LinearGradient(
-                colors: [Color(0xffCCE9CC), thirdcolor],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter)),
+                image: AssetImage('assets/images/rmsbg.png'),
+                fit: BoxFit.cover),
+            color: backgroundcolor
+            // gradient: LinearGradient(
+            //     colors: [thirdcolor.withOpacity(0.8), thirdcolor],
+            //     begin: Alignment.bottomCenter,
+            //     end: Alignment.topCenter)
+            ),
         // color: Color(0xFEEFD8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -97,44 +100,44 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                   //   height: 50,
                   // ),
                   Container(
-                    height: 200,
-                    width: 200,
+                    height: 225,
+                    width: 225,
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: AssetImage(
-                              'assets/images/bnllauncher.png',
+                              'assets/images/broben.png',
                             ),
                             fit: BoxFit.contain)),
                   ),
-                  Text('BNL-RMS',
+                  SizedBox(height: 15),
+                  Text('J A R V I S',
                       style: GoogleFonts.inter(
                           color: Colors.black,
                           fontSize: 40,
                           fontWeight: FontWeight.bold)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 50, right: 50, bottom: 30),
-                    child: Text(
-                      'Request Management System',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                        color: Colors.black,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
+                  // Padding(
+                  //   padding:
+                  //       const EdgeInsets.only(left: 50, right: 50, bottom: 30),
+                  //   child: Text(
+                  //     'Request Management System',
+                  //     textAlign: TextAlign.center,
+                  //     style: GoogleFonts.inter(
+                  //       color: Colors.black,
+                  //       fontSize: 14,
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(
                     height: 20,
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width / 2,
                     child: LinearProgressIndicator(
-                      backgroundColor: Colors.white,
-                      valueColor:
-                          new AlwaysStoppedAnimation<Color>(Colors.tealAccent),
+                      backgroundColor: backgroundcolor,
+                      valueColor: new AlwaysStoppedAnimation<Color>(darkgreen),
                     ),
                   )
                 ],

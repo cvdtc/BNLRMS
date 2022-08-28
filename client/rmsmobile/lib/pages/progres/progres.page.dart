@@ -85,7 +85,7 @@ class _ProgressPageState extends State<ProgressPage> {
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         centerTitle: true,
-        backgroundColor: thirdcolor,
+        backgroundColor: backgroundcolor,
       ),
       body: RefreshIndicator(
         onRefresh: refreshPage,

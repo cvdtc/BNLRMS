@@ -117,7 +117,7 @@ class _PermintaanListState extends State<PermintaanList> {
   // ++ DESIGN LIST COMPONENT
   Widget _listRequest(List<RequestModel>? dataIndex) {
     return Container(
-      height: MediaQuery.of(context).size.height / 4,
+      height: MediaQuery.of(context).size.height / 5,
       margin: EdgeInsets.only(left: 16, right: 16),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -133,108 +133,119 @@ class _PermintaanListState extends State<PermintaanList> {
                               idpermintaan: dataRequest.idpermintaan.toString(),
                             )));
               },
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: EdgeInsets.all(8),
-                height: 70,
-                width: MediaQuery.of(context).size.width * 0.6,
-                decoration: BoxDecoration(
-                  color: mFillColor,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: mBorderColor, width: 1),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Container(
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                child: Card(
+                  elevation: 5,
+                  shadowColor: darkgreen,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    // margin: EdgeInsets.all(8),
+                    // height: 5/0,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    decoration: BoxDecoration(
+                      color: mFillColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            child: Column(
                               children: [
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    ClipOval(
-                                      child: dataRequest.flag_selesai == 1
-                                          ? Container(
-                                              color: Colors.green,
-                                              height: 30.0,
-                                              width: 30.0,
-                                              child: Icon(
-                                                Icons.check,
-                                                color: Colors.white,
-                                              ))
-                                          : (dataRequest.flag_selesai == 0
+                                    Row(
+                                      children: [
+                                        ClipOval(
+                                          child: dataRequest.flag_selesai == 1
                                               ? Container(
-                                                  color: Colors.orange,
+                                                  color: Colors.green,
                                                   height: 30.0,
                                                   width: 30.0,
                                                   child: Icon(
-                                                    Icons.priority_high_rounded,
+                                                    Icons.check,
                                                     color: Colors.white,
                                                   ))
-                                              : Container(
-                                                  color: Colors.black,
-                                                  height: 30.0,
-                                                  width: 30.0,
-                                                  child: Icon(
-                                                    Icons.close_rounded,
-                                                    color: Colors.white,
-                                                  ))),
+                                              : (dataRequest.flag_selesai == 0
+                                                  ? Container(
+                                                      color: Colors.orange,
+                                                      height: 30.0,
+                                                      width: 30.0,
+                                                      child: Icon(
+                                                        Icons
+                                                            .priority_high_rounded,
+                                                        color: Colors.white,
+                                                      ))
+                                                  : Container(
+                                                      color: Colors.black,
+                                                      height: 30.0,
+                                                      width: 30.0,
+                                                      child: Icon(
+                                                        Icons.close_rounded,
+                                                        color: Colors.white,
+                                                      ))),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(dataRequest.kategori.toString(),
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold,
+                                                color: darkgreen)),
+                                      ],
                                     ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(dataRequest.kategori.toString(),
+                                    Text(
+                                        "TR: " + dataRequest.created.toString(),
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: darkgreen)),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                        dataRequest.keterangan.toString().toUpperCase(),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black)),
+                                            SizedBox(height:10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                        "JT: " +
+                                            dataRequest.due_date.toString(),
                                         style: TextStyle(
                                             fontSize: 13,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black45)),
+                                    Text(dataRequest.nama_request.toString(),
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black45))
                                   ],
                                 ),
-                                Text("TR: " + dataRequest.created.toString(),
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black45)),
                               ],
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            SizedBox(
-                                height: MediaQuery.of(context).size.height / 10,
-                                child: Text(dataRequest.keterangan.toString(),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black))),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text("JT: " + dataRequest.due_date.toString(),
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black45)),
-                                Text(dataRequest.nama_request.toString(),
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black45))
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               ),
             );

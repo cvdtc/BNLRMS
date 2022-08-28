@@ -149,7 +149,7 @@ class ProgressModalBottom {
                             _tecUrlProgress.text.toString());
                       },
                       style: ElevatedButton.styleFrom(
-                          elevation: 0.0, primary: backgroundcolor),
+                          elevation: 0.0, primary: thirdcolor),
                       child: Ink(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18.0)),
@@ -240,7 +240,8 @@ class ProgressModalBottom {
                         ? Text('Apakah anda yakin akan menghapus progress ? ' +
                             keterangan +
                             '?')
-                        : Text('Apakah data yang anda masukkan sudah sesuai.? *note: Harap Refresh setelah menekan tombol submit.',
+                        : Text(
+                            'Apakah data yang anda masukkan sudah sesuai.? *note: Harap Refresh setelah menekan tombol submit.',
                             style: TextStyle(fontSize: 16)),
                     SizedBox(
                       height: 20,

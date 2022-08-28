@@ -126,91 +126,103 @@ class _PerpanjanganListState extends State<PerpanjanganList> {
               //                     dataprogress.idpermintaan.toString(),
               //               )));
               // },
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: EdgeInsets.all(8),
-                height: 70,
-                width: MediaQuery.of(context).size.width * 0.6,
-                decoration: BoxDecoration(
-                  color: mFillColor,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: mBorderColor, width: 1),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("FD: " + dataperpanjangan.tglperpanjangan,
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black45)),
-
-                            // Text("TS: " + dataperpanjangan.tglsertifikat,
-                            //     style: TextStyle(
-                            //         fontSize: 13,
-                            //         fontWeight: FontWeight.bold,
-                            //         color: Colors.black45)),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            // SizedBox(
-                            //     height: MediaQuery.of(context).size.height / 15,
-                            //     child: Text(
-                            //         "Produk: " +
-                            //             dataperpanjangan.produk.toString(),
-                            //         style: TextStyle(
-                            //             fontSize: 16,
-                            //             fontWeight: FontWeight.bold,
-                            //             color: Colors.black))),
-                            // SizedBox(
-                            //   height: 10,
-                            // ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 20,
-                              child: Text(dataperpanjangan.produk.toString(),
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black)),
-                            ),
-                            Text(dataperpanjangan.nama.toString(),
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    // fontWeight: FontWeight.bold,
-                                    color: Colors.black)),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                child: Card(
+                  elevation: 5,
+                  shadowColor: darkgreen,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    // margin: EdgeInsets.all(8),
+                    height: 70,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    decoration: BoxDecoration(
+                      color: mFillColor,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: mBorderColor, width: 1),
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                    "Kelas: " +
-                                        dataperpanjangan.kelas.toString(),
+                                Text("FD: " + dataperpanjangan.tglperpanjangan,
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black45)),
-                                Text(
-                                    "Sales: " +
-                                        dataperpanjangan.sales.toString(),
+                                        color: darkgreen)),
+
+                                // Text("TS: " + dataperpanjangan.tglsertifikat,
+                                //     style: TextStyle(
+                                //         fontSize: 13,
+                                //         fontWeight: FontWeight.bold,
+                                //         color: Colors.black45)),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                // SizedBox(
+                                //     height: MediaQuery.of(context).size.height / 15,
+                                //     child: Text(
+                                //         "Produk: " +
+                                //             dataperpanjangan.produk.toString(),
+                                //         style: TextStyle(
+                                //             fontSize: 16,
+                                //             fontWeight: FontWeight.bold,
+                                //             color: Colors.black))),
+                                // SizedBox(
+                                //   height: 10,
+                                // ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 20,
+                                  child: Text(
+                                      dataperpanjangan.produk.toString(),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue)),
+                                ),
+                                Text(dataperpanjangan.nama.toString(),
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black45))
+                                        fontSize: 13.0,
+                                        // fontWeight: FontWeight.bold,
+                                        color: darkgreen)),
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                        "Kelas: " +
+                                            dataperpanjangan.kelas.toString(),
+                                        style: TextStyle(
+                                            fontSize: 12.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red)),
+                                    Text(
+                                        "Sales: " +
+                                            dataperpanjangan.sales.toString(),
+                                        style: TextStyle(
+                                            fontSize: 12.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red))
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               ),
             );

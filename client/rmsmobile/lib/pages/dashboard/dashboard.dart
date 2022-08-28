@@ -105,233 +105,318 @@ class _DahsboardState extends State<Dahsboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            elevation: 0,
-            backgroundColor: thirdcolor,
-            centerTitle: true,
-            title: Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/bnllogodashboard.png'))),
-            )),
+        // appBar: AppBar(
+        //     elevation: 0,
+        //     backgroundColor: thirdcolor,
+        //     centerTitle: true,
+        //     title: Container(
+        //       height: 50,
+        //       width: 50,
+        //       decoration: BoxDecoration(
+        //           image: DecorationImage(
+        //               image: AssetImage('assets/images/bnlnewlogoblack.png'))),
+        //     )),
         body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                child: Column(
+      child: Column(
+        children: [
+          SizedBox(
+            height: 35.0,
+          ),
+          Container(
+            child: Column(
+              children: [
+                Stack(
                   children: [
-                    Stack(
-                      children: [
-                        Container(
-                          color: thirdcolor,
-                          padding: EdgeInsets.all(10),
-                          constraints: BoxConstraints.expand(
-                              height: MediaQuery.of(context).size.height / 6),
-                          child: Column(
+                    Container(
+                      // color: thirdcolor,
+                      padding: EdgeInsets.all(10),
+                      constraints: BoxConstraints.expand(
+                          height: MediaQuery.of(context).size.height / 4),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image:
+                                  AssetImage('assets/images/headdashboard.png'),
+                              fit: BoxFit.cover),
+                          color: backgroundcolor
+                          // gradient: LinearGradient(
+                          //     colors: [thirdcolor.withOpacity(0.6), thirdcolor],
+                          //     begin: Alignment.bottomCenter,
+                          //     end: Alignment.topCenter),
+                          ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 0.15),
+                            child: Row(
+                              children: <Widget>[
+                                CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 20.0,
+                                  backgroundImage: AssetImage(
+                                    'assets/images/bnlnewlogoblack.png',
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Row(children: [
+                                  Text(
+                                    "Halo, ",
+                                    style: TextStyle(
+                                        fontSize: 20.0, color: Colors.white),
+                                  ),
+                                  Text(
+                                    nama.toString(),
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ]),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 50, right: 50),
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(top: 70, left: 20, right: 20),
+                      height: 100,
+                      width: MediaQuery.of(context).size.width * 2.0,
+                      child: Center(
+                        child: Card(
+                          elevation: 5,
+                          shadowColor: darkgreen,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 0.15),
-                                child: Row(
-                                  children: <Widget>[
-                                    CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 20.0,
-                                      backgroundImage: AssetImage(
-                                        'assets/images/bnllogo.png',
-                                      ),
+                              InkWell(
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      _dashboard.length > 0
+                                          ? _dashboard[0]
+                                              .belum_selesai
+                                              .toString()
+                                          : "",
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    SizedBox(
-                                      width: 10,
+                                    Text(
+                                      "Belum Selesai",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.red,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              InkWell(
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      _dashboard.length > 0
+                                          ? _dashboard[0].selesai.toString()
+                                          : "",
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    Row(children: [
-                                      Text(
-                                        "Halo, ",
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        nama.toString(),
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                    ]),
+                                    Text(
+                                      "     Selesai     ",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.blue[800]),
+                                    )
                                   ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Container(
-                          padding: EdgeInsets.only(left: 50, right: 50),
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.only(top: 70, left: 20, right: 20),
-                          height: 100,
-                          width: MediaQuery.of(context).size.width * 2.0,
-                          child: Center(
-                            child: Card(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  InkWell(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Text(
-                                          _dashboard.length > 0
-                                              ? _dashboard[0]
-                                                  .belum_selesai
-                                                  .toString()
-                                              : "",
-                                          style: TextStyle(fontSize: 30),
-                                        ),
-                                        Text(
-                                          "Belum Selesai",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  VerticalDivider(
-                                    color: Colors.black.withOpacity(0.3),
-                                  ),
-                                  InkWell(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Text(
-                                          _dashboard.length > 0
-                                              ? _dashboard[0].selesai.toString()
-                                              : "",
-                                          style: TextStyle(fontSize: 30),
-                                        ),
-                                        Text(
-                                          "     Selesai     ",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.blue[800],
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+
+            // DASHBOARD BAGIAN PROGRESS DITUTUP SEMENTARA DIGANTI PERPANJANGAN, REQ: PAK JIAN 15/01/21
+            // child: Column(
+            //   children: [
+            //     Row(
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         subheading('Progres'),
+            //       ],
+            //     ),
+            //     SizedBox(
+            //       height: 10,
+            //     ),
+            // ProgresList()
+            //   ],
+            // ),
+
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Perpanjangan",
+                      style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: darkgreen),
+                    ),
+
+                    // subheading('Perpanjangan'),
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext) =>
+                                      PerpanjanganPageSearch()));
+                        },
+                        child: CircleAvatar(
+                          maxRadius: 16.0,
+                          minRadius: 16.0,
+                          backgroundColor: darkgreen,
+                          child: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 16.0,
+                            color: Colors.white,
                           ),
                         )
-                      ],
+                        // Text(
+                        //   'Selengkapnya...',
+                        //   style: TextStyle(color: darkgreen),
+                        // )
+                        )
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                PerpanjanganList()
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Permintaan",
+                      style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: darkgreen),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Card(
+                      color: Colors.black,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                          'Tidak Selesai',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    PermintaanList(
+                      tipelist: 2,
                     )
                   ],
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                
-                // DASHBOARD BAGIAN PROGRESS DITUTUP SEMENTARA DIGANTI PERPANJANGAN, REQ: PAK JIAN 15/01/21
-                // child: Column(
-                //   children: [
-                //     Row(
-                //       crossAxisAlignment: CrossAxisAlignment.center,
-                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //       children: [
-                //         subheading('Progres'),
-                //       ],
-                //     ),
-                //     SizedBox(
-                //       height: 10,
-                //     ),
-                    // ProgresList()
-                //   ],
-                // ),
-
-                child: Column(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        subheading('Perpanjangan'),
-                        GestureDetector(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext)=>PerpanjanganPageSearch()));
-                          },
-                          child: Text('Selengkapnya...'))
-                      ],
+                    Card(
+                      color: Colors.orange,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                          'Belum Selesai',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    PerpanjanganList()
+                    PermintaanList(
+                      tipelist: 0,
+                    )
                   ],
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                child: Column(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        subheading('Permintaan'),
-                      ],
+                    Card(
+                      color: Colors.green,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                          'Sudah Selesai',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text('Tidak Selesai'),
-                        PermintaanList(
-                          tipelist: 2,
-                        )
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text('Belum Selesai'),
-                        PermintaanList(
-                          tipelist: 0,
-                        )
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text('Sudah Selesai'),
-                        PermintaanList(
-                          tipelist: 1,
-                        )
-                      ],
-                    ),
+                    PermintaanList(
+                      tipelist: 1,
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
-        ));
+              ],
+            ),
+          )
+        ],
+      ),
+    ));
   }
 }

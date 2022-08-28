@@ -6,9 +6,9 @@ import 'package:rmsmobile/pages/akun/akun.page.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.dart';
 import 'package:rmsmobile/pages/progres/progres.page.dart';
 import 'package:rmsmobile/pages/request/request.page.dart';
-import 'package:rmsmobile/utils/warna.dart';
 import 'package:rolling_nav_bar/rolling_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rmsmobile/utils/warna.dart';
 
 double scaledHeight(BuildContext context, double baseSize) {
   return baseSize * (MediaQuery.of(context).size.height / 800);
@@ -36,8 +36,8 @@ class _BottomNavState extends State<BottomNav> {
   PageStorageBucket bucket = PageStorageBucket();
 
   var iconData = <IconData>[
-    Icons.home_filled,
-    Icons.document_scanner_outlined,
+    Icons.home,
+    Icons.addchart_rounded,
     Icons.hourglass_bottom_rounded,
     // Icons.thermostat_auto_outlined,
     Icons.person
@@ -51,10 +51,10 @@ class _BottomNavState extends State<BottomNav> {
   ];
 
   var iconText = <Widget>[
-    Text('Dashboard', style: TextStyle(color: Colors.grey, fontSize: 12)),
-    Text('Permintaan', style: TextStyle(color: Colors.grey, fontSize: 12)),
-    Text('Progres', style: TextStyle(color: Colors.grey, fontSize: 12)),
-    Text('Akun', style: TextStyle(color: Colors.grey, fontSize: 12)),
+    Text('Dashboard', style: TextStyle(color: darkgreen, fontSize: 12)),
+    Text('Permintaan', style: TextStyle(color: darkgreen, fontSize: 12)),
+    Text('Progres', style: TextStyle(color: darkgreen, fontSize: 12)),
+    Text('Akun', style: TextStyle(color: darkgreen, fontSize: 12)),
   ];
 
   @override
@@ -99,7 +99,7 @@ class _BottomNavState extends State<BottomNav> {
                   iconData: iconData,
                   iconColors: <Color>[Colors.grey[800]!],
                   iconText: iconText,
-                  indicatorColors: <Color>[thirdcolor],
+                  indicatorColors: <Color>[darkgreen],
                   iconSize: 25,
                   indicatorRadius: scaledHeight(context, 30),
                   onTap: (value) {

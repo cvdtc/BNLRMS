@@ -37,7 +37,7 @@ class TimelineBottomModal {
                                       )));
                         },
                         style: ElevatedButton.styleFrom(
-                            elevation: 0.0, primary: backgroundcolor),
+                            elevation: 0.0, primary: thirdcolor),
                         child: Ink(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(18.0)),

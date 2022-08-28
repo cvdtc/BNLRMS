@@ -129,7 +129,7 @@ class _TimelinePageState extends State<TimelinePage> {
                       alignment: TimelineAlign.manual,
                       indicatorStyle: const IndicatorStyle(
                         width: 18,
-                        color: backgroundcolor,
+                        color: thirdcolor,
                         indicatorXY: 0.2,
                         padding: EdgeInsets.all(3),
                       ),
