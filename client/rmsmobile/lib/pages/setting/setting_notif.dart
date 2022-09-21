@@ -40,7 +40,7 @@ class _SettingNotifikasiState extends State<SettingNotifikasi> {
           // style: TextStyle(),
         ),
         centerTitle: true,
-        backgroundColor: thirdcolor,
+        backgroundColor: backgroundcolor,
       ),
       body: Container(
         margin: EdgeInsets.all(10.0),

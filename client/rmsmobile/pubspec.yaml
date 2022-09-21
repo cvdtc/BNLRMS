@@ -34,6 +34,7 @@ dependencies:
   firebase_messaging: ^11.1.0
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.1
   fluttertoast: ^8.0.8
   get: any
   google_fonts: ^2.1.0
@@ -42,7 +43,7 @@ dependencies:
   logger: ^1.1.0
   percent_indicator: ^3.4.0
   rolling_nav_bar: ^0.0.4
-  shared_preferences: ^2.0.8
+  shared_preferences: ^2.0.15
   syncfusion_flutter_datepicker: ^19.3.48
   timeline_tile: ^2.0.0
   webview_flutter: ^3.0.0

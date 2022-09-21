@@ -68,7 +68,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     numberOfpage: 0,
                   )));
     });
-    Timer(Duration(seconds: 20), () {
+    Timer(Duration(seconds: 4), () {
       cekToken();
     });
   }

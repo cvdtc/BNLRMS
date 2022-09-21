@@ -53,7 +53,7 @@ class _TimelinePageState extends State<TimelinePage> {
       appBar: AppBar(
         title: Text('Timeline '),
         centerTitle: true,
-        backgroundColor: thirdcolor,
+        backgroundColor: backgroundcolor,
       ),
       body: FutureBuilder(
           future: _apiService.getListTimeline(token!, idpermintaan.toString()),
