@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class WebviewPage extends StatefulWidget {
+class WebviewPageNotUsed extends StatefulWidget {
   String data_url;
-  WebviewPage({required this.data_url});
+  WebviewPageNotUsed({required this.data_url});
 
   @override
-  _WebviewPageState createState() => _WebviewPageState();
+  _WebviewPageNotUsedState createState() => _WebviewPageNotUsedState();
 }
 
-class _WebviewPageState extends State<WebviewPage> {
+class _WebviewPageNotUsedState extends State<WebviewPageNotUsed> {
   var urlweb;
   final Completer<WebViewController> _webviewController =
       Completer<WebViewController>();
@@ -74,8 +74,8 @@ JavascriptChannel _toasterJavascriptChannel(BuildContext context) {
       name: 'Toaster',
       onMessageReceived: (JavascriptMessage message) {
         // ignore: deprecated_member_use
-        Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text(message.message)),
-        );
+        // Scaffold.of(context).showSnackBar(
+        //   SnackBar(content: Text(message.message)),
+        // );
       });
 }

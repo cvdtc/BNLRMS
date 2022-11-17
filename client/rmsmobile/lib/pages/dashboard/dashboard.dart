@@ -346,72 +346,91 @@ class _DahsboardState extends State<Dahsboard> {
                 SizedBox(
                   height: 10,
                 ),
+
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Card(
-                      color: Colors.black,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(
-                          'Tidak Selesai',
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
                     PermintaanList(
-                      tipelist: 2,
+                      tipelist: -1,
                     )
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Card(
-                      color: Colors.orange,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(
-                          'Belum Selesai',
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    PermintaanList(
-                      tipelist: 0,
-                    )
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Card(
-                      color: Colors.green,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(
-                          'Sudah Selesai',
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    PermintaanList(
-                      tipelist: 1,
-                    )
-                  ],
-                ),
+
+                // //start tipe 2
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   mainAxisAlignment: MainAxisAlignment.start,
+                //   children: [
+                //     Card(
+                //       color: Colors.black,
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(5.0),
+                //         child: Text(
+                //           'Tidak Selesai',
+                //           style: TextStyle(
+                //               fontSize: 16.0,
+                //               fontWeight: FontWeight.bold,
+                //               color: Colors.white),
+                //         ),
+                //       ),
+                //     ),
+                //     PermintaanList(
+                //       tipelist: 2,
+                //     )
+                //   ],
+                // ),
+                // //end tipe 2
+
+                // //start tipe 0
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   mainAxisAlignment: MainAxisAlignment.start,
+                //   children: [
+                //     Card(
+                //       color: Colors.orange,
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(5.0),
+                //         child: Text(
+                //           'Belum Selesai',
+                //           style: TextStyle(
+                //               fontSize: 16.0,
+                //               fontWeight: FontWeight.bold,
+                //               color: Colors.white),
+                //         ),
+                //       ),
+                //     ),
+                //     PermintaanList(
+                //       tipelist: 0,
+                //     )
+                //   ],
+                // ),
+                // //end tipe 0
+
+                // //start tipe 1
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   mainAxisAlignment: MainAxisAlignment.start,
+                //   children: [
+                //     Card(
+                //       color: Colors.green,
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(5.0),
+                //         child: Text(
+                //           'Sudah Selesai',
+                //           style: TextStyle(
+                //               fontSize: 16.0,
+                //               fontWeight: FontWeight.bold,
+                //               color: Colors.white),
+                //         ),
+                //       ),
+                //     ),
+                //     PermintaanList(
+                //       tipelist: 1,
+                //     )
+                //   ],
+                // ),
+                // //end tip 1
               ],
             ),
           )

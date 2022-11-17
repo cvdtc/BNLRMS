@@ -53,12 +53,12 @@ class _PermintaanListState extends State<PermintaanList> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircularProgressIndicator(),
+                // CircularProgressIndicator(),
                 SizedBox(
                   height: 15,
                 ),
                 Text(
-                    'maaf, terjadi masalah ${snapshot.error}. buka halaman ini kembali.')
+                    'SORRY, terjadi masalah ${snapshot.error}. buka halaman ini kembali.')
               ],
             ),
           );
@@ -67,28 +67,24 @@ class _PermintaanListState extends State<PermintaanList> {
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.connectionState == ConnectionState.done) {
-          List<RequestModel>? dataRequest = snapshot.data!
-              .where((element) => element.flag_selesai == tipelist)
-              .toList();
+          // List<RequestModel>? dataRequest = snapshot.data!
+          //     .where((element) => element.flag_selesai == tipelist)
+          //     .toList();
+          List<RequestModel>? dataRequest = snapshot.data!.toList();
           if (dataRequest.isNotEmpty) {
             // (tipelist == 2 || tipelist == 1)
             //     ? dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date))
             //     : dataRequest;
-            if (tipelist == 2) {
-              dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date));
-            } else if (tipelist == 1) {
-              dataRequest
-                  .sort((b, a) => a.date_selesai.compareTo(b.date_selesai));
-            } else {
-              dataRequest;
-            }
-            return _listRequest(dataRequest);
             // if (tipelist == 2) {
             //   dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date));
-            //   return _listRequest(dataRequest);
+            // } else if (tipelist == 1) {
+            //   dataRequest
+            //       .sort((b, a) => a.date_selesai.compareTo(b.date_selesai));
             // } else {
-            //   return _listRequest(dataRequest);
+            //   dataRequest;
             // }
+
+            return _listRequestAll(dataRequest);
           } else {
             return Container(
               child: Text('Data Permintaan masih kosong'),
@@ -100,12 +96,12 @@ class _PermintaanListState extends State<PermintaanList> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircularProgressIndicator(),
+                // CircularProgressIndicator(),
                 SizedBox(
                   height: 15,
                 ),
                 Text(
-                    'maaf, terjadi masalah ${snapshot.error}. buka halaman ini kembali.')
+                    'SORRY 2, terjadi masalah ${snapshot.error}. buka halaman ini kembali.')
               ],
             ),
           );
@@ -115,7 +111,24 @@ class _PermintaanListState extends State<PermintaanList> {
   }
 
   // ++ DESIGN LIST COMPONENT
-  Widget _listRequest(List<RequestModel>? dataIndex) {
+  Widget _listRequest(List<RequestModel>? dataIndex1, int tipelist) {
+    List<RequestModel>? dataIndex;
+    if (tipelist == 2) {
+      print("masuk 2");
+      dataIndex = dataIndex1!
+          .where((element) => element.flag_selesai == tipelist)
+          .toList();
+      dataIndex.sort((b, a) => a.due_date.compareTo(b.due_date));
+    } else if (tipelist == 1) {
+      print("masuk 1");
+      dataIndex = dataIndex1!
+          .where((element) => element.flag_selesai == tipelist)
+          .toList();
+      dataIndex.sort((b, a) => a.date_selesai.compareTo(b.date_selesai));
+    } else {
+      print("masuk 0");
+      dataIndex = dataIndex1;
+    }
     return Container(
       height: MediaQuery.of(context).size.height / 5,
       margin: EdgeInsets.only(left: 16, right: 16),
@@ -123,7 +136,7 @@ class _PermintaanListState extends State<PermintaanList> {
           scrollDirection: Axis.horizontal,
           itemCount: dataIndex!.length,
           itemBuilder: (context, index) {
-            RequestModel? dataRequest = dataIndex[index];
+            RequestModel? dataRequest = dataIndex![index];
             return InkWell(
               onTap: () {
                 Navigator.push(
@@ -214,12 +227,14 @@ class _PermintaanListState extends State<PermintaanList> {
                                   height: 10,
                                 ),
                                 Text(
-                                        dataRequest.keterangan.toString().toUpperCase(),
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black)),
-                                            SizedBox(height:10),
+                                    dataRequest.keterangan
+                                        .toString()
+                                        .toUpperCase(),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black)),
+                                SizedBox(height: 10),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -250,6 +265,61 @@ class _PermintaanListState extends State<PermintaanList> {
               ),
             );
           }),
+    );
+  }
+
+  Widget _listRequestAll(List<RequestModel>? dataRequest) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Card(
+            color: Colors.black,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                'Tidak Selesai',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+          _listRequest(dataRequest, 2), //tipelist 2
+
+          Card(
+            color: Colors.orange,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                'Belum Selesai',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+          _listRequest(dataRequest, 0), //tipelist 0
+
+          Card(
+            color: Colors.green,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                'Sudah Selesai',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+          _listRequest(dataRequest, 1), //tipelist 2
+        ],
+      ),
     );
   }
 }

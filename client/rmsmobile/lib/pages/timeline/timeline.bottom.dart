@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rmsmobile/pages/webview/webviewpage.dart';
 import 'package:rmsmobile/utils/warna.dart';
+
+import '../webview/inappwebviewpage.dart';
 
 class TimelineBottomModal {
   void actionTimeline(context, String urlweb) {

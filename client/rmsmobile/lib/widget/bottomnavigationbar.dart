@@ -117,18 +117,18 @@ class _BottomNavState extends State<BottomNav> {
   }
 
   Future<bool> _onBackPressed() async {
-    DateTime currenttime = DateTime.now();
-    bool backbutton = backbuttonpressedtime == null ||
-        currenttime.difference(backbuttonpressedtime!) > Duration(seconds: 3);
+    // DateTime currenttime = DateTime.now();
+    // bool backbutton = backbuttonpressedtime == null ||
+    //     currenttime.difference(backbuttonpressedtime!) > Duration(seconds: 3);
 
-    if (backbutton) {
-      backbuttonpressedtime = currenttime;
-      Fluttertoast.showToast(
-          msg: "Klik 2x untuk keluar aplikasi",
-          backgroundColor: Colors.black,
-          textColor: Colors.white);
-      return false;
-    }
+    // if (backbutton) {
+    //   backbuttonpressedtime = currenttime;
+    //   Fluttertoast.showToast(
+    //       msg: "Klik 2x untuk keluar aplikasi",
+    //       backgroundColor: Colors.black,
+    //       textColor: Colors.white);
+    //   return false;
+    // }
     return true;
   }
 }
