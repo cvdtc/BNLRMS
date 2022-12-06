@@ -69,7 +69,7 @@ class _AkunPageState extends State<AkunPage> {
                 padding: EdgeInsets.only(left: 20),
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
-                  child: Image.asset('assets/images/bnlnewlogo.png'),
+                  child: Image.asset('assets/images/icon_jarvis.jpg'),
                 ),
               ),
               SizedBox(

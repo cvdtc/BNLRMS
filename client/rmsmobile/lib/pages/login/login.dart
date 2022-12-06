@@ -77,7 +77,7 @@ class _LoginscreenState extends State<Loginscreen> {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         image: AssetImage(
-                          'assets/images/bnlnewlogoblack.png',
+                          'assets/images/logo_jarvis.png',
                         ),
                         fit: BoxFit.contain)),
               ),

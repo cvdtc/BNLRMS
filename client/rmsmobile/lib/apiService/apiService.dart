@@ -51,7 +51,7 @@ class ApiService {
   ///////////////////// MODEL ALL REQUEST : GET, PUT, POST, DEL ////////////////////////////////
 
   Future<List<RequestModel>?> getListRequest(String token) async {
-    var url = Uri.parse(baseUrl + 'permintaan');
+    var url = Uri.parse(baseUrl + 'permintaand');
     var response = await client.get(url, headers: {
       'content-type': 'application/json',
       // ++ fyi : sending token with BEARER

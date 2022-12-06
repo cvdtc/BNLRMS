@@ -152,10 +152,8 @@ class _DahsboardState extends State<Dahsboard> {
                               children: <Widget>[
                                 CircleAvatar(
                                   backgroundColor: Colors.white,
-                                  radius: 20.0,
-                                  backgroundImage: AssetImage(
-                                    'assets/images/bnlnewlogoblack.png',
-                                  ),
+                                  child: Image.asset(
+                                      'assets/images/icon_jarvis.jpg'),
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -164,14 +162,14 @@ class _DahsboardState extends State<Dahsboard> {
                                   Text(
                                     "Halo, ",
                                     style: TextStyle(
-                                        fontSize: 20.0, color: Colors.white),
+                                        fontSize: 20.0, color: darkgreen),
                                   ),
                                   Text(
                                     nama.toString(),
                                     style: TextStyle(
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.w800,
-                                      color: Colors.white,
+                                      color: darkgreen,
                                     ),
                                   ),
                                 ]),

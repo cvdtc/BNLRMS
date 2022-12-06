@@ -105,16 +105,16 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: AssetImage(
-                              'assets/images/broben.png',
+                              'assets/images/logo_jarvis.png',
                             ),
                             fit: BoxFit.contain)),
                   ),
-                  SizedBox(height: 15),
-                  Text('J A R V I S',
-                      style: GoogleFonts.inter(
-                          color: Colors.black,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold)),
+                  // SizedBox(height: 15),
+                  // Text('J A R V I S',
+                  //     style: GoogleFonts.inter(
+                  //         color: Colors.black,
+                  //         fontSize: 40,
+                  //         fontWeight: FontWeight.bold)),
                   // SizedBox(
                   //   height: 10,
                   // ),
