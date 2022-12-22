@@ -190,6 +190,13 @@ class RequestModalBottom {
                                           },
                                           items: <String>[
                                             'Merek',
+                                            'Merek - QC',
+                                            'Merek - Permohonan',
+                                            'Merek - Oposisi',
+                                            'Merek - KO',
+                                            'Merek - Sanggahan',
+                                            'Merek - KBM',
+                                            'Merek - Lain Lain',
                                             'Paten',
                                             'Desain Industri',
                                             'Hak Cipta'

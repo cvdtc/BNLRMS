@@ -24,7 +24,6 @@ class RequestPageSearchState extends State<RequestPageSearch> {
   late SharedPreferences sp;
   String _dropdownValue = "";
   String? defaultKategori = 'Merek';
-  String? jenisKategori = 'Merek';
   String? tipe = "";
   String? keterangan = "";
   String? kategori = "";
@@ -83,21 +82,16 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     });
   }
 
-  // List<DropdownMenuItem<String>> get dataKategori {
-  //   List<DropdownMenuItem<String>> kategoriItems = [
-  //     DropdownMenuItem(child: Text('Semua'), value: ''),
-  //     DropdownMenuItem(child: Text('Merek'), value: 'Merek'),
-  //     DropdownMenuItem(child: Text('Paten'), value: 'Paten'),
-  //     DropdownMenuItem(
-  //         child: Text('Desain Industri'), value: 'Desain Industri'),
-  //     DropdownMenuItem(child: Text('Hak Cipta'), value: 'Hak Cipta')
-  //   ];
-  //   return kategoriItems;
-  // }
-
   var kategoriItems = [
     '',
     'Merek',
+    'Merek - QC',
+    'Merek - Permohonan',
+    'Merek - Oposisi',
+    'Merek - KO',
+    'Merek - Sanggahan',
+    'Merek - KBM',
+    'Merek - Lain Lain',
     'Paten',
     'Desain Industri',
     'Hak Cipta',
