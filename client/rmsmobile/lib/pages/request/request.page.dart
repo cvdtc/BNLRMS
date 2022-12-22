@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:rmsmobile/model/request/filterrequest.model.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/request/request.bottom.dart';
@@ -31,12 +33,18 @@ class RequestPageSearchState extends State<RequestPageSearch> {
   String? keterangan_selesai = "";
   String? tipeupdate = "";
   TextEditingController _textSearch = TextEditingController(text: "");
+  TextEditingController _tecTanggalAwal = TextEditingController(text: "");
+  TextEditingController _tecTanggalAkhir = TextEditingController(text: "");
+  TextEditingController _tecKeyword = TextEditingController(text: "");
   // dynamic cekid;
   int? pilihkategori;
   var dataKategori = ['Merek', 'Paten', 'Desain Industri', 'Lainnya'];
   var token = "", flagcari = '0';
   List<RequestModel> _requests = <RequestModel>[];
   List<RequestModel> _requestDisplay = <RequestModel>[];
+
+  DateTime? tanggal_awal;
+  DateTime? tanggal_akhir;
 
   /// for set value listview to this variable
   var valuelistview;
@@ -49,7 +57,11 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     setState(() {
       token = sp.getString('access_token')!;
     });
-    await fetchPermintaan(token).then((value) {
+    FilterRequest data = FilterRequest(
+        tanggal_awal: _tecTanggalAwal.text.toString(),
+        tanggal_akhir: _tecTanggalAkhir.text.toString(),
+        keyword: _tecKeyword.text.toString());
+    await fetchPermintaan(token, data).then((value) {
       setState(() {
         _isLoading = false;
         _requests.clear();
@@ -58,13 +70,14 @@ class RequestPageSearchState extends State<RequestPageSearch> {
         _requestDisplay = _requests;
       });
     }).onError((error, stackTrace) {
-      ReusableClasses().clearSharedPreferences();
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Loginscreen(
-                    tipe: 'sesiberakhir',
-                  )));
+      print(error.toString() + ' -- ' + stackTrace.toString());
+      // ReusableClasses().clearSharedPreferences();
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => Loginscreen(
+      //               tipe: 'sesiberakhir',
+      //             )));
     });
   }
 
@@ -229,6 +242,82 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                       ),
                       SizedBox(
                         height: 20.0,
+                      ),
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: _tecTanggalAwal,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.date_range_outlined),
+                                hintText: 'Tanggal Awal',
+                                filled: true,
+                              ),
+                              readOnly: true,
+                              onTap: () async {
+                                tanggal_awal = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2015),
+                                    lastDate: DateTime(2030));
+                                setState(() {
+                                  _tecTanggalAwal.text =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(tanggal_awal!)
+                                          .toString();
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextField(
+                              controller: _tecTanggalAkhir,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.date_range_outlined),
+                                hintText: 'Tanggal Akhir',
+                                filled: true,
+                              ),
+                              readOnly: true,
+                              onTap: () async {
+                                tanggal_akhir = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2015),
+                                    lastDate: DateTime(2030));
+                                setState(() {
+                                  _tecTanggalAkhir.text =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(tanggal_akhir!)
+                                          .toString();
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextField(
+                              controller: _tecKeyword,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.key_rounded),
+                                hintText: 'Keyword',
+                                filled: true,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            ElevatedButton.icon(
+                                onPressed: () async {
+                                  await refreshPage();
+                                },
+                                icon: Icon(Icons.search),
+                                label: Text('C A R I')),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
                       ),
                       Container(
                         child: SingleChildScrollView(

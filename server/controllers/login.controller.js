@@ -76,17 +76,18 @@ async function Login(req, res) {
     var username = req.body.username
     var password = req.body.password
     var tipe = req.body.tipe
-    console.log('Ada yang mencoba masuk')
-    if (Object.keys(req.body).length != 3) {
-        return res.status(405).send({
-            message: "Sorry,  parameters not match!",
-            error: jwtresult,
-            data: null
-        })
-    } else {
+    // console.log('Ada yang mencoba masuk')
+    // if (Object.keys(req.body).length != 3) {
+    //     return res.status(405).send({
+    //         message: "Sorry,  parameters not match!",
+    //         error: jwtresult,
+    //         data: null
+    //     })
+    // } else {
         console.log("Ada yang mencoba masuk...")
         try {
             pool.getConnection(function (error, database) {
+                console.log("🚀 ~ file: login.controller.js:90 ~ error, database", error, database)
                 if (error) {
                     return res.status(501).send({
                         message: "Sorry, your connection has refused",
@@ -97,6 +98,7 @@ async function Login(req, res) {
                     var sqlquery = "SELECT * FROM pengguna WHERE username = ?"
                     database.query(sqlquery, [username], function (error, rows) {
                         database.release()
+                        console.log(error, rows);
                         if (error) {
                             return res.status(407).send({
                                 message: "Sorry, sql query have a problem",
@@ -172,7 +174,7 @@ async function Login(req, res) {
                 error: error
             })
         }
-    }
+    // }
 }
 
 /**
