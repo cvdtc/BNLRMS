@@ -78,7 +78,7 @@ var nows = {
 
 async function getAllPermintaan(req, res) {
     const token = req.headers.authorization
-    const {tanggal_awal, tanggal_akhir, keyword} = req.params;
+    const {tanggal_awal, tanggal_akhir, keyword, kategori} = req.body;
     console.log('Akses Permintaan...')
     if (token != null) {
         try {
@@ -102,11 +102,11 @@ async function getAllPermintaan(req, res) {
                             var filtertanggal='';
                             /// cek filter tanggal dan keyword [06122022]
                             if(tanggal_awal!=''||tanggal_akhir!=''){
-                                    filtertanggal = `and date(p.created) between ${tanggal_awal} and ${tanggal_akhir} and p.keterangan like %${keyword}%`;
+                                    filtertanggal = `and date(p.created) between '${tanggal_awal}' and '${tanggal_akhir}' and p.keterangan like '%${keyword}%' and p.kategori like '%${kategori}%'`;
                             }
                             var sqlquery = `select a.*, ifnull(b.jml,0) as jmlprogress from (SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request, p.idpengguna, url_web as url_permintaan FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna `+filtertanggal+`)a left join (select idpermintaan, count(*) as jml from progress GROUP BY idpermintaan)b ON a.idpermintaan=b.idpermintaan ` + filter + ` ORDER BY flag_selesai ASC, due_date ASC`
                             database.query(sqlquery, (error, rows) => {
-                                console.log("🚀 ~ file: permintaan.controller.js:113 ~ sqlquery", sqlquery)
+                                
                                 database.release()
                                 if (error) {
                                     return res.status(500).send({

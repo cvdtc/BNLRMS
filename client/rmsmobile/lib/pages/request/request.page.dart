@@ -22,6 +22,7 @@ class RequestPageSearch extends StatefulWidget {
 
 class RequestPageSearchState extends State<RequestPageSearch> {
   late SharedPreferences sp;
+  String _dropdownValue = "";
   String? defaultKategori = 'Merek';
   String? jenisKategori = 'Merek';
   String? tipe = "";
@@ -60,7 +61,8 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     FilterRequest data = FilterRequest(
         tanggal_awal: _tecTanggalAwal.text.toString(),
         tanggal_akhir: _tecTanggalAkhir.text.toString(),
-        keyword: _tecKeyword.text.toString());
+        keyword: _tecKeyword.text.toString(),
+        kategori: _dropdownValue.toString());
     await fetchPermintaan(token, data).then((value) {
       setState(() {
         _isLoading = false;
@@ -81,9 +83,30 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     });
   }
 
+  // List<DropdownMenuItem<String>> get dataKategori {
+  //   List<DropdownMenuItem<String>> kategoriItems = [
+  //     DropdownMenuItem(child: Text('Semua'), value: ''),
+  //     DropdownMenuItem(child: Text('Merek'), value: 'Merek'),
+  //     DropdownMenuItem(child: Text('Paten'), value: 'Paten'),
+  //     DropdownMenuItem(
+  //         child: Text('Desain Industri'), value: 'Desain Industri'),
+  //     DropdownMenuItem(child: Text('Hak Cipta'), value: 'Hak Cipta')
+  //   ];
+  //   return kategoriItems;
+  // }
+
+  var kategoriItems = [
+    '',
+    'Merek',
+    'Paten',
+    'Desain Industri',
+    'Hak Cipta',
+  ];
+
   Future refreshPage() async {
     _requestDisplay.clear();
     _textSearch.clear();
+    _dropdownValue = '';
     setState(() {
       cekToken();
     });
@@ -305,11 +328,39 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                               ),
                             ),
                             SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Kategori : ',
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                DropdownButton(
+                                    value: _dropdownValue,
+                                    items: kategoriItems.map((String items) {
+                                      return DropdownMenuItem(
+                                          child: Text(items), value: items);
+                                    }).toList(),
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _dropdownValue = value!;
+                                      });
+                                    }),
+                              ],
+                            ),
+                            SizedBox(
                               height: 20,
                             ),
                             ElevatedButton.icon(
                                 onPressed: () async {
                                   await refreshPage();
+                                  Navigator.pop(context);
                                 },
                                 icon: Icon(Icons.search),
                                 label: Text('C A R I')),
