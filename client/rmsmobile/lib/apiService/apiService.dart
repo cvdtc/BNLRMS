@@ -69,7 +69,7 @@ class ApiService {
 
   // ! Add Data Request
   Future<bool> addRequest(String token, RequestModel data) async {
-    var url = Uri.parse(baseUrl + 'permintaan');
+    var url = Uri.parse(baseUrl + 'addpermintaan');
     var response = await client.post(url,
         headers: {
           'content-type': 'application/json',
