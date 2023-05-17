@@ -109,7 +109,7 @@ class _PerpanjanganListState extends State<PerpanjanganList> {
   // ++ DESIGN LIST COMPONENT
   Widget _listPerpanjangan(List<PerpanjanganModel>? dataIndex) {
     return Container(
-      height: MediaQuery.of(context).size.height / 5.5,
+      height: MediaQuery.of(context).size.height / 5,
       margin: EdgeInsets.only(left: 16, right: 16),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -117,111 +117,69 @@ class _PerpanjanganListState extends State<PerpanjanganList> {
           itemBuilder: (context, index) {
             PerpanjanganModel? dataperpanjangan = dataIndex[index];
             return InkWell(
-              // onTap: () {
-              //   Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) => TimelinePage(
-              //                 idpermintaan:
-              //                     dataprogress.idpermintaan.toString(),
-              //               )));
-              // },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: Card(
-                  elevation: 5,
-                  shadowColor: darkgreen,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    // margin: EdgeInsets.all(8),
-                    height: 70,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    decoration: BoxDecoration(
-                      color: mFillColor,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: mBorderColor, width: 1),
-                    ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("FD: " + dataperpanjangan.tglperpanjangan,
+              child: Card(
+                elevation: 5,
+                shadowColor: darkgreen,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("FD: " + dataperpanjangan.tglperpanjangan,
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: darkgreen)),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 20,
+                                child: Text(dataperpanjangan.produk.toString(),
                                     style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
-                                        color: darkgreen)),
-
-                                // Text("TS: " + dataperpanjangan.tglsertifikat,
-                                //     style: TextStyle(
-                                //         fontSize: 13,
-                                //         fontWeight: FontWeight.bold,
-                                //         color: Colors.black45)),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                // SizedBox(
-                                //     height: MediaQuery.of(context).size.height / 15,
-                                //     child: Text(
-                                //         "Produk: " +
-                                //             dataperpanjangan.produk.toString(),
-                                //         style: TextStyle(
-                                //             fontSize: 16,
-                                //             fontWeight: FontWeight.bold,
-                                //             color: Colors.black))),
-                                // SizedBox(
-                                //   height: 10,
-                                // ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 20,
-                                  child: Text(
-                                      dataperpanjangan.produk.toString(),
+                                        color: Colors.blue)),
+                              ),
+                              Text(dataperpanjangan.nama.toString(),
+                                  style: TextStyle(
+                                      fontSize: 13.0, color: darkgreen)),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      "Kelas: " +
+                                          dataperpanjangan.kelas.toString(),
                                       style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 12.0,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.blue)),
-                                ),
-                                Text(dataperpanjangan.nama.toString(),
-                                    style: TextStyle(
-                                        fontSize: 13.0,
-                                        // fontWeight: FontWeight.bold,
-                                        color: darkgreen)),
-                                SizedBox(
-                                  height: 6,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                        "Kelas: " +
-                                            dataperpanjangan.kelas.toString(),
-                                        style: TextStyle(
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.red)),
-                                    Text(
-                                        "Sales: " +
-                                            dataperpanjangan.sales.toString(),
-                                        style: TextStyle(
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.red))
-                                  ],
-                                ),
-                              ],
-                            ),
+                                          color: Colors.red)),
+                                  Text(
+                                      "Sales: " +
+                                          dataperpanjangan.sales.toString(),
+                                      style: TextStyle(
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red))
+                                ],
+                              ),
+                            ],
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),

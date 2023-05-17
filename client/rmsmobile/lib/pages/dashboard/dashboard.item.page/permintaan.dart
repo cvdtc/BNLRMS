@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
-import 'package:rmsmobile/pages/timeline/timeline.dart';
+import 'package:rmsmobile/pages/request/request.network.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../request/request.bottom.dart';
 
 class PermintaanList extends StatefulWidget {
   // * buat filter listview jika tipe list 1 maka data yang keluar sudah selesai, jika 0 data yang keluar yang belum selesai
@@ -139,127 +141,131 @@ class _PermintaanListState extends State<PermintaanList> {
             RequestModel? dataRequest = dataIndex![index];
             return InkWell(
               onTap: () {
-                Navigator.push(
+                print('xxxx' +
+                    dataRequest.keterangan +
+                    ' - ' +
+                    dataRequest.due_date.toString() +
+                    ' - ' +
+                    dataRequest.kategori +
+                    ' - ' +
+                    // dataRequest.idpermintaan.toString() +
+                    // ' - ' +
+                    '' +
+                    ' - ' +
+                    dataRequest.flag_selesai.toString() +
+                    ' - ' +
+                    dataRequest.nama_request +
+                    ' - ' +
+                    dataRequest.url_permintaan +
+                    ' - ' +
+                    dataRequest.jmlprogress.toString());
+                RequestModalBottom().modalActionItem(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => TimelinePage(
-                              idpermintaan: dataRequest.idpermintaan.toString(),
-                            )));
+                    token,
+                    dataRequest.keterangan,
+                    dataRequest.due_date.toString(),
+                    dataRequest.kategori,
+                    dataRequest.idpermintaan.toString(),
+                    dataRequest.keterangan_selesai.toString(),
+                    dataRequest.flag_selesai,
+                    dataRequest.nama_request,
+                    dataRequest.url_permintaan,
+                    0);
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => TimelinePage(
+                //               idpermintaan: dataRequest.idpermintaan.toString(),
+                //             )));
               },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: Card(
-                  elevation: 5,
-                  shadowColor: darkgreen,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    // margin: EdgeInsets.all(8),
-                    // height: 5/0,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    decoration: BoxDecoration(
-                      color: mFillColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Container(
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        ClipOval(
-                                          child: dataRequest.flag_selesai == 1
-                                              ? Container(
-                                                  color: Colors.green,
-                                                  height: 30.0,
-                                                  width: 30.0,
-                                                  child: Icon(
-                                                    Icons.check,
-                                                    color: Colors.white,
-                                                  ))
-                                              : (dataRequest.flag_selesai == 0
-                                                  ? Container(
-                                                      color: Colors.orange,
-                                                      height: 30.0,
-                                                      width: 30.0,
-                                                      child: Icon(
-                                                        Icons
-                                                            .priority_high_rounded,
-                                                        color: Colors.white,
-                                                      ))
-                                                  : Container(
-                                                      color: Colors.black,
-                                                      height: 30.0,
-                                                      width: 30.0,
-                                                      child: Icon(
-                                                        Icons.close_rounded,
-                                                        color: Colors.white,
-                                                      ))),
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(dataRequest.kategori.toString(),
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.bold,
-                                                color: darkgreen)),
-                                      ],
-                                    ),
-                                    Text(
-                                        "TR: " + dataRequest.created.toString(),
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                            color: darkgreen)),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                    dataRequest.keterangan
-                                        .toString()
-                                        .toUpperCase(),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
-                                SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                        "JT: " +
-                                            dataRequest.due_date.toString(),
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black45)),
-                                    Text(dataRequest.nama_request.toString(),
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black45))
-                                  ],
-                                ),
-                              ],
-                            ),
+              child: Card(
+                elevation: 5,
+                shadowColor: darkgreen,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              ClipOval(
+                                child: dataRequest.flag_selesai == 1
+                                    ? Container(
+                                        color: Colors.green,
+                                        height: 30.0,
+                                        width: 30.0,
+                                        child: Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                        ))
+                                    : (dataRequest.flag_selesai == 0
+                                        ? Container(
+                                            color: Colors.orange,
+                                            height: 30.0,
+                                            width: 30.0,
+                                            child: Icon(
+                                              Icons.priority_high_rounded,
+                                              color: Colors.white,
+                                            ))
+                                        : Container(
+                                            color: Colors.black,
+                                            height: 30.0,
+                                            width: 30.0,
+                                            child: Icon(
+                                              Icons.close_rounded,
+                                              color: Colors.white,
+                                            ))),
+                              ),
+                              SizedBox(
+                                width: 4,
+                              ),
+                              Text(dataRequest.kategori.toString(),
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: darkgreen)),
+                            ],
                           ),
-                        )
-                      ],
-                    ),
+                          Text("TR: " + dataRequest.created.toString(),
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: darkgreen)),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(dataRequest.keterangan.toString(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          )),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("JT: " + dataRequest.due_date.toString(),
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black45)),
+                          Text(dataRequest.nama_request.toString(),
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black45))
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ),

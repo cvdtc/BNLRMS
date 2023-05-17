@@ -564,6 +564,22 @@ class RequestModalBottom {
       String nama_request,
       String url_permintaan,
       int jmlprogress) {
+    print(keterangan_selesai +
+        ' - ' +
+        duedate +
+        ' - ' +
+        kategori +
+        ' - ' +
+        idpermintaan +
+        ' - ' +
+        keterangan_selesai +
+        ' - ' +
+        flag_selesai.toString() +
+        ' - ' +
+        nama_request +
+        url_permintaan.toString() +
+        ' -' +
+        jmlprogress.toString());
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,

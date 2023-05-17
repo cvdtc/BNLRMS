@@ -27,7 +27,7 @@ router.put('/pengguna', function (req, res) {
 
 // ! PERMINTAAN / REQUEST
 var RouteToPermintaan = require('../controllers/permintaan.controller')
-router.get('/permintaan', function (req, res) {
+router.get('/permintaan/:tanggal_awal/:tanggal_akhir/:keyword', function (req, res) {
     RouteToPermintaan.getAllPermintaan(req, res)
 })
 router.post('/permintaan', function (req, res) {

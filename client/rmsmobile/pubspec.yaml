@@ -38,12 +38,12 @@ dependencies:
   flutter_launcher_icons: ^0.11.0
   fluttertoast: ^8.0.8
   get: any
-  google_fonts: ^2.1.0
+  google_fonts: ^4.0.4
   http: ^0.13.3
   intl: ^0.17.0
   logger: ^1.1.0
   percent_indicator: ^3.4.0
-  rolling_nav_bar: ^0.0.4
+  # rolling_nav_bar: ^0.0.4
   shared_preferences: ^2.0.15
   syncfusion_flutter_datepicker: ^19.3.48
   timeline_tile: ^2.0.0
