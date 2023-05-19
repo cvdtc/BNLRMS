@@ -143,10 +143,14 @@ class _TimelinePageState extends State<TimelinePage> {
                           dataTimeline.edited,
                           dataTimeline.flag_selesai,
                           dataTimeline.keterangan_selesai,
-                          dataTimeline.idpengguna_close_permintaan,
+                          dataTimeline.idpengguna_close_permintaan != null
+                              ? dataTimeline.idpengguna_close_permintaan
+                              : 'Tidak Selesai',
                           dataTimeline.prg_keterangan,
                           dataTimeline.prg_created,
-                          dataTimeline.prg_edited,
+                          dataTimeline.prg_edited != null
+                              ? dataTimeline.prg_edited
+                              : 'Tidak Selesai',
                           dataTimeline.prg_flag_selesai,
                           dataTimeline.nama_request,
                           dataTimeline.nama_progress,

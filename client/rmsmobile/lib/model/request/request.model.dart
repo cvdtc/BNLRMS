@@ -13,7 +13,8 @@ class RequestModel {
       nama_request,
       jmlprogress,
       url_permintaan,
-      date_selesai;
+      date_selesai,
+      idpengguna;
 // ++ addons json
 
   RequestModel(
@@ -28,23 +29,24 @@ class RequestModel {
       this.nama_request,
       this.jmlprogress,
       this.url_permintaan,
-      this.date_selesai});
+      this.date_selesai,
+      this.idpengguna});
 
   factory RequestModel.fromJson(Map<dynamic, dynamic> map) {
     return RequestModel(
-      idpermintaan: map["idpermintaan"],
-      keterangan: map["keterangan"],
-      kategori: map["kategori"],
-      due_date: map["due_date"],
-      created: map["created"],
-      edited: map["edited"],
-      flag_selesai: map["flag_selesai"],
-      keterangan_selesai: map["keterangan_selesai"],
-      nama_request: map["nama_request"],
-      jmlprogress: map["jmlprogress"],
-      url_permintaan: map["url_permintaan"],
-      date_selesai: map["date_selesai"],
-    );
+        idpermintaan: map["idpermintaan"],
+        keterangan: map["keterangan"],
+        kategori: map["kategori"],
+        due_date: map["due_date"],
+        created: map["created"],
+        edited: map["edited"],
+        flag_selesai: map["flag_selesai"],
+        keterangan_selesai: map["keterangan_selesai"],
+        nama_request: map["nama_request"],
+        jmlprogress: map["jmlprogress"],
+        url_permintaan: map["url_permintaan"],
+        date_selesai: map["date_selesai"],
+        idpengguna: map["idpengguna"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -56,6 +58,7 @@ class RequestModel {
       "url_permintaan": url_permintaan,
       "keterangan_selesai": keterangan_selesai,
       "date_selesai": date_selesai,
+      "idpengguna": idpengguna
     };
   }
 }

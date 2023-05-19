@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:get/get_state_manager/get_state_manager.dart';
@@ -5,15 +7,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:rmsmobile/model/request/filterrequest.model.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
-import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/request/request.bottom.dart';
-
+import 'package:http/http.dart' as client;
 import 'package:rmsmobile/pages/request/request.network.dart';
 import 'package:rmsmobile/pages/request/request.tile.dart';
-import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 // import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../apiService/apiService.dart';
 
 class RequestPageSearch extends StatefulWidget {
   @override
@@ -22,7 +24,6 @@ class RequestPageSearch extends StatefulWidget {
 
 class RequestPageSearchState extends State<RequestPageSearch> {
   late SharedPreferences sp;
-  String _dropdownValue = "";
   String? defaultKategori = 'Merek';
   String? tipe = "";
   String? keterangan = "";
@@ -32,14 +33,27 @@ class RequestPageSearchState extends State<RequestPageSearch> {
   String? idpermintaan = "";
   String? keterangan_selesai = "";
   String? tipeupdate = "";
+  String idpengguna = "";
   TextEditingController _textSearch = TextEditingController(text: "");
   TextEditingController _tecTanggalAwal = TextEditingController(text: "");
   TextEditingController _tecTanggalAkhir = TextEditingController(text: "");
   TextEditingController _tecKeyword = TextEditingController(text: "");
+  TextEditingController _tecKeterangan = TextEditingController(text: "");
+  TextEditingController _tecDueDate = TextEditingController(text: "");
+  TextEditingController _tecKeteranganSelesai = TextEditingController(text: "");
+  TextEditingController _tecUrlPermintaan = TextEditingController(text: "");
+
+  TextEditingController _tecKeteranganNext = TextEditingController(text: "");
+  DateTime selectedDate = DateTime.now();
   // dynamic cekid;
   int? pilihkategori;
+  bool nextuser = false;
   var dataKategori = ['Merek', 'Paten', 'Desain Industri', 'Lainnya'];
-  var token = "", flagcari = '0';
+  var token = "",
+      flagcari = '0',
+      tanggal = '',
+      _dropdownValue = "Merek",
+      _dropdownValueFilter = "";
   List<RequestModel> _requests = <RequestModel>[];
   List<RequestModel> _requestDisplay = <RequestModel>[];
 
@@ -56,12 +70,13 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     sp = await SharedPreferences.getInstance();
     setState(() {
       token = sp.getString('access_token')!;
+      idpengguna = sp.getString('idpengguna')!;
     });
     FilterRequest data = FilterRequest(
         tanggal_awal: _tecTanggalAwal.text.toString(),
         tanggal_akhir: _tecTanggalAkhir.text.toString(),
         keyword: _tecKeyword.text.toString(),
-        kategori: _dropdownValue.toString());
+        kategori: _dropdownValueFilter.toString());
     await fetchPermintaan(token, data).then((value) {
       setState(() {
         _isLoading = false;
@@ -70,6 +85,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
         _requests.addAll(valuelistview);
         _requestDisplay = _requests;
       });
+      _pngguna(token);
     }).onError((error, stackTrace) {
       print(error.toString() + ' -- ' + stackTrace.toString());
       // ReusableClasses().clearSharedPreferences();
@@ -100,7 +116,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
   Future refreshPage() async {
     _requestDisplay.clear();
     _textSearch.clear();
-    _dropdownValue = '';
+    _dropdownValueFilter = '';
     setState(() {
       cekToken();
     });
@@ -109,6 +125,25 @@ class RequestPageSearchState extends State<RequestPageSearch> {
         msg: "Data Berhasil diperbarui",
         backgroundColor: Colors.black,
         textColor: Colors.white);
+  }
+
+  ApiService _apiService = new ApiService();
+  String? _mypengguna;
+  List? pnggunaList;
+  Future<String?> _pngguna(String token_pengguna) async {
+    var url = Uri.parse(_apiService.baseUrl + 'pengguna');
+    final response = await client
+        .get(url, headers: {"Authorization": "BEARER ${token_pengguna}"});
+    // .then((value) => print("Pengguna?" + value.toString()))
+    // .onError((error, stackTrace) {
+    //   ReusableClasses().modalbottomWarning(context, "Pengguna ",
+    //       'Pengguna tidak ke load', 'f404', 'assets/images/sorry');
+    // });
+    var dataz = json.decode(response.body);
+    setState(() {
+      print('Data Pengguna?' + dataz.toString());
+      pnggunaList = dataz['data'];
+    });
   }
 
   @override
@@ -166,7 +201,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
           //         builder: (context) => BottomNav(
           //               numberOfpage: 2,
           //             )));
-          RequestModalBottom().modalAddRequest(
+          modalAddRequestDirect(
               context, 'tambah', token, "", "", "", "", "", "", "");
         },
         backgroundColor: thirdcolor,
@@ -189,6 +224,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                           return RequestTile(
                             request: this._requestDisplay[index - 1],
                             token: token,
+                            idpengguna: idpengguna,
                           );
                         });
                 } else {
@@ -336,14 +372,15 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                   width: 20,
                                 ),
                                 DropdownButton(
-                                    value: _dropdownValue,
+                                    dropdownColor: Colors.white,
+                                    value: _dropdownValueFilter,
                                     items: kategoriItems.map((String items) {
                                       return DropdownMenuItem(
                                           child: Text(items), value: items);
                                     }).toList(),
                                     onChanged: (String? value) {
                                       setState(() {
-                                        _dropdownValue = value!;
+                                        _dropdownValueFilter = value!;
                                       });
                                     }),
                               ],
@@ -536,5 +573,310 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                     ])));
       },
     );
+  }
+
+  // ++ BOTTOM MODAL INPUT FORM
+  void modalAddRequestDirect(
+      context,
+      String tipe,
+      String token,
+      String keterangan,
+      String kategori,
+      String duedate,
+      String flag_selesai,
+      String idpermintaan,
+      String keterangan_selesai,
+      String url_permintaan) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0))),
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Padding(
+                padding: MediaQuery.of(context).viewInsets,
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          tipe.toUpperCase() + " PERMINTAAN",
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                            controller: _tecKeterangan,
+                            keyboardType: TextInputType.multiline,
+                            decoration: InputDecoration(
+                                icon: Icon(Icons.description_rounded),
+                                labelText: 'Deskripsi Permintaan',
+                                hintText: 'Masukkan Deskripsi',
+                                suffixIcon:
+                                    Icon(Icons.check_circle_outline_outlined))),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        TextFormField(
+                            controller: _tecUrlPermintaan,
+                            decoration: InputDecoration(
+                                icon: Icon(Icons.link_rounded),
+                                labelText: 'Sematkan URL',
+                                hintText: 'Masukkan URL',
+                                suffixIcon:
+                                    Icon(Icons.check_circle_outline_outlined))),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.4,
+                              child: TextFormField(
+                                  enabled: false,
+                                  controller: _tecDueDate,
+                                  textCapitalization: TextCapitalization.words,
+                                  onSaved: (String? val) {
+                                    tanggal = val.toString();
+                                  },
+                                  decoration: InputDecoration(
+                                      icon: Icon(Icons.date_range_rounded),
+                                      labelText: 'Pilih Tanggal Tenggat',
+                                      hintText: 'Pilih Tanggal',
+                                      suffixIcon: Icon(Icons
+                                          .check_circle_outline_outlined))),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  showDatePicker(
+                                      context: context,
+                                      initialDate: selectedDate,
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2900),
+                                      builder: (context, picker) {
+                                        return Theme(
+                                            data: ThemeData.dark().copyWith(
+                                                colorScheme: ColorScheme.dark(
+                                                    primary: Colors.deepOrange,
+                                                    onPrimary: Colors.white,
+                                                    surface: Colors.white70,
+                                                    onSurface: Colors.green),
+                                                dialogBackgroundColor:
+                                                    Colors.white),
+                                            child: picker!);
+                                      }).then((value) {
+                                    if (value != null) {
+                                      selectedDate = value;
+                                      _tecDueDate.text =
+                                          DateFormat('yyyy-MM-dd')
+                                              .format(selectedDate);
+                                    }
+                                  });
+                                },
+                                child: Text('Pilih Tgl'))
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                child: Row(
+                                  children: [
+                                    Text('Pilih Kategori '),
+                                    SizedBox(
+                                      width: 10.0,
+                                    ),
+                                    StatefulBuilder(
+                                      builder: (BuildContext context,
+                                          void Function(void Function())
+                                              setState) {
+                                        return DropdownButton(
+                                          dropdownColor: Colors.white,
+                                          value: _dropdownValue,
+                                          icon: Icon(Icons.arrow_drop_down),
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              _dropdownValue = value!;
+                                            });
+                                          },
+                                          items: <String>[
+                                            'Merek',
+                                            'Merek - QC',
+                                            'Merek - Permohonan',
+                                            'Merek - Oposisi',
+                                            'Merek - KO',
+                                            'Merek - Sanggahan',
+                                            'Merek - KBM',
+                                            'Merek - Lain Lain',
+                                            'Paten',
+                                            'Desain Industri',
+                                            'Hak Cipta'
+                                          ].map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                            return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value));
+                                          }).toList(),
+                                        );
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ]),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        StatefulBuilder(builder: (BuildContext context,
+                            void Function(void Function()) setState) {
+                          return Container(
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text('Next User ? '),
+                                    Switch(
+                                      onChanged: (bool value) {
+                                        // value == true ? 'selesai' : 'data';
+                                        setState(() {
+                                          nextuser = value;
+                                        });
+                                      },
+                                      activeTrackColor: thirdcolor,
+                                      activeColor: Colors.green,
+                                      value: nextuser,
+                                    ),
+                                    nextuser == true
+                                        ? Container(
+                                            color: Colors.white,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                _buildKomboPengguna(
+                                                    _mypengguna.toString())
+                                              ],
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            height: 0,
+                                          ),
+                                  ],
+                                ),
+                                // nextuser == true
+                                //     ? TextFormField(
+                                //         controller: _tecKeteranganNext,
+                                //         decoration: InputDecoration(
+                                //             icon: Icon(Icons.note_add_rounded),
+                                //             labelText:
+                                //                 'Keterangan Next Progress',
+                                //             hintText: 'Masukkan Deskripsi',
+                                //             suffixIcon: Icon(Icons
+                                //                 .check_circle_outline_outlined)))
+                                //     : SizedBox(
+                                //         height: 0,
+                                //       ),
+                              ],
+                            ),
+                          );
+                        }),
+                        SizedBox(
+                          height: 15.0,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              RequestModalBottom().modalKonfirmasi(
+                                  context,
+                                  tipe,
+                                  token,
+                                  _tecKeterangan.text.toString(),
+                                  _dropdownValue.toString(),
+                                  _tecDueDate.text.toString(),
+                                  0.toString(),
+
+                                  ///set flag selesai permintaan
+                                  idpermintaan,
+                                  _tecKeteranganSelesai.text.toString(),
+                                  _tecUrlPermintaan.text.toString(),
+                                  nextuser,
+                                  _mypengguna == null
+                                      ? '0'
+                                      : _mypengguna.toString());
+                            },
+                            style: ElevatedButton.styleFrom(
+                                elevation: 0.0, primary: thirdcolor),
+                            child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18.0)),
+                                child: Container(
+                                  width: 325,
+                                  height: 45,
+                                  alignment: Alignment.center,
+                                  child: Text('S I M P A N',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                )))
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        });
+  }
+
+  Widget _buildKomboPengguna(String pengguna1) {
+    // _controlleridpengguna = TextEditingController(text: pengguna1);
+    return StatefulBuilder(builder:
+        (BuildContext context, void Function(void Function()) setState) {
+      return DropdownButtonHideUnderline(
+        child: ButtonTheme(
+            minWidth: 30,
+            alignedDropdown: true,
+            child: DropdownButton<String>(
+              dropdownColor: Colors.white,
+              value: _mypengguna,
+              iconSize: 30,
+              icon: Icon(Icons.arrow_drop_down),
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 16,
+              ),
+              hint: Text('Pilih User'),
+              onChanged: (String? value) {
+                setState(() {
+                  _mypengguna = value;
+                });
+              },
+              items: pnggunaList?.map((item) {
+                return new DropdownMenuItem(
+                  child: Text(
+                    '${item['nama']}',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  value: item['idpengguna'].toString(),
+                );
+              }).toList(),
+            )),
+      );
+    });
   }
 }

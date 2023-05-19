@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +10,7 @@ import 'package:rmsmobile/pages/progres/progress.bottom.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
+import 'package:http/http.dart' as client;
 // import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 
 class RequestModalBottom {
@@ -15,12 +18,20 @@ class RequestModalBottom {
   TextEditingController _tecKeterangan = TextEditingController(text: "");
   TextEditingController _tecDueDate = TextEditingController(text: "");
   TextEditingController _tecKeteranganSelesai = TextEditingController(text: "");
+  TextEditingController _tecKeteranganNextUser =
+      TextEditingController(text: "");
+
   TextEditingController _tecUrlPermintaan = TextEditingController(text: "");
   String _dropdownValue = "Merek", tanggal = "";
   DateTime selectedDate = DateTime.now();
 
   bool flagpermintaanselesai = false;
   int valueflagpermintaanselesai = 0;
+  // * for edit progress
+  bool flagswitchnextuser = false;
+
+  List? pnggunaList;
+  String? _mypengguna;
 
   /**
    * * PARAMETER YANG DITERIMA:
@@ -64,6 +75,7 @@ class RequestModalBottom {
               TextPosition(offset: _tecUrlPermintaan.text.length)));
       _dropdownValue = kategori;
     }
+
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -216,6 +228,51 @@ class RequestModalBottom {
                         SizedBox(
                           height: 10,
                         ),
+                        Container(
+                          height: 100,
+                          child: Row(
+                            children: [
+                              Text('Assign To : '),
+                              Switch(
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    print(value);
+                                    flagswitchnextuser = value;
+                                  });
+                                },
+                                activeTrackColor: thirdcolor,
+                                activeColor: Colors.green,
+                                value: flagswitchnextuser,
+                              ),
+                              flagswitchnextuser == true
+                                  ? Container(
+                                      color: Colors.white,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          _buildKomboPengguna(
+                                              _mypengguna.toString())
+                                        ],
+                                      ),
+                                    )
+                                  : Container(
+                                      child: Text('false'),
+                                    )
+                              //     ? TextFormField(
+                              //         controller: _tecKeteranganNextUser,
+                              //         decoration: InputDecoration(
+                              //             icon: Icon(Icons.cabin_rounded),
+                              //             labelText: 'Keterangan Next Progress',
+                              //             hintText: 'Masukkan Deskripsi',
+                              //             suffixIcon: Icon(Icons
+                              //                 .check_circle_outline_outlined)))
+                              //     : SizedBox(
+                              //         height: 0,
+                              //       ),
+                            ],
+                          ),
+                        ),
                         tipe == 'ubah'
                             ? StatefulBuilder(
                                 builder: (BuildContext context,
@@ -275,7 +332,7 @@ class RequestModalBottom {
                         ),
                         ElevatedButton(
                             onPressed: () {
-                              _modalKonfirmasi(
+                              modalKonfirmasi(
                                   context,
                                   tipe,
                                   token,
@@ -285,8 +342,13 @@ class RequestModalBottom {
                                   valueflagpermintaanselesai.toString(),
                                   idpermintaan,
                                   _tecKeteranganSelesai.text.toString(),
-                                  _tecUrlPermintaan.text.toString());
-                              Navigator.pop(context);
+                                  _tecUrlPermintaan.text.toString(),
+                                  false,
+
+                                  /// isnextuser
+                                  0.toString() //idnextuser
+                                  );
+                              // Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                                 elevation: 0.0, primary: thirdcolor),
@@ -315,7 +377,7 @@ class RequestModalBottom {
   }
 
   // ++ BOTTOM MODAL CONFIRMATION
-  _modalKonfirmasi(
+  modalKonfirmasi(
       context,
       String tipe,
       String token,
@@ -325,7 +387,9 @@ class RequestModalBottom {
       String flag_selesai,
       String idpermintaan,
       String keterangan_selesai,
-      String url_permintaan) {
+      String url_permintaan,
+      bool isnextuser,
+      String idnextuser) {
     if (keterangan == "" || duedate == "" || kategori == "") {
       ReusableClasses().modalbottomWarning(
           context,
@@ -414,7 +478,9 @@ class RequestModalBottom {
                                     flag_selesai,
                                     idpermintaan,
                                     keterangan_selesai,
-                                    url_permintaan);
+                                    url_permintaan,
+                                    isnextuser,
+                                    idnextuser);
                                 Navigator.pop(context);
                               },
                               style: ElevatedButton.styleFrom(
@@ -454,7 +520,9 @@ class RequestModalBottom {
       String flag_selesai,
       String idpermintaan,
       String keterangan_selesai,
-      String url_permintaan) async {
+      String url_permintaan,
+      bool isnextuser,
+      String idnextuser) async {
     if (keterangan == "" || duedate == "" || kategori == "") {
       ReusableClasses().modalbottomWarning(
           context,
@@ -472,7 +540,8 @@ class RequestModalBottom {
           keterangan_selesai: keterangan_selesai);
       if (tipe == 'tambah') {
         _apiService.addRequest(token.toString(), dataadd).then((isSuccess) {
-          if (isSuccess) {
+          print('RESPONSE??' + isSuccess.toString());
+          if (isSuccess.toString().split('|')[0] == '201') {
             _tecKeterangan.clear();
             _tecDueDate.clear();
             _tecKeteranganSelesai.clear();
@@ -501,7 +570,6 @@ class RequestModalBottom {
                 'f400',
                 'assets/images/sorry.png');
           }
-          return;
         }).onError((error, stackTrace) {
           Fluttertoast.showToast(
               msg: "${_apiService.responseCode.messageApi}",
@@ -563,23 +631,9 @@ class RequestModalBottom {
       int flag_selesai,
       String nama_request,
       String url_permintaan,
-      int jmlprogress) {
-    print(keterangan_selesai +
-        ' - ' +
-        duedate +
-        ' - ' +
-        kategori +
-        ' - ' +
-        idpermintaan +
-        ' - ' +
-        keterangan_selesai +
-        ' - ' +
-        flag_selesai.toString() +
-        ' - ' +
-        nama_request +
-        url_permintaan.toString() +
-        ' -' +
-        jmlprogress.toString());
+      int jmlprogress,
+      String idpengguna,
+      String idrequest) {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -717,8 +771,8 @@ class RequestModalBottom {
                   SizedBox(
                     height: 20,
                   ),
-                  // ++ add filter jika flag selesai 0 maka  data masih bisa di ubah
-                  flag_selesai == 0
+                  // ++ add filter jika flag selesai 0 atau idpengguna tidak sama dengan idlogin maka  data masih bisa di ubah
+                  flag_selesai == 0 && idpengguna == idrequest
                       ? ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
@@ -790,5 +844,42 @@ class RequestModalBottom {
             ),
           );
         });
+  }
+
+  Widget _buildKomboPengguna(String pengguna1) {
+    // _controlleridpengguna = TextEditingController(text: pengguna1);
+    return StatefulBuilder(builder:
+        (BuildContext context, void Function(void Function()) setState) {
+      return DropdownButtonHideUnderline(
+        child: ButtonTheme(
+            minWidth: 30,
+            alignedDropdown: true,
+            child: DropdownButton<String>(
+              dropdownColor: Colors.white,
+              value: _mypengguna,
+              iconSize: 30,
+              icon: Icon(Icons.arrow_drop_down),
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 16,
+              ),
+              hint: Text('Pilih User'),
+              onChanged: (String? value) {
+                setState(() {
+                  _mypengguna = value;
+                });
+              },
+              items: pnggunaList?.map((item) {
+                return new DropdownMenuItem(
+                  child: Text(
+                    '${item['nama']}',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  value: item['idpengguna'].toString(),
+                );
+              }).toList(),
+            )),
+      );
+    });
   }
 }

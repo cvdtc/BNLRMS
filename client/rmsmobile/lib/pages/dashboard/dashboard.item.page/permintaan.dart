@@ -20,7 +20,7 @@ class _PermintaanListState extends State<PermintaanList> {
   late SharedPreferences sp;
   ApiService _apiService = ApiService();
   bool isSuccess = false;
-  String? token = "";
+  String? token = "", idpengguna = "";
   int tipelist = 0;
 
   // * ceking token and getting dashboard value from api
@@ -28,6 +28,7 @@ class _PermintaanListState extends State<PermintaanList> {
     sp = await SharedPreferences.getInstance();
     setState(() {
       token = sp.getString("access_token");
+      idpengguna = sp.getString("idpengguna");
     });
   }
 
@@ -141,24 +142,6 @@ class _PermintaanListState extends State<PermintaanList> {
             RequestModel? dataRequest = dataIndex![index];
             return InkWell(
               onTap: () {
-                print('xxxx' +
-                    dataRequest.keterangan +
-                    ' - ' +
-                    dataRequest.due_date.toString() +
-                    ' - ' +
-                    dataRequest.kategori +
-                    ' - ' +
-                    // dataRequest.idpermintaan.toString() +
-                    // ' - ' +
-                    '' +
-                    ' - ' +
-                    dataRequest.flag_selesai.toString() +
-                    ' - ' +
-                    dataRequest.nama_request +
-                    ' - ' +
-                    dataRequest.url_permintaan +
-                    ' - ' +
-                    dataRequest.jmlprogress.toString());
                 RequestModalBottom().modalActionItem(
                     context,
                     token,
@@ -170,7 +153,9 @@ class _PermintaanListState extends State<PermintaanList> {
                     dataRequest.flag_selesai,
                     dataRequest.nama_request,
                     dataRequest.url_permintaan,
-                    0);
+                    0,
+                    idpengguna!,
+                    dataRequest.idpengguna.toString());
                 // Navigator.push(
                 //     context,
                 //     MaterialPageRoute(

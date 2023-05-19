@@ -133,7 +133,6 @@ class ProgressModalBottom {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        print('simpan clicked');
                         Navigator.of(context).pop();
                         modalKonfirmasi(
                             context,

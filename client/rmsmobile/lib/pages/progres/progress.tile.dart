@@ -164,6 +164,7 @@ class _ProgressTileState extends State<ProgressTile> {
             minWidth: 30,
             alignedDropdown: true,
             child: DropdownButton<String>(
+              dropdownColor: Colors.white,
               value: _mypengguna,
               iconSize: 30,
               icon: Icon(Icons.arrow_drop_down),

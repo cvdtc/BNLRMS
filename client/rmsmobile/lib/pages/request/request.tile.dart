@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
-
 import 'request.bottom.dart';
 
 class RequestTile extends StatefulWidget {
   late final RequestModel request;
-  final String token;
-  RequestTile({required this.request, required this.token});
+  final String token, idpengguna;
+  RequestTile(
+      {required this.request, required this.token, required this.idpengguna});
 
   @override
   State<RequestTile> createState() => _RequestTileState();
@@ -18,7 +18,6 @@ class _RequestTileState extends State<RequestTile> {
   static final DateTime now = DateTime.now();
   static final DateFormat formatter = DateFormat('yyyy-MM-dd');
   final String formatted = formatter.format(now);
-
   @override
   void initState() {
     // TODO: implement initState
@@ -41,11 +40,15 @@ class _RequestTileState extends State<RequestTile> {
                 widget.request.due_date,
                 widget.request.kategori,
                 widget.request.idpermintaan.toString(),
-                widget.request.keterangan_selesai,
+                widget.request.keterangan_selesai != null
+                    ? widget.request.keterangan_selesai
+                    : '-',
                 widget.request.flag_selesai,
                 widget.request.nama_request,
                 widget.request.url_permintaan,
-                widget.request.jmlprogress);
+                widget.request.jmlprogress,
+                widget.idpengguna,
+                widget.request.idpengguna.toString());
             // });
           },
           child: Container(

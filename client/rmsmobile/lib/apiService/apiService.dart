@@ -40,6 +40,7 @@ class ApiService {
       sp.setString("username", "${loginresult.username}");
       sp.setString("jabatan", "${loginresult.jabatan}");
       sp.setString("nama", "${loginresult.nama}");
+      sp.setString("idpengguna", '${loginresult.idpengguna.toString()}');
       sp.setBool("notif_permintaan", true);
       sp.setBool("notif_progress", true);
       return true;
@@ -68,7 +69,7 @@ class ApiService {
   }
 
   // ! Add Data Request
-  Future<bool> addRequest(String token, RequestModel data) async {
+  Future<String?> addRequest(String token, RequestModel data) async {
     var url = Uri.parse(baseUrl + 'addpermintaan');
     var response = await client.post(url,
         headers: {
@@ -78,11 +79,12 @@ class ApiService {
         body: RequestModelToJson(data));
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
-    if (response.statusCode == 201) {
-      return true;
-    } else {
-      return false;
-    }
+    print('RESPONSE PERMINTAAN' + response.body);
+    // if (response.statusCode == 201) {
+    return response.statusCode.toString() + '|' + response.body;
+    // } else {
+    //   return false;
+    // }
   }
 
   Future<bool> ubahRequest(
@@ -131,6 +133,7 @@ class ApiService {
         body: ProgressToJson(data));
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
+    print('RESPON ADD PROGRESS' + response.body);
     if (response.statusCode == 201) {
       return true;
     } else {
