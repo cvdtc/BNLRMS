@@ -140,7 +140,9 @@ class _TimelinePageState extends State<TimelinePage> {
                           dataTimeline.kategori,
                           dataTimeline.due_date,
                           dataTimeline.created,
-                          dataTimeline.edited,
+                          dataTimeline.edited != null
+                              ? dataTimeline.edited
+                              : '-',
                           dataTimeline.flag_selesai,
                           dataTimeline.keterangan_selesai,
                           dataTimeline.idpengguna_close_permintaan != null
@@ -157,7 +159,9 @@ class _TimelinePageState extends State<TimelinePage> {
                           dataTimeline.nama_close_permintaan,
                           dataTimeline.date_selesai,
                           dataTimeline.url_permintaan,
-                          dataTimeline.url_progress))));
+                          dataTimeline.url_progress != null
+                              ? dataTimeline.url_progress
+                              : ''))));
         });
   }
 

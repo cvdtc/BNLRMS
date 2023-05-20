@@ -208,6 +208,7 @@ class RequestModalBottom {
                                             'Merek - KO',
                                             'Merek - Sanggahan',
                                             'Merek - KBM',
+                                            'Merek - Perpanjangan',
                                             'Merek - Lain Lain',
                                             'Paten',
                                             'Desain Industri',
@@ -227,51 +228,6 @@ class RequestModalBottom {
                             ]),
                         SizedBox(
                           height: 10,
-                        ),
-                        Container(
-                          height: 100,
-                          child: Row(
-                            children: [
-                              Text('Assign To : '),
-                              Switch(
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    print(value);
-                                    flagswitchnextuser = value;
-                                  });
-                                },
-                                activeTrackColor: thirdcolor,
-                                activeColor: Colors.green,
-                                value: flagswitchnextuser,
-                              ),
-                              flagswitchnextuser == true
-                                  ? Container(
-                                      color: Colors.white,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          _buildKomboPengguna(
-                                              _mypengguna.toString())
-                                        ],
-                                      ),
-                                    )
-                                  : Container(
-                                      child: Text('false'),
-                                    )
-                              //     ? TextFormField(
-                              //         controller: _tecKeteranganNextUser,
-                              //         decoration: InputDecoration(
-                              //             icon: Icon(Icons.cabin_rounded),
-                              //             labelText: 'Keterangan Next Progress',
-                              //             hintText: 'Masukkan Deskripsi',
-                              //             suffixIcon: Icon(Icons
-                              //                 .check_circle_outline_outlined)))
-                              //     : SizedBox(
-                              //         height: 0,
-                              //       ),
-                            ],
-                          ),
                         ),
                         tipe == 'ubah'
                             ? StatefulBuilder(
@@ -346,8 +302,8 @@ class RequestModalBottom {
                                   false,
 
                                   /// isnextuser
-                                  0.toString() //idnextuser
-                                  );
+                                  0.toString(), //idnextuser
+                                  'tanpa progress');
                               // Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
@@ -389,7 +345,8 @@ class RequestModalBottom {
       String keterangan_selesai,
       String url_permintaan,
       bool isnextuser,
-      String idnextuser) {
+      String idnextuser,
+      keteranganProgress) {
     if (keterangan == "" || duedate == "" || kategori == "") {
       ReusableClasses().modalbottomWarning(
           context,
@@ -480,7 +437,8 @@ class RequestModalBottom {
                                     keterangan_selesai,
                                     url_permintaan,
                                     isnextuser,
-                                    idnextuser);
+                                    idnextuser,
+                                    keteranganProgress);
                                 Navigator.pop(context);
                               },
                               style: ElevatedButton.styleFrom(
@@ -522,7 +480,8 @@ class RequestModalBottom {
       String keterangan_selesai,
       String url_permintaan,
       bool isnextuser,
-      String idnextuser) async {
+      String idnextuser,
+      String keteranganProgress) async {
     if (keterangan == "" || duedate == "" || kategori == "") {
       ReusableClasses().modalbottomWarning(
           context,
@@ -539,45 +498,69 @@ class RequestModalBottom {
           url_permintaan: url_permintaan,
           keterangan_selesai: keterangan_selesai);
       if (tipe == 'tambah') {
-        _apiService.addRequest(token.toString(), dataadd).then((isSuccess) {
-          print('RESPONSE??' + isSuccess.toString());
-          if (isSuccess.toString().split('|')[0] == '201') {
-            _tecKeterangan.clear();
-            _tecDueDate.clear();
-            _tecKeteranganSelesai.clear();
-            _tecUrlPermintaan.clear();
+        if (isnextuser) {
+          _apiService
+              .addRequestDanProgress(token, keterangan, kategori, duedate,
+                  flag_selesai, url_permintaan, idnextuser, keteranganProgress)
+              .then((isBerhasil) => {
+                    if (isBerhasil)
+                      {
+                        Fluttertoast.showToast(
+                            msg: 'Data berhasil dibuat!',
+                            backgroundColor: darkgreen,
+                            textColor: Colors.black)
+                      }
+                    else
+                      {
+                        ReusableClasses().modalbottomWarning(
+                            context,
+                            'Data Gagal Disimpan!',
+                            '${_apiService.responseCode.messageApi}',
+                            'f400',
+                            'assets/images/sorry.png')
+                      }
+                  });
+        } else {
+          _apiService.addRequest(token.toString(), dataadd).then((isSuccess) {
+            print('RESPONSE??' + isSuccess.toString());
+            if (isSuccess) {
+              _tecKeterangan.clear();
+              _tecDueDate.clear();
+              _tecKeteranganSelesai.clear();
+              _tecUrlPermintaan.clear();
+              Fluttertoast.showToast(
+                  msg: "${_apiService.responseCode.messageApi}",
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white);
+              // Navigator.pushReplacement(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => BottomNav(
+              //               numberOfpage: 0,
+              //             )));
+              // ReusableClasses().modalbottomWarning(
+              //     context,
+              //     'Data Berhasil Disimpan!',
+              //     '${_apiService.responseCode.messageApi}',
+              //     'f201',
+              //     'assets/images/congratulations.png');
+            } else {
+              ReusableClasses().modalbottomWarning(
+                  context,
+                  'Data Gagal Disimpan!',
+                  '${_apiService.responseCode.messageApi}',
+                  'f400',
+                  'assets/images/sorry.png');
+            }
+          }).onError((error, stackTrace) {
             Fluttertoast.showToast(
                 msg: "${_apiService.responseCode.messageApi}",
                 backgroundColor: Colors.red,
-                textColor: Colors.white);
-            // Navigator.pushReplacement(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => BottomNav(
-            //               numberOfpage: 0,
-            //             )));
-            // ReusableClasses().modalbottomWarning(
-            //     context,
-            //     'Data Berhasil Disimpan!',
-            //     '${_apiService.responseCode.messageApi}',
-            //     'f201',
-            //     'assets/images/congratulations.png');
-          } else {
-            ReusableClasses().modalbottomWarning(
-                context,
-                'Data Gagal Disimpan!',
-                '${_apiService.responseCode.messageApi}',
-                'f400',
-                'assets/images/sorry.png');
-          }
-        }).onError((error, stackTrace) {
-          Fluttertoast.showToast(
-              msg: "${_apiService.responseCode.messageApi}",
-              backgroundColor: Colors.red,
-              textColor: Colors.red);
-          // ReusableClasses().modalbottomWarning(context, 'Data Gagal Disimpan!',
-          //     '${error}', 'f400', 'assets/images/sorry.png');
-        });
+                textColor: Colors.red);
+            // ReusableClasses().modalbottomWarning(context, 'Data Gagal Disimpan!',
+            //     '${error}', 'f400', 'assets/images/sorry.png');
+          });
+        }
       } else if (tipe == 'ubah') {
         _apiService
             .ubahRequest(token.toString(), idpermintaan, dataadd)

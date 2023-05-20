@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
+import 'package:rmsmobile/utils/versioncontrol.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 
@@ -125,7 +126,9 @@ class _LoginscreenState extends State<Loginscreen> {
                               fontSize: 26.0,
                               fontWeight: FontWeight.bold,
                             )),
-                      )))
+                      ))),
+              SizedBox(height: 12),
+              Text('Version: v' + AppVersion.versionNumber.toString()),
             ],
           ),
         ),

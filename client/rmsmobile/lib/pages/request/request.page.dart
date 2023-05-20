@@ -107,6 +107,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     'Merek - KO',
     'Merek - Sanggahan',
     'Merek - KBM',
+    'Merek - Perpanjangan',
     'Merek - Lain Lain',
     'Paten',
     'Desain Industri',
@@ -719,6 +720,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                             'Merek - KO',
                                             'Merek - Sanggahan',
                                             'Merek - KBM',
+                                            'Merek - Perpanjangan',
                                             'Merek - Lain Lain',
                                             'Paten',
                                             'Desain Industri',
@@ -776,19 +778,19 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                           ),
                                   ],
                                 ),
-                                // nextuser == true
-                                //     ? TextFormField(
-                                //         controller: _tecKeteranganNext,
-                                //         decoration: InputDecoration(
-                                //             icon: Icon(Icons.note_add_rounded),
-                                //             labelText:
-                                //                 'Keterangan Next Progress',
-                                //             hintText: 'Masukkan Deskripsi',
-                                //             suffixIcon: Icon(Icons
-                                //                 .check_circle_outline_outlined)))
-                                //     : SizedBox(
-                                //         height: 0,
-                                //       ),
+                                nextuser == true
+                                    ? TextFormField(
+                                        controller: _tecKeteranganNext,
+                                        decoration: InputDecoration(
+                                            icon: Icon(Icons.note_add_rounded),
+                                            labelText:
+                                                'Keterangan Next Progress',
+                                            hintText: 'Masukkan Deskripsi',
+                                            suffixIcon: Icon(Icons
+                                                .check_circle_outline_outlined)))
+                                    : SizedBox(
+                                        height: 0,
+                                      ),
                               ],
                             ),
                           );
@@ -815,7 +817,8 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                   nextuser,
                                   _mypengguna == null
                                       ? '0'
-                                      : _mypengguna.toString());
+                                      : _mypengguna.toString(),
+                                  _tecKeteranganNext.text.trim().toString());
                             },
                             style: ElevatedButton.styleFrom(
                                 elevation: 0.0, primary: thirdcolor),

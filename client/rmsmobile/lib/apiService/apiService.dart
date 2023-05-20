@@ -69,7 +69,7 @@ class ApiService {
   }
 
   // ! Add Data Request
-  Future<String?> addRequest(String token, RequestModel data) async {
+  Future<bool> addRequest(String token, RequestModel data) async {
     var url = Uri.parse(baseUrl + 'addpermintaan');
     var response = await client.post(url,
         headers: {
@@ -79,12 +79,44 @@ class ApiService {
         body: RequestModelToJson(data));
     Map responsemessage = jsonDecode(response.body);
     responseCode = ResponseCode.fromJson(responsemessage);
-    print('RESPONSE PERMINTAAN' + response.body);
-    // if (response.statusCode == 201) {
-    return response.statusCode.toString() + '|' + response.body;
-    // } else {
-    //   return false;
-    // }
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> addRequestDanProgress(
+      String token,
+      String keterangan,
+      String kategori,
+      String due_date,
+      String flag_selesai,
+      String url_web,
+      String next_idpengguna,
+      String keterangan_progress) async {
+    var url = Uri.parse(baseUrl + 'addpermintaandanprogress');
+    var response = await client.post(url,
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer ${token}'
+        },
+        body: jsonEncode(<String, String>{
+          "keterangan": keterangan,
+          "kategori": kategori,
+          "due_date": due_date,
+          "flag_selesai": flag_selesai,
+          "url_web": url_web,
+          "next_idpengguna": next_idpengguna,
+          "keterangan_progress": keterangan_progress,
+        }));
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<bool> ubahRequest(

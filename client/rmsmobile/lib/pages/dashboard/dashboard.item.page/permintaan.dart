@@ -123,18 +123,16 @@ class _PermintaanListState extends State<PermintaanList> {
           .toList();
       dataIndex.sort((b, a) => a.due_date.compareTo(b.due_date));
     } else if (tipelist == 1) {
-      print("masuk 1");
       dataIndex = dataIndex1!
           .where((element) => element.flag_selesai == tipelist)
           .toList();
       dataIndex.sort((b, a) => a.date_selesai.compareTo(b.date_selesai));
     } else {
-      print("masuk 0");
       dataIndex = dataIndex1;
     }
     return Container(
       height: MediaQuery.of(context).size.height / 5,
-      margin: EdgeInsets.only(left: 16, right: 16),
+      // margin: EdgeInsets.only(left: 16, right: 16),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: dataIndex!.length,
@@ -168,89 +166,95 @@ class _PermintaanListState extends State<PermintaanList> {
                 shadowColor: darkgreen,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              ClipOval(
-                                child: dataRequest.flag_selesai == 1
-                                    ? Container(
-                                        color: Colors.green,
-                                        height: 30.0,
-                                        width: 30.0,
-                                        child: Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                        ))
-                                    : (dataRequest.flag_selesai == 0
-                                        ? Container(
-                                            color: Colors.orange,
-                                            height: 30.0,
-                                            width: 30.0,
-                                            child: Icon(
-                                              Icons.priority_high_rounded,
-                                              color: Colors.white,
-                                            ))
-                                        : Container(
-                                            color: Colors.black,
-                                            height: 30.0,
-                                            width: 30.0,
-                                            child: Icon(
-                                              Icons.close_rounded,
-                                              color: Colors.white,
-                                            ))),
-                              ),
-                              SizedBox(
-                                width: 4,
-                              ),
-                              Text(dataRequest.kategori.toString(),
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                      color: darkgreen)),
-                            ],
-                          ),
-                          Text("TR: " + dataRequest.created.toString(),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * .8,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                ClipOval(
+                                  child: dataRequest.flag_selesai == 1
+                                      ? Container(
+                                          color: Colors.green,
+                                          height: 30.0,
+                                          width: 30.0,
+                                          child: Icon(
+                                            Icons.check,
+                                            color: Colors.white,
+                                          ))
+                                      : (dataRequest.flag_selesai == 0
+                                          ? Container(
+                                              color: Colors.orange,
+                                              height: 30.0,
+                                              width: 30.0,
+                                              child: Icon(
+                                                Icons.priority_high_rounded,
+                                                color: Colors.white,
+                                              ))
+                                          : Container(
+                                              color: Colors.black,
+                                              height: 30.0,
+                                              width: 30.0,
+                                              child: Icon(
+                                                Icons.close_rounded,
+                                                color: Colors.white,
+                                              ))),
+                                ),
+                                SizedBox(
+                                  width: 4,
+                                ),
+                                Text(dataRequest.kategori.toString(),
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: darkgreen)),
+                              ],
+                            ),
+                            Text("TR: " + dataRequest.created.toString(),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: darkgreen)),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Expanded(
+                          child: Text(dataRequest.keterangan.toString(),
+                              overflow: TextOverflow.fade,
                               style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: darkgreen)),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(dataRequest.keterangan.toString(),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          )),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text("JT: " + dataRequest.due_date.toString(),
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black45)),
-                          Text(dataRequest.nama_request.toString(),
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black45))
-                        ],
-                      )
-                    ],
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("JT: " + dataRequest.due_date.toString(),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black45)),
+                            Text(dataRequest.nama_request.toString(),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black45))
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -279,7 +283,9 @@ class _PermintaanListState extends State<PermintaanList> {
             ),
           ),
           _listRequest(dataRequest, 2), //tipelist 2
-
+          SizedBox(
+            height: 12.0,
+          ),
           Card(
             color: Colors.orange,
             child: Padding(
@@ -294,7 +300,9 @@ class _PermintaanListState extends State<PermintaanList> {
             ),
           ),
           _listRequest(dataRequest, 0), //tipelist 0
-
+          SizedBox(
+            height: 12.0,
+          ),
           Card(
             color: Colors.green,
             child: Padding(

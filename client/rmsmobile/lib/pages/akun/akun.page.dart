@@ -6,6 +6,7 @@ import 'package:rmsmobile/model/pengguna/pengguna.model.gantipassword.dart';
 import 'package:rmsmobile/pages/akun/akun.bottommodal.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/setting/setting_notif.dart';
+import 'package:rmsmobile/utils/versioncontrol.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -84,7 +85,7 @@ class _AkunPageState extends State<AkunPage> {
             ],
           ),
           _option(context),
-          Text('v.1.3.0 (S)')
+          Text('Version: v' + AppVersion.versionNumber.toString())
         ],
       ),
     ));
