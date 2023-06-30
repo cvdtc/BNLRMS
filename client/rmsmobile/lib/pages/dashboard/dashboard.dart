@@ -5,6 +5,7 @@ import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/permintaan.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/perpanjangan.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/progres.dart';
+import 'package:rmsmobile/pages/dashboard/merekinternasional/daftarmerek.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/perpanjangan/perpanjangan.page.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
@@ -256,24 +257,45 @@ class _DahsboardState extends State<Dahsboard> {
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-
-            // DASHBOARD BAGIAN PROGRESS DITUTUP SEMENTARA DIGANTI PERPANJANGAN, REQ: PAK JIAN 15/01/21
-            // child: Column(
-            //   children: [
-            //     Row(
-            //       crossAxisAlignment: CrossAxisAlignment.center,
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         subheading('Progres'),
-            //       ],
-            //     ),
-            //     SizedBox(
-            //       height: 10,
-            //     ),
-            // ProgresList()
-            //   ],
-            // ),
-
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Merek Internasional",
+                      style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: darkgreen),
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext) =>
+                                      PerpanjanganPageSearch()));
+                        },
+                        child: Text(
+                          '//Semua',
+                          style: TextStyle(color: darkgreen),
+                        ))
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                DaftarMerekInternasional()
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Column(
               children: [
                 Row(
@@ -287,7 +309,6 @@ class _DahsboardState extends State<Dahsboard> {
                           fontWeight: FontWeight.bold,
                           color: darkgreen),
                     ),
-
                     // subheading('Perpanjangan'),
                     GestureDetector(
                         onTap: () {
@@ -344,7 +365,6 @@ class _DahsboardState extends State<Dahsboard> {
                 SizedBox(
                   height: 10,
                 ),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -354,81 +374,6 @@ class _DahsboardState extends State<Dahsboard> {
                     )
                   ],
                 ),
-
-                // //start tipe 2
-                // Column(
-                //   crossAxisAlignment: CrossAxisAlignment.start,
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     Card(
-                //       color: Colors.black,
-                //       child: Padding(
-                //         padding: const EdgeInsets.all(5.0),
-                //         child: Text(
-                //           'Tidak Selesai',
-                //           style: TextStyle(
-                //               fontSize: 16.0,
-                //               fontWeight: FontWeight.bold,
-                //               color: Colors.white),
-                //         ),
-                //       ),
-                //     ),
-                //     PermintaanList(
-                //       tipelist: 2,
-                //     )
-                //   ],
-                // ),
-                // //end tipe 2
-
-                // //start tipe 0
-                // Column(
-                //   crossAxisAlignment: CrossAxisAlignment.start,
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     Card(
-                //       color: Colors.orange,
-                //       child: Padding(
-                //         padding: const EdgeInsets.all(5.0),
-                //         child: Text(
-                //           'Belum Selesai',
-                //           style: TextStyle(
-                //               fontSize: 16.0,
-                //               fontWeight: FontWeight.bold,
-                //               color: Colors.white),
-                //         ),
-                //       ),
-                //     ),
-                //     PermintaanList(
-                //       tipelist: 0,
-                //     )
-                //   ],
-                // ),
-                // //end tipe 0
-
-                // //start tipe 1
-                // Column(
-                //   crossAxisAlignment: CrossAxisAlignment.start,
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     Card(
-                //       color: Colors.green,
-                //       child: Padding(
-                //         padding: const EdgeInsets.all(5.0),
-                //         child: Text(
-                //           'Sudah Selesai',
-                //           style: TextStyle(
-                //               fontSize: 16.0,
-                //               fontWeight: FontWeight.bold,
-                //               color: Colors.white),
-                //         ),
-                //       ),
-                //     ),
-                //     PermintaanList(
-                //       tipelist: 1,
-                //     )
-                //   ],
-                // ),
-                // //end tip 1
               ],
             ),
           )

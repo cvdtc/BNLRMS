@@ -77,6 +77,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
         tanggal_akhir: _tecTanggalAkhir.text.toString(),
         keyword: _tecKeyword.text.toString(),
         kategori: _dropdownValueFilter.toString());
+    print(data.toString());
     await fetchPermintaan(token, data).then((value) {
       setState(() {
         _isLoading = false;
@@ -116,8 +117,8 @@ class RequestPageSearchState extends State<RequestPageSearch> {
 
   Future refreshPage() async {
     _requestDisplay.clear();
-    _textSearch.clear();
-    _dropdownValueFilter = '';
+    // _textSearch.clear();
+    // _dropdownValueFilter = '';
     setState(() {
       cekToken();
     });
@@ -126,6 +127,27 @@ class RequestPageSearchState extends State<RequestPageSearch> {
         msg: "Data Berhasil diperbarui",
         backgroundColor: Colors.black,
         textColor: Colors.white);
+  }
+
+  Future filterData() async {
+    FilterRequest data = FilterRequest(
+        tanggal_awal: _tecTanggalAwal.text.toString(),
+        tanggal_akhir: _tecTanggalAkhir.text.toString(),
+        keyword: _tecKeyword.text.toString(),
+        kategori: _dropdownValueFilter.toString());
+    print(data.toString());
+    await fetchPermintaan(token, data).then((value) {
+      setState(() {
+        _isLoading = false;
+        _requests.clear();
+        valuelistview = value;
+        _requests.addAll(valuelistview);
+        _requestDisplay = _requests;
+      });
+      _pngguna(token);
+    }).onError((error, stackTrace) {
+      print(error.toString() + ' -- ' + stackTrace.toString());
+    });
   }
 
   ApiService _apiService = new ApiService();
@@ -381,6 +403,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                     }).toList(),
                                     onChanged: (String? value) {
                                       setState(() {
+                                        print(value);
                                         _dropdownValueFilter = value!;
                                       });
                                     }),
@@ -819,6 +842,15 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                       ? '0'
                                       : _mypengguna.toString(),
                                   _tecKeteranganNext.text.trim().toString());
+
+                              /// Clear text input
+                              _tecKeterangan.clear();
+                              _tecDueDate.clear();
+                              idpermintaan = '';
+                              _tecKeteranganSelesai.clear();
+                              _tecUrlPermintaan.clear();
+                              // _mypengguna = '';
+                              _tecKeteranganNext.clear();
                             },
                             style: ElevatedButton.styleFrom(
                                 elevation: 0.0, primary: thirdcolor),

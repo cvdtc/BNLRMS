@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/model/login/loginResult.model.dart';
+import 'package:rmsmobile/model/merekinternasional/dashboard.merekinternasional.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.gantipassword.dart';
 import 'package:rmsmobile/model/perpanjangan/perpanjangan.model.dart';

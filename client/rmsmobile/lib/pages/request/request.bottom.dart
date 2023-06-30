@@ -507,7 +507,7 @@ class RequestModalBottom {
                       {
                         Fluttertoast.showToast(
                             msg: 'Data berhasil dibuat!',
-                            backgroundColor: darkgreen,
+                            backgroundColor: Colors.white,
                             textColor: Colors.black)
                       }
                     else
@@ -529,9 +529,10 @@ class RequestModalBottom {
               _tecKeteranganSelesai.clear();
               _tecUrlPermintaan.clear();
               Fluttertoast.showToast(
-                  msg: "${_apiService.responseCode.messageApi}",
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white);
+                msg: "${_apiService.responseCode.messageApi}",
+                backgroundColor: Colors.white,
+                textColor: Colors.black,
+              );
               // Navigator.pushReplacement(
               //     context,
               //     MaterialPageRoute(

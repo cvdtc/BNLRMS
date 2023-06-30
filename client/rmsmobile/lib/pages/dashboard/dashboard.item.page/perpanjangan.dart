@@ -79,6 +79,7 @@ class _PerpanjanganListState extends State<PerpanjanganList> {
           );
         } else if (snapshot.connectionState == ConnectionState.done) {
           List<PerpanjanganModel>? dataPerpanjangan = snapshot.data;
+          print(dataPerpanjangan);
           if (dataPerpanjangan!.isNotEmpty) {
             return _listPerpanjangan(dataPerpanjangan);
           } else {
