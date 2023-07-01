@@ -9,20 +9,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/warna.dart';
 
-class DaftarMerekInternasional extends StatefulWidget {
-  const DaftarMerekInternasional({Key? key}) : super(key: key);
+class ListDaftarMerekInternasional extends StatefulWidget {
+  const ListDaftarMerekInternasional({Key? key}) : super(key: key);
 
   @override
-  State<DaftarMerekInternasional> createState() =>
+  State<ListDaftarMerekInternasional> createState() =>
       _DaftarMerekInternasionalState();
 }
 
-class _DaftarMerekInternasionalState extends State<DaftarMerekInternasional> {
+class _DaftarMerekInternasionalState
+    extends State<ListDaftarMerekInternasional> {
   late SharedPreferences sp;
   TextEditingController _textSearch = TextEditingController(text: "");
   var token = "";
-  List<MerekInternasionalModel> _dataList = <MerekInternasionalModel>[];
-  List<MerekInternasionalModel> _dataListDisplay = <MerekInternasionalModel>[];
+  List<DataMerekInternasionalModel> _dataList = <DataMerekInternasionalModel>[];
+  List<DataMerekInternasionalModel> _dataListDisplay =
+      <DataMerekInternasionalModel>[];
 
   DateTime? tanggal_awal;
   DateTime? tanggal_akhir;
@@ -73,7 +75,7 @@ class _DaftarMerekInternasionalState extends State<DaftarMerekInternasional> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Daftar Permintaan',
+          'Merek Internasional',
           style: GoogleFonts.lato(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
         ),
@@ -86,14 +88,14 @@ class _DaftarMerekInternasionalState extends State<DaftarMerekInternasional> {
           child: Container(
             child: ListView.builder(
               itemBuilder: (context, index) {
+                print('index?' + index.toString());
                 if (!_isLoading) {
                   return index == 0
                       ? _searchBar()
                       : StatefulBuilder(builder:
                           (BuildContext context, StateSetter setState) {
                           return MerekInternasionalTile(
-                            merekInternasional:
-                                this._dataListDisplay[index - 1],
+                            merekInternasional: this._dataList[index - 1],
                             token: token,
                           );
                         });
@@ -119,14 +121,14 @@ class _DaftarMerekInternasionalState extends State<DaftarMerekInternasional> {
         onChanged: (searchText) {
           searchText = searchText.toLowerCase();
           setState(() {
-            // _dataListDisplay = _dataList.where((u) {
-            // var fNama = u.data.toLowerCase();
-            // var fKeterangan = u.keterangan.toLowerCase();
-            // var fkategori = u.kategori.toLowerCase();
-            // return fNama.contains(searchText) ||
-            //     fKeterangan.contains(searchText) ||
-            //     fkategori.contains(searchText);
-            // }).toList();
+            _dataListDisplay = _dataList.where((u) {
+              var fNama = u.dESKRIPSI.toString().toLowerCase();
+              var fKeterangan = u.cUSTOMER.toString().toLowerCase();
+              var fkategori = u.kODE.toString().toLowerCase();
+              return fNama.contains(searchText) ||
+                  fKeterangan.contains(searchText) ||
+                  fkategori.contains(searchText);
+            }).toList();
           });
         },
         controller: _textSearch,
@@ -134,7 +136,7 @@ class _DaftarMerekInternasionalState extends State<DaftarMerekInternasional> {
           fillColor: thirdcolor,
           border: OutlineInputBorder(),
           prefixIcon: Icon(Icons.search),
-          hintText: 'Cari Permintaan',
+          hintText: 'Cari Merek',
         ),
       ),
     );

@@ -13,6 +13,8 @@ import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../merekinternasional/daftarmerekinternasional.dart';
+
 class Dahsboard extends StatefulWidget {
   const Dahsboard({Key? key}) : super(key: key);
 
@@ -276,7 +278,7 @@ class _DahsboardState extends State<Dahsboard> {
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext) =>
-                                      PerpanjanganPageSearch()));
+                                      ListDaftarMerekInternasional()));
                         },
                         child: Text(
                           '//Semua',
@@ -287,7 +289,7 @@ class _DahsboardState extends State<Dahsboard> {
                 SizedBox(
                   height: 10,
                 ),
-                DaftarMerekInternasional()
+                // DaftarMerekInternasional()
               ],
             ),
           ),

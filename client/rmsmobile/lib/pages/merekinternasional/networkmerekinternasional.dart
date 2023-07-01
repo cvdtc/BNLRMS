@@ -7,12 +7,12 @@ import 'package:rmsmobile/model/merekinternasional/timeline.merekinternasional.d
 import '../../../apiService/apiService.dart';
 
 final String _apiService = ApiService().baseUrl;
-List<MerekInternasionalModel> parseMerekInternasional(String responseBody) {
+List<DataMerekInternasionalModel> parseMerekInternasional(String responseBody) {
   var listSite = json.decode(responseBody)['data'] as List<dynamic>;
-  return listSite.map((e) => MerekInternasionalModel.fromJson(e)).toList();
+  return listSite.map((e) => DataMerekInternasionalModel.fromJson(e)).toList();
 }
 
-Future<List<MerekInternasionalModel>> fetchMerekInternasional(
+Future<List<DataMerekInternasionalModel>> fetchMerekInternasional(
     String token) async {
   var url = Uri.parse(_apiService + 'merekinternasional');
   var response = await http.get(url, headers: {
@@ -20,6 +20,7 @@ Future<List<MerekInternasionalModel>> fetchMerekInternasional(
     // ++ fyi : sending token with BEARER
     'Authorization': 'Bearer ' + token
   });
+  print(response.body);
   if (response.statusCode == 200) {
     return compute(parseMerekInternasional, response.body);
   } else {

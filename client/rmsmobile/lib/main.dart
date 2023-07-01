@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/pages/splashscreen/splashscreen.dart';
 import 'package:rmsmobile/utils/warna.dart';
-
 import 'utils/warna.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -32,6 +31,7 @@ void main() async {
     systemNavigationBarColor: Colors.transparent, // navigation bar color
     statusBarColor: backgroundcolor, // status bar color
   ));
+
   runApp(MyApp());
 }
 

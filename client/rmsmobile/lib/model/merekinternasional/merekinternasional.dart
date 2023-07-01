@@ -1,7 +1,7 @@
 class MerekInternasionalModel {
   String? message;
   Null? error;
-  List<Data>? data;
+  List<DataMerekInternasionalModel>? data;
 
   MerekInternasionalModel({this.message, this.error, this.data});
 
@@ -9,9 +9,9 @@ class MerekInternasionalModel {
     message = json['message'];
     error = json['error'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <DataMerekInternasionalModel>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new DataMerekInternasionalModel.fromJson(v));
       });
     }
   }
@@ -27,7 +27,7 @@ class MerekInternasionalModel {
   }
 }
 
-class Data {
+class DataMerekInternasionalModel {
   String? kODE;
   String? dESKRIPSI;
   String? kelas;
@@ -35,7 +35,7 @@ class Data {
   String? cUSNAMA;
   String? cUSTOMER;
 
-  Data(
+  DataMerekInternasionalModel(
       {this.kODE,
       this.dESKRIPSI,
       this.kelas,
@@ -43,7 +43,7 @@ class Data {
       this.cUSNAMA,
       this.cUSTOMER});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DataMerekInternasionalModel.fromJson(Map<String, dynamic> json) {
     kODE = json['KODE'];
     dESKRIPSI = json['DESKRIPSI'];
     kelas = json['kelas'];

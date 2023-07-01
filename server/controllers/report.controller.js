@@ -397,6 +397,15 @@ async function getMerekInternasional(req, res) {
                                                 data: rows,
                                             });
                                         } else {
+                                            const blobtofile = new File(
+                                                [rows.FILE],
+                                                rows.KODE,
+                                                {
+                                                    type: 'image/jpeg',
+                                                    lastModified: new Date(),
+                                                }
+                                            );
+                                            console.log(blobtofile);
                                             return res.status(200).send({
                                                 message:
                                                     'Done!, data has fetched!',
