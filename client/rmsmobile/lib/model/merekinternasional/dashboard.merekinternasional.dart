@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 class DashboardMerekInternasionalModel {
   String? message;
   Null? error;
-  List<Data>? data;
+  List<DataDashboardMerekInternasionalModel>? data;
 
   DashboardMerekInternasionalModel({this.message, this.error, this.data});
 
@@ -9,9 +11,9 @@ class DashboardMerekInternasionalModel {
     message = json['message'];
     error = json['error'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <DataDashboardMerekInternasionalModel>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new DataDashboardMerekInternasionalModel.fromJson(v));
       });
     }
   }
@@ -27,7 +29,7 @@ class DashboardMerekInternasionalModel {
   }
 }
 
-class Data {
+class DataDashboardMerekInternasionalModel {
   String? kODE;
   String? dESKRIPSI;
   String? kelas;
@@ -35,7 +37,7 @@ class Data {
   String? cUSNAMA;
   String? cUSTOMER;
 
-  Data(
+  DataDashboardMerekInternasionalModel(
       {this.kODE,
       this.dESKRIPSI,
       this.kelas,
@@ -43,7 +45,7 @@ class Data {
       this.cUSNAMA,
       this.cUSTOMER});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DataDashboardMerekInternasionalModel.fromJson(Map<String, dynamic> json) {
     kODE = json['KODE'];
     dESKRIPSI = json['DESKRIPSI'];
     kelas = json['kelas'];
@@ -62,4 +64,11 @@ class Data {
     data['CUSTOMER'] = this.cUSTOMER;
     return data;
   }
+}
+
+List<DataDashboardMerekInternasionalModel>
+    DashboardMerekInternasionalModelFromJson(String dataJson) {
+  final data = json.decode(dataJson);
+  return List<DataDashboardMerekInternasionalModel>.from(data["data"]
+      .map((item) => DataDashboardMerekInternasionalModel.fromJson(item)));
 }

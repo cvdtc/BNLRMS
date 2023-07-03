@@ -1,7 +1,7 @@
 class TimelineMerekInternasionalModel {
   String? message;
   Null? error;
-  List<Data>? data;
+  List<DataTimelineMerekInternasionalModel>? data;
 
   TimelineMerekInternasionalModel({this.message, this.error, this.data});
 
@@ -9,9 +9,9 @@ class TimelineMerekInternasionalModel {
     message = json['message'];
     error = json['error'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <DataTimelineMerekInternasionalModel>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new DataTimelineMerekInternasionalModel.fromJson(v));
       });
     }
   }
@@ -27,7 +27,7 @@ class TimelineMerekInternasionalModel {
   }
 }
 
-class Data {
+class DataTimelineMerekInternasionalModel {
   String? kODE;
   String? dESKRIPSI;
   String? kelas;
@@ -38,7 +38,7 @@ class Data {
   String? nodoc;
   String? ketd;
 
-  Data(
+  DataTimelineMerekInternasionalModel(
       {this.kODE,
       this.dESKRIPSI,
       this.kelas,
@@ -49,7 +49,7 @@ class Data {
       this.nodoc,
       this.ketd});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DataTimelineMerekInternasionalModel.fromJson(Map<String, dynamic> json) {
     kODE = json['KODE'];
     dESKRIPSI = json['DESKRIPSI'];
     kelas = json['kelas'];

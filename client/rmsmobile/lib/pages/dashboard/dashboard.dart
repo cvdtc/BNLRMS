@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
+import 'package:rmsmobile/pages/dashboard/dashboard.item.page/merekinternasional.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/permintaan.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/perpanjangan.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/progres.dart';
@@ -266,7 +267,7 @@ class _DahsboardState extends State<Dahsboard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Merek Internasional",
+                      "Merek Luar Negri",
                       style: TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
@@ -289,7 +290,7 @@ class _DahsboardState extends State<Dahsboard> {
                 SizedBox(
                   height: 10,
                 ),
-                // DaftarMerekInternasional()
+                DashboardMerekInternasional()
               ],
             ),
           ),

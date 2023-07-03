@@ -55,6 +55,7 @@ class _DaftarMerekInternasionalState
 
   Future refreshPage() async {
     _dataListDisplay.clear();
+    _dataList.clear();
     setState(() {
       cekToken();
     });
@@ -75,7 +76,7 @@ class _DaftarMerekInternasionalState
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Merek Internasional',
+          'Merek Luar Negri',
           style: GoogleFonts.lato(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
         ),
@@ -122,12 +123,13 @@ class _DaftarMerekInternasionalState
           searchText = searchText.toLowerCase();
           setState(() {
             _dataListDisplay = _dataList.where((u) {
-              var fNama = u.dESKRIPSI.toString().toLowerCase();
-              var fKeterangan = u.cUSTOMER.toString().toLowerCase();
-              var fkategori = u.kODE.toString().toLowerCase();
-              return fNama.contains(searchText) ||
-                  fKeterangan.contains(searchText) ||
-                  fkategori.contains(searchText);
+              var fMerek = u.dESKRIPSI.toString().toLowerCase();
+              // var fKeterangan = u.cUSTOMER.toString().toLowerCase();
+              // var fkategori = u.kODE.toString().toLowerCase();
+              return fMerek.contains(searchText);
+              // ||
+              //     fKeterangan.contains(searchText) ||
+              //     fkategori.contains(searchText);
             }).toList();
           });
         },

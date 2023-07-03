@@ -298,4 +298,23 @@ class ApiService {
       return null;
     }
   }
+
+  Future<List<DataDashboardMerekInternasionalModel>?>
+      getListDashboardMerekInternasional(String token) async {
+    var url = Uri.parse(baseUrl + 'dashboardmerekinternasional');
+    var response = await client.get(url, headers: {
+      'content-type': 'application/json',
+      // ++ fyi : sending token with BEARER
+      'Authorization': 'Bearer ' + token
+    });
+    // ++ fyi : for getting response message from api
+    Map responsemessage = jsonDecode(response.body);
+    responseCode = ResponseCode.fromJson(responsemessage);
+
+    if (response.statusCode == 200) {
+      return DashboardMerekInternasionalModelFromJson(response.body);
+    } else {
+      return null;
+    }
+  }
 }

@@ -28,16 +28,16 @@ Future<List<DataMerekInternasionalModel>> fetchMerekInternasional(
   }
 }
 
-List<TimelineMerekInternasionalModel> parseTimelineMerekInternasional(
+List<DataTimelineMerekInternasionalModel> parseTimelineMerekInternasional(
     String responseBody) {
   var listSite = json.decode(responseBody)['data'] as List<dynamic>;
   return listSite
-      .map((e) => TimelineMerekInternasionalModel.fromJson(e))
+      .map((e) => DataTimelineMerekInternasionalModel.fromJson(e))
       .toList();
 }
 
-Future<List<TimelineMerekInternasionalModel>> fetchTimelineMerekInternasional(
-    String kode, String token) async {
+Future<List<DataTimelineMerekInternasionalModel>>
+    fetchTimelineMerekInternasional(String kode, String token) async {
   var url = Uri.parse(_apiService + 'timelinemerekinternasional/' + kode);
   var response = await http.get(url, headers: {
     'content-type': 'application/json',

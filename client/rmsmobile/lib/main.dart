@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:rmsmobile/pages/splashscreen/splashscreen.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'utils/warna.dart';
@@ -31,7 +32,7 @@ void main() async {
     systemNavigationBarColor: Colors.transparent, // navigation bar color
     statusBarColor: backgroundcolor, // status bar color
   ));
-
+  initializeDateFormatting();
   runApp(MyApp());
 }
 

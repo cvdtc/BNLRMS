@@ -1,8 +1,10 @@
 class AppVersion {
-  static double versionNumber = 2.4;
+  static double versionNumber = 2.6;
 }
 
 /**
+ * Update v2.6 :
+ * - Update Merek Internasinal di halaman dashboard
  * Update v2.4 :
  * - Null Safety
  * - Update Dashboard layout

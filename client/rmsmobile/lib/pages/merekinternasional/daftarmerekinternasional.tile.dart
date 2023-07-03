@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/model/merekinternasional/merekinternasional.dart';
+import 'package:rmsmobile/pages/merekinternasional/detailmerekinternasional.dart';
 
 class MerekInternasionalTile extends StatelessWidget {
   late final DataMerekInternasionalModel merekInternasional;
@@ -12,7 +13,15 @@ class MerekInternasionalTile extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DetailListMerekInternasional(
+                        merekInternasional: merekInternasional,
+                        token: token,
+                      )));
+        },
         child: Card(
           child: Padding(
             padding: EdgeInsets.all(12.0),
