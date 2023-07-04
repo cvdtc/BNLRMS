@@ -25,22 +25,26 @@ class _DetailListMerekInternasionalState
         appBar: AppBar(
           backgroundColor: backgroundcolor,
           foregroundColor: darkgreen,
-          bottom: TabBar(indicatorColor: darkgreen, tabs: [
-            Tab(
-              icon: Icon(
-                Icons.auto_fix_normal_rounded,
-                color: darkgreen,
-              ),
-              text: 'Details',
-            ),
-            Tab(
-              icon: Icon(
-                Icons.history_edu_rounded,
-                color: darkgreen,
-              ),
-              text: 'History',
-            )
-          ]),
+          bottom: TabBar(
+              indicatorColor: darkgreen,
+              labelColor: darkgreen,
+              unselectedLabelColor: Colors.white,
+              tabs: [
+                Tab(
+                  icon: Icon(
+                    Icons.auto_fix_normal_rounded,
+                    color: darkgreen,
+                  ),
+                  text: 'Details',
+                ),
+                Tab(
+                  icon: Icon(
+                    Icons.history_edu_rounded,
+                    color: darkgreen,
+                  ),
+                  text: 'History',
+                )
+              ]),
           title: Text(
             'Detail',
             style: TextStyle(color: darkgreen),
