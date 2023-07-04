@@ -96,7 +96,8 @@ class _DaftarMerekInternasionalState
                       : StatefulBuilder(builder:
                           (BuildContext context, StateSetter setState) {
                           return MerekInternasionalTile(
-                            merekInternasional: this._dataList[index - 1],
+                            merekInternasional:
+                                this._dataListDisplay[index - 1],
                             token: token,
                           );
                         });
@@ -124,12 +125,11 @@ class _DaftarMerekInternasionalState
           setState(() {
             _dataListDisplay = _dataList.where((u) {
               var fMerek = u.dESKRIPSI.toString().toLowerCase();
-              // var fKeterangan = u.cUSTOMER.toString().toLowerCase();
-              // var fkategori = u.kODE.toString().toLowerCase();
-              return fMerek.contains(searchText);
-              // ||
-              //     fKeterangan.contains(searchText) ||
-              //     fkategori.contains(searchText);
+              var fCustomer = u.cUSTOMER.toString().toLowerCase();
+              var fKetKelas = u.kETKELAS.toString().toLowerCase();
+              return fMerek.contains(searchText) ||
+                  fCustomer.contains(searchText) ||
+                  fKetKelas.contains(searchText);
             }).toList();
           });
         },

@@ -6,7 +6,6 @@ import '../../../apiService/apiService.dart';
 import '../../../utils/ReusableClasses.dart';
 import '../../../utils/warna.dart';
 import '../../login/login.dart';
-import '../../merekinternasional/detailmerekinternasional.dart';
 
 class DashboardMerekInternasional extends StatefulWidget {
   const DashboardMerekInternasional({Key? key}) : super(key: key);

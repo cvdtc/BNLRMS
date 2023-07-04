@@ -5,8 +5,6 @@ import 'package:rmsmobile/model/dashboard/dashboard.model.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/merekinternasional.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/permintaan.dart';
 import 'package:rmsmobile/pages/dashboard/dashboard.item.page/perpanjangan.dart';
-import 'package:rmsmobile/pages/dashboard/dashboard.item.page/progres.dart';
-import 'package:rmsmobile/pages/dashboard/merekinternasional/daftarmerek.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/perpanjangan/perpanjangan.page.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
@@ -281,10 +279,13 @@ class _DahsboardState extends State<Dahsboard> {
                                   builder: (BuildContext) =>
                                       ListDaftarMerekInternasional()));
                         },
-                        child: Text(
-                          '//Semua',
-                          style: TextStyle(color: darkgreen),
-                        ))
+                        child: Row(children: [
+                          Text(
+                            'Semua',
+                            style: TextStyle(color: darkgreen),
+                          ),
+                          Icon(Icons.arrow_right_alt_rounded)
+                        ]))
                   ],
                 ),
                 SizedBox(

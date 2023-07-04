@@ -22,9 +22,7 @@ class TimelineMerekInternasionalTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(timelinemerekInternasional.statusd.toString()),
-                          Text(DateTime.parse(
-                                  timelinemerekInternasional.tgldoc.toString())
-                              .toString()),
+                          Text(timelinemerekInternasional.tgldoc.toString()),
                         ],
                       ),
                       Divider(),
