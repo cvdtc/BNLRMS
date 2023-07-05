@@ -1,11 +1,12 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/pengguna/pengguna.model.gantipassword.dart';
+import 'package:rmsmobile/pages/akun/akun.bottommodal.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/setting/setting_notif.dart';
+import 'package:rmsmobile/utils/versioncontrol.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,11 +17,11 @@ class AkunPage extends StatefulWidget {
 
 class _AkunPageState extends State<AkunPage> {
   late SharedPreferences sp;
-  bool 
-  // _obsecureText = true,
+  bool
+      // _obsecureText = true,
       _fieldPassword = false;
-      // _fieldPasswordretype = false
-      // ;
+  // _fieldPasswordretype = false
+  // ;
   String? token = "", username = "", jabatan = "", nama = "";
   TextEditingController _textFieldControllerGantipass = TextEditingController();
   TextEditingController _textFieldControllerGantipassretype =
@@ -29,23 +30,21 @@ class _AkunPageState extends State<AkunPage> {
   // * ceking token and getting dashboard value from Shared Preferences
   cekToken() async {
     sp = await SharedPreferences.getInstance();
-    if (token == null) {
-      Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    }
     setState(() {
       token = sp.getString("access_token");
       username = sp.getString("username");
       nama = sp.getString("nama");
       jabatan = sp.getString("jabatan");
     });
+    if (token == null) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Loginscreen(
+                    tipe: 'sesiberakhir',
+                  )));
+    }
   }
-
-  // void _toggle() {
-  //   setState(() {
-  //     _obsecureText = !_obsecureText;
-  //   });
-  // }
 
   @override
   initState() {
@@ -70,21 +69,23 @@ class _AkunPageState extends State<AkunPage> {
               Container(
                 padding: EdgeInsets.only(left: 20),
                 child: CircleAvatar(
-                  backgroundColor: primarycolor,
-                  child: Image.asset('assets/images/bnllogo.png'),
+                  backgroundColor: Colors.white,
+                  child: Image.asset('assets/images/icon_jarvis.jpg'),
                 ),
               ),
               SizedBox(
                 width: 15,
               ),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(username.toString().toUpperCase()),
+                Text(nama.toString().toUpperCase(),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
                 Text(jabatan.toString())
               ]),
             ],
           ),
           _option(context),
-          Text('v.1.0.4 debuging')
+          Text('Version: v' + AppVersion.versionNumber.toString())
         ],
       ),
     ));
@@ -100,10 +101,11 @@ class _AkunPageState extends State<AkunPage> {
               children: [
                 Text('Ganti Password'),
                 IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.close_rounded))
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.password_outlined),
+                )
               ],
             ),
             content: Container(
@@ -158,7 +160,6 @@ class _AkunPageState extends State<AkunPage> {
                           jabatan: jabatan,
                           notification_token: "",
                           aktif: 1);
-                      print('data pass yang ke kirim $gantipass');
                       if (_textFieldControllerGantipass.text.toString() == "" ||
                           _textFieldControllerGantipassretype.text.toString() ==
                               "") {
@@ -175,24 +176,17 @@ class _AkunPageState extends State<AkunPage> {
                             backgroundColor: Colors.red,
                             textColor: Colors.white);
                       } else {
-                        // Fluttertoast.showToast(
-                        //     msg: "Tes masuk sini !",
-                        //     backgroundColor: Colors.black,
-                        //     textColor: Colors.white);
                         ApiService()
                             .ubahPassword(token.toString(), gantipass)
                             .then((isSuccess) {
-                          print('masuk1 $isSuccess');
                           if (isSuccess) {
-                            print('masuk2');
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
                             Fluttertoast.showToast(
                                 msg: "Berhasil Ubah Password",
                                 backgroundColor: Colors.black,
                                 textColor: Colors.white);
                           } else {
-                            print('masuk3');
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
                             Fluttertoast.showToast(
                                 msg: "Maaf, password gagal diubah",
                                 backgroundColor: Colors.red,
@@ -229,13 +223,10 @@ class _AkunPageState extends State<AkunPage> {
               },
               title: (Text(
                 'Ganti Password',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
+                style: TextStyle(fontSize: 18, color: Colors.black),
               )),
               leading: Icon(
-                Icons.exit_to_app_rounded,
+                Icons.password_rounded,
                 color: Colors.black,
                 size: 22,
               ),
@@ -256,13 +247,10 @@ class _AkunPageState extends State<AkunPage> {
               },
               title: (Text(
                 'Setting Notifikasi',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
+                style: TextStyle(fontSize: 18, color: Colors.black),
               )),
               leading: Icon(
-                Icons.exit_to_app_rounded,
+                Icons.notifications_active_outlined,
                 color: Colors.black,
                 size: 22,
               ),
@@ -337,7 +325,7 @@ class _AkunPageState extends State<AkunPage> {
                     children: [
                       ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0.0,
@@ -358,8 +346,8 @@ class _AkunPageState extends State<AkunPage> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            exit();
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
+                            AkunBottomModal().exit(context);
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0.0,
@@ -372,7 +360,10 @@ class _AkunPageState extends State<AkunPage> {
                               alignment: Alignment.center,
                               child: Text(
                                 "Ya",
-                                style: TextStyle(color: primarycolor),
+                                style: TextStyle(
+                                    color: primarycolor,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           )),
@@ -383,19 +374,5 @@ class _AkunPageState extends State<AkunPage> {
             ),
           );
         });
-  }
-
-  void exit() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.remove(token.toString());
-    preferences.clear();
-    late FirebaseMessaging messaging;
-    // * adding firebase configuration setup
-    messaging = FirebaseMessaging.instance;
-    messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-    messaging.unsubscribeFromTopic('RMSPROGRESS');
-    // print('preference $preferences');
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Loginscreen()));
   }
 }

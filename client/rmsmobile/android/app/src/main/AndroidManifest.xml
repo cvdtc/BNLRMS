@@ -2,9 +2,10 @@
     package="com.example.rmsmobile">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="rmsmobile"
+        android:label="JARVIS"
         android:icon="@mipmap/ic_launcher">
         <activity
+            android:exported="true"
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -6,20 +5,22 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:rmsmobile/pages/splashscreen/splashscreen.dart';
 import 'package:rmsmobile/utils/warna.dart';
+import 'utils/warna.dart';
 
 class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
+  // @override
+  // HttpClient createHttpClient(SecurityContext context) {
+  //   return super.createHttpClient(context)
+  //     ..badCertificateCallback =
+  //         (X509Certificate cert, String host, int port) => true;
+  // }
 }
 
 Future<void> _messageHandler(RemoteMessage message) async {
-  print('background message ${message.notification.body}');
+  print('background message ${message.notification?.body}');
 }
 
 void main() async {
@@ -29,8 +30,9 @@ void main() async {
   HttpOverrides.global = new MyHttpOverrides();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent, // navigation bar color
-    statusBarColor: thirdcolor, // status bar color
+    statusBarColor: backgroundcolor, // status bar color
   ));
+  initializeDateFormatting();
   runApp(MyApp());
 }
 
@@ -40,10 +42,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
-      title: 'RMS BNL',
+      title: 'JARVIS',
       theme: ThemeData.light().copyWith(
           scaffoldBackgroundColor: backgroundcolor,
-          textTheme: GoogleFonts.openSansTextTheme(Theme.of(context).textTheme)
+          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
               .apply(bodyColor: textcolor),
           canvasColor: Colors.transparent),
       debugShowCheckedModeBanner: false,

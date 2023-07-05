@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
+import 'package:rmsmobile/pages/request/request.network.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../request/request.bottom.dart';
+
 class PermintaanList extends StatefulWidget {
-  const PermintaanList({Key? key}) : super(key: key);
+  // * buat filter listview jika tipe list 1 maka data yang keluar sudah selesai, jika 0 data yang keluar yang belum selesai
+  int tipelist;
+  PermintaanList({required this.tipelist});
 
   @override
   _PermintaanListState createState() => _PermintaanListState();
@@ -15,23 +20,22 @@ class _PermintaanListState extends State<PermintaanList> {
   late SharedPreferences sp;
   ApiService _apiService = ApiService();
   bool isSuccess = false;
-  String? token = "", username = "", jabatan = "", nama = "";
+  String? token = "", idpengguna = "";
+  int tipelist = 0;
 
   // * ceking token and getting dashboard value from api
   cekToken() async {
     sp = await SharedPreferences.getInstance();
     setState(() {
       token = sp.getString("access_token");
-      // username = sp.getString("username");
-      nama = sp.getString('nama');
-      jabatan = sp.getString("jabatan");
+      idpengguna = sp.getString("idpengguna");
     });
-    // });
   }
 
   @override
   initState() {
     super.initState();
+    tipelist = widget.tipelist;
     cekToken();
   }
 
@@ -52,12 +56,12 @@ class _PermintaanListState extends State<PermintaanList> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircularProgressIndicator(),
+                // CircularProgressIndicator(),
                 SizedBox(
                   height: 15,
                 ),
                 Text(
-                    'maaf, terjadi masalah ${snapshot.error}. buka halaman ini kembali.')
+                    'SORRY, terjadi masalah ${snapshot.error}. buka halaman ini kembali.')
               ],
             ),
           );
@@ -66,25 +70,41 @@ class _PermintaanListState extends State<PermintaanList> {
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.connectionState == ConnectionState.done) {
-          List<RequestModel>? dataRequest = snapshot.data;
-          if (dataRequest!.isNotEmpty) {
-            return _listRequest(dataRequest);
+          // List<RequestModel>? dataRequest = snapshot.data!
+          //     .where((element) => element.flag_selesai == tipelist)
+          //     .toList();
+          List<RequestModel>? dataRequest = snapshot.data!.toList();
+          if (dataRequest.isNotEmpty) {
+            // (tipelist == 2 || tipelist == 1)
+            //     ? dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date))
+            //     : dataRequest;
+            // if (tipelist == 2) {
+            //   dataRequest.sort((b, a) => a.due_date.compareTo(b.due_date));
+            // } else if (tipelist == 1) {
+            //   dataRequest
+            //       .sort((b, a) => a.date_selesai.compareTo(b.date_selesai));
+            // } else {
+            //   dataRequest;
+            // }
+
+            return _listRequestAll(dataRequest);
+          } else {
+            return Container(
+              child: Text('Data Permintaan masih kosong'),
+            );
           }
         } else {
-          return Container(child: Text('Data permintaan masih kosong'));
-        }
-        {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircularProgressIndicator(),
+                // CircularProgressIndicator(),
                 SizedBox(
                   height: 15,
                 ),
                 Text(
-                    'maaf, terjadi masalah ${snapshot.error}. buka halaman ini kembali.')
+                    'SORRY 2, terjadi masalah ${snapshot.error}. buka halaman ini kembali.')
               ],
             ),
           );
@@ -94,125 +114,211 @@ class _PermintaanListState extends State<PermintaanList> {
   }
 
   // ++ DESIGN LIST COMPONENT
-  Widget _listRequest(List<RequestModel>? dataIndex) {
+  Widget _listRequest(List<RequestModel>? dataIndex1, int tipelist) {
+    List<RequestModel>? dataIndex;
+    if (tipelist == 2) {
+      print("masuk 2");
+      dataIndex = dataIndex1!
+          .where((element) => element.flag_selesai == tipelist)
+          .toList();
+      dataIndex.sort((b, a) => a.due_date.compareTo(b.due_date));
+    } else if (tipelist == 1) {
+      dataIndex = dataIndex1!
+          .where((element) => element.flag_selesai == tipelist)
+          .toList();
+      dataIndex.sort((b, a) => a.date_selesai.compareTo(b.date_selesai));
+    } else {
+      dataIndex = dataIndex1;
+    }
     return Container(
-      height: MediaQuery.of(context).size.height /4,
-      margin: EdgeInsets.only(left: 16, right: 16),
+      height: MediaQuery.of(context).size.height / 5,
+      // margin: EdgeInsets.only(left: 16, right: 16),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: dataIndex!.length,
           itemBuilder: (context, index) {
-            RequestModel? dataRequest = dataIndex[index];
-            print('flagselesainya ${dataRequest.flag_selesai}');
-            return Container(
-              padding: const EdgeInsets.all(8.0),
-              margin: EdgeInsets.all(8),
-              height: 70,
-              width: MediaQuery.of(context).size.width * 0.6,
-              decoration: BoxDecoration(
-                color: mFillColor,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: mBorderColor, width: 1),
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              ClipOval(
-                                child: dataRequest.flag_selesai == 1 ? Container(
-                                    color: Colors.green,
-                                    height: 30.0,
-                                    width: 30.0,
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                    )) : Container(
-                                    color: Colors.orange,
-                                    height: 30.0,
-                                    width: 30.0,
-                                    child: Icon(
-                                      Icons.priority_high_rounded,
-                                      color: Colors.white,
-                                    )),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text(dataRequest.nama_request.toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black45)),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10,),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 10,
-                            child: Text(dataRequest.keterangan.toString().toUpperCase(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black))),
-                          SizedBox(height: 10,),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Text(dataRequest.due_date.toString(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black45)))
-                        ],
-                      ),
+            RequestModel? dataRequest = dataIndex![index];
+            return InkWell(
+              onTap: () {
+                RequestModalBottom().modalActionItem(
+                    context,
+                    token,
+                    dataRequest.keterangan,
+                    dataRequest.due_date.toString(),
+                    dataRequest.kategori,
+                    dataRequest.idpermintaan.toString(),
+                    dataRequest.keterangan_selesai.toString(),
+                    dataRequest.flag_selesai,
+                    dataRequest.nama_request,
+                    dataRequest.url_permintaan,
+                    0,
+                    idpengguna!,
+                    dataRequest.idpengguna.toString());
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => TimelinePage(
+                //               idpermintaan: dataRequest.idpermintaan.toString(),
+                //             )));
+              },
+              child: Card(
+                elevation: 5,
+                shadowColor: darkgreen,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * .8,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                ClipOval(
+                                  child: dataRequest.flag_selesai == 1
+                                      ? Container(
+                                          color: Colors.green,
+                                          height: 30.0,
+                                          width: 30.0,
+                                          child: Icon(
+                                            Icons.check,
+                                            color: Colors.white,
+                                          ))
+                                      : (dataRequest.flag_selesai == 0
+                                          ? Container(
+                                              color: Colors.orange,
+                                              height: 30.0,
+                                              width: 30.0,
+                                              child: Icon(
+                                                Icons.priority_high_rounded,
+                                                color: Colors.white,
+                                              ))
+                                          : Container(
+                                              color: Colors.black,
+                                              height: 30.0,
+                                              width: 30.0,
+                                              child: Icon(
+                                                Icons.close_rounded,
+                                                color: Colors.white,
+                                              ))),
+                                ),
+                                SizedBox(
+                                  width: 4,
+                                ),
+                                Text(dataRequest.kategori.toString(),
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: darkgreen)),
+                              ],
+                            ),
+                            Text("TR: " + dataRequest.created.toString(),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: darkgreen)),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Expanded(
+                          child: Text(dataRequest.keterangan.toString(),
+                              overflow: TextOverflow.fade,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("JT: " + dataRequest.due_date.toString(),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black45)),
+                            Text(dataRequest.nama_request.toString(),
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black45))
+                          ],
+                        )
+                      ],
                     ),
-                  )
-                ],
+                  ),
+                ),
               ),
             );
           }),
     );
-    // return Container(
-    //   // width: MediaQuery.of(context).size.height /4,
-    //   height: MediaQuery.of(context).size.height / 4,
-    //   margin: EdgeInsets.only(left: 10, right: 10),
-    //   child: ListView.builder(
-    //       scrollDirection: Axis.horizontal,
-    //       itemCount: dataIndex!.length,
-    //       itemBuilder: (context, index) {
-    //         RequestModel? dataRequest = dataIndex[index];
-    //         return Padding(
-    //             padding: const EdgeInsets.all(5.0),
-    //             child: Container(
-    //               height: MediaQuery.of(context).size.height / 5,
-    //               width: MediaQuery.of(context).size.width,
-    //               color: Colors.white,
-    //               child: Padding(
-    //                 padding: EdgeInsets.only(
-    //                     left: 20, right: 20, top: 10, bottom: 15),
-    //                 child: Column(
-    //                   mainAxisAlignment: MainAxisAlignment.start,
-    //                   crossAxisAlignment: CrossAxisAlignment.start,
-    //                   children: [
-    //                     Row(
-    //                       children: [
-    //                         Text('Kategori : ',
-    //                             style: TextStyle(fontSize: 18.0)),
-    //                         Text(dataRequest.kategori,
-    //                             style: TextStyle(fontSize: 18.0))
-    //                       ],
-    //                     ),
-    //                     SizedBox(
-    //                       height: 5,
-    //                     ),
-    //                     Row(
-    //                       children: [
-    //                         Text('Nama : ', style: TextStyle(fontSize: 18.0)),
-    //                         Text(dataRequest.nama_request,
-    //                             style: TextStyle(fontSize: 18.0))
-    //                       ],
-    //                     ),
-    //                     SizedBox(
-    //                       height: 5,
-    //                     ),
-    //                     Text('Keterangan : ' + dataRequest.keterangan,
-    //                         style: TextStyle(fontSize: 18.0)),
-    //                   ],
-    //                 ),
-    //               ),
-    //             ));
-    //       }),
-    // );
+  }
+
+  Widget _listRequestAll(List<RequestModel>? dataRequest) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Card(
+            color: Colors.black,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                'Tidak Selesai',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+          _listRequest(dataRequest, 2), //tipelist 2
+          SizedBox(
+            height: 12.0,
+          ),
+          Card(
+            color: Colors.orange,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                'Belum Selesai',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+          _listRequest(dataRequest, 0), //tipelist 0
+          SizedBox(
+            height: 12.0,
+          ),
+          Card(
+            color: Colors.green,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                'Sudah Selesai',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+          _listRequest(dataRequest, 1), //tipelist 2
+        ],
+      ),
+    );
   }
 }

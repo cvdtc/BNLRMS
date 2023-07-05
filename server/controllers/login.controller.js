@@ -36,19 +36,24 @@ const pool = mysql.createPool({
  *  post:
  *      summary: api untuk akses login kedalam aplikasi BNLRMS
  *      parameters:
- *          - in: body
- *            name: Parameter
+ *          - name: username
+ *            in: body
  *            schema:
- *              properties:
- *                  username:
- *                      type: string
- *                      description: parameter `username` dikirim di body, sesuai dengan username pengguna yang sudah terdaftar di database.
- *                  password:
- *                      type: string
- *                      description: parameter `password` dikirim di body, sesuai dengan password username.
- *                  tipe:
- *                      type: string
- *                      description: parameter `tipe` dikirim di body, parameter ini menyesuaikan platform yang dipakai, misal `mobile` atau `web`.
+ *              type: string
+ *              description: >
+ *                  parameter `username` dikirim di body, sesuai dengan username pengguna yang sudah terdaftar di database.
+ *          - name: password
+ *            in: body
+ *            schema:
+ *              type: string
+ *              description: >
+ *                  parameter `password` dikirim di body, sesuai dengan password username.
+ *          - name: tipe
+ *            in: body
+ *            schema:
+ *              type: string
+ *              description: >
+ *                  parameter `tipe` dikirim di body, parameter ini menyesuaikan platform yang dipakai, misal `mobile` atau `web`.
  *      tags: [LOGIN]
  *      responses:
  *          200:
@@ -71,18 +76,20 @@ async function Login(req, res) {
     var username = req.body.username
     var password = req.body.password
     var tipe = req.body.tipe
-    console.log('Ada yang mencoba masuk')
-    if (Object.keys(req.body).length != 3) {
-        res.status(405).send({
-            message: "Sorry,  parameters not match!",
-            error: jwtresult,
-            data: null
-        })
-    } else {
+    // console.log('Ada yang mencoba masuk')
+    // if (Object.keys(req.body).length != 3) {
+    //     return res.status(405).send({
+    //         message: "Sorry,  parameters not match!",
+    //         error: jwtresult,
+    //         data: null
+    //     })
+    // } else {
+        console.log("Ada yang mencoba masuk...")
         try {
             pool.getConnection(function (error, database) {
+                console.log("🚀 ~ file: login.controller.js:90 ~ error, database", error, database)
                 if (error) {
-                    res.status(501).send({
+                    return res.status(501).send({
                         message: "Sorry, your connection has refused",
                         error: error,
                         data: null
@@ -91,22 +98,23 @@ async function Login(req, res) {
                     var sqlquery = "SELECT * FROM pengguna WHERE username = ?"
                     database.query(sqlquery, [username], function (error, rows) {
                         database.release()
+                        console.log(error, rows);
                         if (error) {
-                            res.status(407).send({
+                            return res.status(407).send({
                                 message: "Sorry, sql query have a problem",
                                 error: error,
                                 data: null
                             })
                         } else {
                             if (!rows.length) {
-                                res.status(400).send({
-                                    message: "Username atau Password anda tidak ditemukan!",
+                                return res.status(400).send({
+                                    message: "Username anda tidak ditemukan!",
                                     error: null,
                                     data: null
                                 })
                             } else {
                                 if (rows[0].aktif == 0) {
-                                    res.status(200).send({
+                                    return res.status(200).send({
                                         message: "Akun anda tidak aktif",
                                         error: null,
                                         data: null
@@ -121,12 +129,14 @@ async function Login(req, res) {
                                             if (eErr) {
                                                 console.log(eErr)
                                                 return res.status(401).send({
-                                                    message: 'Username atau Password anda Salah!'
+                                                    message: 'Password anda Salah!'
                                                 })
                                             } else if (eResult) {
                                                 console.log("Login Berhasil")
                                                 const user = {
                                                     idpengguna: rows[0].idpengguna,
+                                                    username: rows[0].username,
+                                                    jabatan: rows[0].jabatan,
                                                     tipe: tipe
                                                 }
                                                 const access_token = jwt.sign(user, process.env.ACCESS_SECRET, {
@@ -146,7 +156,9 @@ async function Login(req, res) {
                                                 })
                                             } else {
                                                 return res.status(401).send({
-                                                    message: 'Username atau Password salah'
+                                                    message: 'Username atau Password salah',
+                                                    error: null,
+                                                    data: null
                                                 })
                                             }
                                         })
@@ -162,7 +174,7 @@ async function Login(req, res) {
                 error: error
             })
         }
-    }
+    // }
 }
 
 /**
@@ -200,7 +212,7 @@ async function GenerateNewToken(req, res) {
     const refreshToken = req.body.refresh_token
     console.log("refresh token di fungsi newtoken : " + refreshTokens)
     if (refreshToken == null) {
-        res.status(405).send({
+        return res.status(405).send({
             message: "Refresh token tidak kosong!",
             error: null,
             data: null
@@ -211,18 +223,19 @@ async function GenerateNewToken(req, res) {
                 if (jwtresult) {
                     const user = {
                         idpengguna: decoded.idpengguna,
+                        jabatan: decoded.jabatan,
                         tipe: decode.tipe
                     }
                     const accessToken = jwt.sign(user, process.env.ACCESS_SECRET, {
                         expiresIn: process.env.ACCESS_EXPIRED
                     })
-                    res.status(200).send({
+                    return res.status(200).send({
                         message: 'Refresh token berhasil digenerate!',
                         error: null,
                         data: accessToken
                     })
                 } else {
-                    res.status(401).send({
+                    return res.status(401).send({
                         message: 'refresh token tidak valid!',
                         error: error,
                         data: null
@@ -230,7 +243,7 @@ async function GenerateNewToken(req, res) {
                 }
             })
         } catch (error) {
-            res.status(403).send({
+            return res.status(403).send({
                 message: "Forbidden",
                 error: error,
                 data: null

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/pages/login/login.dart';
@@ -18,60 +19,55 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   late SharedPreferences sp;
   late FirebaseMessaging messaging;
   ApiService _apiService = new ApiService();
-  String? token = "", username = "", jabatan = "";
-  bool subscribepermintaan = true;
-  bool subscribeprogress = true;
+  String? token = "";
 
   cekToken() async {
     sp = await SharedPreferences.getInstance();
-    // token = sp.getString("access_token");
-    // username = sp.getString("username");
-    // jabatan = sp.getString("jabatan");
     setState(() {
       token = sp.getString("access_token");
-      username = sp.getString("username");
-      jabatan = sp.getString("jabatan");
     });
-    print('tokenyya $token ${_apiService.responseCode.messageApi}');
     if (token == null) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => Loginscreen(
+                    tipe: 'splashscreen',
+                  )));
     } else {
-      print(
-          'responsecode ${_apiService.responseCode.messageApi} ++ ${_apiService.responseCode} ++ ');
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BottomNav()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNav(
+                    numberOfpage: 0,
+                  )));
     }
   }
 
   @override
   void initState() {
     super.initState();
-    // * adding firebase configuration setup
+    // // * adding firebase configuration setup
     messaging = FirebaseMessaging.instance;
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      print("message recieved");
-      print(event.notification!.body);
+      print(event.toString());
+      Fluttertoast.showToast(
+          msg: " Notifikasi : ${event}",
+          backgroundColor: Colors.red,
+          textColor: Colors.white);
     });
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Message clicked!');
+      print(message.toString());
+      Fluttertoast.showToast(
+          msg: " Notifikasi ${message}",
+          backgroundColor: Colors.red,
+          textColor: Colors.white);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNav(
+                    numberOfpage: 0,
+                  )));
     });
-    // ++ SUBSCRIBE TOPIC RMS PERMINTAAN
-    if (subscribepermintaan) {
-      // messaging.subscribeToTopic('RMSPERMINTAAN');
-      messaging.subscribeToTopic('RMSPERMINTAAN');
-    } else {
-      // messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-      messaging.unsubscribeFromTopic('RMSPERMINTAAN');
-    }
-    // ++ SUBSCRIBE TOPIC RMSPROGRESS
-    if (subscribeprogress) {
-      // messaging.subscribeToTopic('RMSPROGRESS');
-      messaging.subscribeToTopic('RMSPROGRESS');
-    } else {
-      // messaging.unsubscribeFromTopic('RMSPROGRESS');
-      messaging.unsubscribeFromTopic('RMSPROGRESS');
-    }
     Timer(Duration(seconds: 4), () {
       cekToken();
     });
@@ -84,11 +80,14 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       body: Container(
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/images/1.png'), fit: BoxFit.cover),
-            gradient: LinearGradient(
-                colors: [Color(0xffCCE9CC), thirdcolor],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter)),
+                image: AssetImage('assets/images/rmsbg.png'),
+                fit: BoxFit.cover),
+            color: backgroundcolor
+            // gradient: LinearGradient(
+            //     colors: [thirdcolor.withOpacity(0.8), thirdcolor],
+            //     begin: Alignment.bottomCenter,
+            //     end: Alignment.topCenter)
+            ),
         // color: Color(0xFEEFD8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -101,64 +100,52 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                   //   height: 50,
                   // ),
                   Container(
-                    height: 200,
-                    width: 200,
+                    height: 225,
+                    width: 225,
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: AssetImage(
-                              'assets/images/bnllauncher.png',
+                              'assets/images/logo_jarvis.png',
                             ),
                             fit: BoxFit.contain)),
                   ),
-                  Text('BNL-RMS',
-                      style: GoogleFonts.inter(
-                          color: Colors.black,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 50, right: 50, bottom: 30),
-                    child: Text(
-                      'Memberikan solusi terbaik untuk kemudahan anda dalam menyelesaikan sebuah masalah.',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                        color: Colors.black,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
+                  // SizedBox(height: 15),
+                  // Text('J A R V I S',
+                  //     style: GoogleFonts.inter(
+                  //         color: Colors.black,
+                  //         fontSize: 40,
+                  //         fontWeight: FontWeight.bold)),
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
+                  // Padding(
+                  //   padding:
+                  //       const EdgeInsets.only(left: 50, right: 50, bottom: 30),
+                  //   child: Text(
+                  //     'Request Management System',
+                  //     textAlign: TextAlign.center,
+                  //     style: GoogleFonts.inter(
+                  //       color: Colors.black,
+                  //       fontSize: 14,
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(
                     height: 20,
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width / 2,
                     child: LinearProgressIndicator(
-                      backgroundColor: Colors.white,
-                      valueColor:
-                          new AlwaysStoppedAnimation<Color>(Colors.tealAccent),
+                      backgroundColor: backgroundcolor,
+                      valueColor: new AlwaysStoppedAnimation<Color>(darkgreen),
                     ),
                   )
-                  // LinearPercentIndicator(
-                  //   alignment: MainAxisAlignment.center,
-                  //   width: 240.0,
-                  //   lineHeight: 4.0,
-                  //   animation: true,
-                  //   percent: 1.0,
-                  //   animationDuration: 1250,
-                  //   backgroundColor: Colors.red,
-                  //   progressColor: Colors.white,
-                  // ),
                 ],
               ),
             ),
           ],
         ),
       ),
-      // bottomSheet:
-      //     Image(image: AssetImage('assets/images/splashgif.gif'), fit: BoxFit.fitWidth),
     );
   }
 

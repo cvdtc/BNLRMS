@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/login/loginModel.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
-import 'package:rmsmobile/utils/TextFieldContainer.dart';
+import 'package:rmsmobile/utils/versioncontrol.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 
+import '../../utils/warna.dart';
+
 class Loginscreen extends StatefulWidget {
-  const Loginscreen({Key? key}) : super(key: key);
+  var tipe;
+  Loginscreen({this.tipe});
 
   @override
   _LoginscreenState createState() => _LoginscreenState();
@@ -19,11 +22,12 @@ class _LoginscreenState extends State<Loginscreen> {
   ApiService _apiService = ApiService();
   TextEditingController _controllerUsername = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
-  bool _fieldEmail = false,
+  bool
+      // _fieldEmail = false,
       _obsecureText = true,
-      _fieldPassword = false,
+      // _fieldPassword = false,
       isloading = false;
-  var emailaccountselection, token = '';
+  var emailaccountselection, token = '', tipelogin;
 
   void _toggle() {
     setState(() {
@@ -32,83 +36,99 @@ class _LoginscreenState extends State<Loginscreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tipelogin = widget.tipe;
+    // if (tipelogin == 'sesiberakhir') {
+    //   ReusableClasses().modalbottomWarning(
+    //       context,
+    //       'Sesi Berakhir',
+    //       'Waaah, sesi anda sudah berakhir nih, login lagi yaa.... :)',
+    //       'f401',
+    //       'assets/images/sorry.png');
+    // }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
+        padding: EdgeInsets.all(25.0),
         decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/images/1.png'), fit: BoxFit.cover),
-          gradient: LinearGradient(
-              colors: [Color(0xffCCE9CC), thirdcolor],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter),
-        ),
+            image: DecorationImage(
+                image: AssetImage('assets/images/rmsbg.png'),
+                fit: BoxFit.cover),
+            color: backgroundcolor
+            // gradient: LinearGradient(
+            //     colors: [thirdcolor.withOpacity(0.6), thirdcolor],
+            //     begin: Alignment.bottomCenter,
+            //     end: Alignment.topCenter),
+            ),
         child: Center(
           child: Column(
             children: <Widget>[
               SizedBox(
                 height: 180,
               ),
-              Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: 40,
-                  ),
-                  Text(
-                    'Selamat Datang',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35),
-                  ),
-                ],
+              Container(
+                height: 125,
+                width: 225,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(
+                          'assets/images/logo_jarvis.png',
+                        ),
+                        fit: BoxFit.contain)),
               ),
+              // Text(
+              //   'Selamat Datang',
+              //   style: TextStyle(
+              //       color: Colors.white,
+              //       fontWeight: FontWeight.bold,
+              //       fontSize: 35),
+              // ),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              // Text(
+              //   'Masukkan username yang sudah terdaftar',
+              //   style: TextStyle(color: Colors.white, fontSize: 14),
+              // ),
               SizedBox(
-                height: 10,
+                height: 40,
               ),
-              Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: 40,
-                  ),
-                  Text(
-                    'Masukkan akun yang sudah terdaftar',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 65,
-              ),
-              _buildTextFieldEmail(),
-              SizedBox(
-                height: 10,
-              ),
-              _buildTextFieldPassword(),
+              Container(child: _TextEditingUsername()),
               SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 25, right: 25),
-                child: ButtonTheme(
-                    buttonColor: Colors.white,
-                    minWidth: MediaQuery.of(context).size.width,
-                    height: 55,
-                    // ignore: deprecated_member_use
-                    child: RaisedButton(
-                      onPressed: () {
-                        // Navigator.push(context, MaterialPageRoute(builder: (context)=>BottomNav()));
-                        loginClick();
-                      },
-                      child: Text(
-                        'Login',
-                        style: TextStyle(color: Colors.blue, fontSize: 22),
-                      ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
-                    )),
+              Container(child: _TextEditingPassword()),
+              SizedBox(
+                height: 35,
               ),
+              ElevatedButton(
+                  onPressed: () {
+                    loginClick();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0.0, primary: darkgreen),
+                  child: Ink(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18.0)),
+                      child: Container(
+                        width: 325,
+                        height: 55,
+                        alignment: Alignment.center,
+                        child: Text('L O G I N',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 26.0,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ))),
+              SizedBox(height: 12),
+              Text('Version: v' + AppVersion.versionNumber.toString()),
             ],
           ),
         ),
@@ -116,65 +136,56 @@ class _LoginscreenState extends State<Loginscreen> {
     );
   }
 
-  Widget _buildTextFieldEmail() {
-    return TextFieldContainer(
-      child: TextField(
-        textInputAction: TextInputAction.next,
-        // enabled: uuidAnyar != "" ? false : true,
+  // * widget for text editing username
+  Widget _TextEditingUsername() {
+    return TextFormField(
+        style: TextStyle(color: darkgreen, fontSize: 22.0),
+        cursorColor: darkgreen,
         controller: _controllerUsername,
         decoration: InputDecoration(
+          fillColor: Colors.white,
+          filled: true,
+          hoverColor: darkgreen,
+          // border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
+          focusColor: darkgreen,
           icon: Icon(
-            Icons.person,
-            color: Colors.blue,
+            Icons.people_alt_outlined,
+            color: darkgreen,
           ),
-          hintText: "Username",
-          fillColor: Colors.lightBlue,
-          border: InputBorder.none,
-          // errorText:
-          //     _fieldEmail == null || _fieldEmail ? null : "Email Harus Diisi!",
-        ),
-        onChanged: (value) {
-          bool isFieldValid = value.trim().isNotEmpty;
-          if (isFieldValid != _fieldEmail) {
-            setState(() => _fieldEmail = isFieldValid);
-          }
-        },
-      ),
-    );
+          hintText: 'Masukkan Username',
+          suffixIcon: Icon(
+            Icons.check_circle,
+            color: darkgreen,
+          ),
+        ));
   }
 
-  Widget _buildTextFieldPassword() {
-    return TextFieldContainer(
-      child: TextField(
-        textInputAction: TextInputAction.done,
+  // * widget for text editing password
+  Widget _TextEditingPassword() {
+    return TextFormField(
+        style: TextStyle(color: darkgreen, fontSize: 22.0),
+        cursorColor: darkgreen,
         controller: _controllerPassword,
-        keyboardType: TextInputType.text,
         obscureText: _obsecureText,
+        keyboardType: TextInputType.visiblePassword,
         decoration: InputDecoration(
+          fillColor: Colors.white,
+          filled: true,
+          hoverColor: darkgreen,
+          // border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
           icon: Icon(
-            Icons.lock,
-            color: Colors.blue,
+            Icons.password,
+            color: darkgreen,
           ),
+          hintText: 'Masukkan Password',
           suffixIcon: IconButton(
             onPressed: _toggle,
             icon: new Icon(
-                _obsecureText ? Icons.remove_red_eye : Icons.visibility_off),
+              _obsecureText ? Icons.remove_red_eye : Icons.visibility_off,
+              color: darkgreen,
+            ),
           ),
-          hintText: "Password",
-          fillColor: Colors.white12,
-          border: InputBorder.none,
-          // errorText: _fieldPassword == null || _fieldPassword
-          //     ? null
-          //     : "Password Harus Diisi!",
-        ),
-        onChanged: (value) {
-          bool isFieldValid = value.trim().isNotEmpty;
-          if (isFieldValid != _fieldPassword) {
-            setState(() => _fieldPassword = isFieldValid);
-          }
-        },
-      ),
-    );
+        ));
   }
 
   loginClick() {
@@ -185,14 +196,18 @@ class _LoginscreenState extends State<Loginscreen> {
     LoginModel pengguna =
         LoginModel(username: username, password: password, tipe: 'mobile');
     //execute sending json to api url
-    print("LOGIN? : " + pengguna.toString());
     _apiService.loginIn(pengguna).then((isSuccess) {
       setState(() => isloading = false);
       // if login success page will be route to home page
       if (isSuccess) {
-        print('sukses masuk');
+        _controllerUsername.clear();
+        _controllerPassword.clear();
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BottomNav()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BottomNav(
+                      numberOfpage: 0,
+                    )));
       } else {
         ReusableClasses().modalbottomWarning(
             context,

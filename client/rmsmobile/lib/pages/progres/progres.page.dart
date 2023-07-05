@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/progress/progress.model.dart';
 import 'package:rmsmobile/pages/login/login.dart';
 import 'package:rmsmobile/pages/progres/progress.network.dart';
 import 'package:rmsmobile/pages/progres/progress.tile.dart';
+import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,9 +16,10 @@ class ProgressPage extends StatefulWidget {
 
 class _ProgressPageState extends State<ProgressPage> {
   late SharedPreferences sp;
-  String? token = "", username = "", jabatan = "";
+  String? token = "";
   List<ProgressModel> _progress = <ProgressModel>[];
   List<ProgressModel> _progressDisplay = <ProgressModel>[];
+  TextEditingController _textSearch = TextEditingController(text: "");
 
   bool _isLoading = true;
 
@@ -27,33 +28,22 @@ class _ProgressPageState extends State<ProgressPage> {
     sp = await SharedPreferences.getInstance();
     setState(() {
       token = sp.getString("access_token");
-      username = sp.getString("username");
-      jabatan = sp.getString("jabatan");
     });
-    print(
-        'object progress ${ApiService().responseCode.statusCode} ++++ $token');
-    if (token == null) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
-    }
     fetchProgress(token!).then((value) {
       setState(() {
         _isLoading = false;
         _progress.addAll(value);
         _progressDisplay = _progress;
-        print(_progressDisplay.length);
       });
-      print('yes bisa ?');
     }).onError((error, stackTrace) {
-      Fluttertoast.showToast(
-          msg: "Maaf, Token anda expired, silahkan melakukan login ulang",
-          backgroundColor: Colors.black,
-          textColor: Colors.white);
-      ApiService().clearshared();
+      ReusableClasses().clearSharedPreferences();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Loginscreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => Loginscreen(
+                    tipe: 'sesiberakhir',
+                  )));
     });
-    ;
   }
 
   @override
@@ -62,37 +52,62 @@ class _ProgressPageState extends State<ProgressPage> {
     super.initState();
   }
 
+  Future refreshPage() async {
+    _progressDisplay.clear();
+    _textSearch.clear();
+    Fluttertoast.showToast(
+        msg: "Data Berhasil diperbarui",
+        backgroundColor: Colors.black,
+        textColor: Colors.white);
+    setState(() {
+      cekToken();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                refreshPage();
+                // openFilterDialog(context);
+              },
+              icon: Icon(
+                Icons.refresh_outlined,
+                color: Colors.black87,
+              ))
+        ],
         title: Text(
           'Daftar Progres',
           style: GoogleFonts.lato(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         centerTitle: true,
-        backgroundColor: thirdcolor,
+        backgroundColor: backgroundcolor,
       ),
-      body: SafeArea(
-        child: Container(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              if (!_isLoading) {
-                return index == 0
-                    ? _searchBar()
-                    : ProgressTile(
-                        progress: this._progressDisplay[index - 1],
-                        token: token!,
-                      );
-                // : SiteTile(site: this._sitesDisplay[index - 1]);
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-            itemCount: _progressDisplay.length + 1,
+      body: RefreshIndicator(
+        onRefresh: refreshPage,
+        child: SafeArea(
+          child: Container(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                if (!_isLoading) {
+                  return index == 0
+                      ? _searchBar()
+                      : ProgressTile(
+                          progress: this._progressDisplay[index - 1],
+                          token: token!,
+                        );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+              itemCount: _progressDisplay.length + 1,
+            ),
           ),
         ),
       ),
@@ -117,7 +132,7 @@ class _ProgressPageState extends State<ProgressPage> {
             }).toList();
           });
         },
-        // controller: _textController,
+        controller: _textSearch,
         decoration: InputDecoration(
           fillColor: thirdcolor,
           border: OutlineInputBorder(),

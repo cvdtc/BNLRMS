@@ -8,7 +8,6 @@ import 'package:rmsmobile/model/progress/progress.model.dart';
 final String _apiService = ApiService().baseUrl;
 List<ProgressModel> parseSite(String responseBody) {
   var listSite = json.decode(responseBody)['data'] as List<dynamic>;
-  print(listSite);
   return listSite.map((e) => ProgressModel.fromJson(e)).toList();
 }
 
@@ -19,9 +18,7 @@ Future<List<ProgressModel>> fetchProgress(String token) async {
     // ++ fyi : sending token with BEARER
     'Authorization': 'Bearer ' + token
   });
-  print("NETWORK permintaan? " + token);
   if (response.statusCode == 200) {
-    print('Success?');
     return compute(parseSite, response.body);
   } else {
     return throw Exception(response.statusCode);
