@@ -288,6 +288,7 @@ class RequestModalBottom {
                         ),
                         ElevatedButton(
                             onPressed: () {
+                              Navigator.pop(context);
                               modalKonfirmasi(
                                   context,
                                   tipe,
@@ -304,7 +305,6 @@ class RequestModalBottom {
                                   /// isnextuser
                                   0.toString(), //idnextuser
                                   'tanpa progress');
-                              // Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                                 elevation: 0.0, primary: thirdcolor),
@@ -522,7 +522,6 @@ class RequestModalBottom {
                   });
         } else {
           _apiService.addRequest(token.toString(), dataadd).then((isSuccess) {
-            print('RESPONSE??' + isSuccess.toString());
             if (isSuccess) {
               _tecKeterangan.clear();
               _tecDueDate.clear();
@@ -533,18 +532,6 @@ class RequestModalBottom {
                 backgroundColor: Colors.white,
                 textColor: Colors.black,
               );
-              // Navigator.pushReplacement(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => BottomNav(
-              //               numberOfpage: 0,
-              //             )));
-              // ReusableClasses().modalbottomWarning(
-              //     context,
-              //     'Data Berhasil Disimpan!',
-              //     '${_apiService.responseCode.messageApi}',
-              //     'f201',
-              //     'assets/images/congratulations.png');
             } else {
               ReusableClasses().modalbottomWarning(
                   context,
@@ -558,8 +545,6 @@ class RequestModalBottom {
                 msg: "${_apiService.responseCode.messageApi}",
                 backgroundColor: Colors.red,
                 textColor: Colors.red);
-            // ReusableClasses().modalbottomWarning(context, 'Data Gagal Disimpan!',
-            //     '${error}', 'f400', 'assets/images/sorry.png');
           });
         }
       } else if (tipe == 'ubah') {
@@ -582,9 +567,6 @@ class RequestModalBottom {
                 'assets/images/sorry.png');
           }
           return;
-        }).onError((error, stackTrace) {
-          ReusableClasses().modalbottomWarning(context, 'Data Gagal Disimpan!',
-              '${error}', 'f400', 'assets/images/sorry.png');
         });
       } else {
         ReusableClasses().modalbottomWarning(context, "Tidak Valid!",
@@ -798,31 +780,6 @@ class RequestModalBottom {
                   SizedBox(
                     height: 10,
                   ),
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       Navigator.of(context).pop();
-                  //       _modalKonfirmasi(context, token, 'hapus', '','','','','','',idpermintaan.toString());
-                  //     },
-                  //     style: ElevatedButton.styleFrom(
-                  //         side: BorderSide(width: 2, color: Colors.red),
-                  //         elevation: 0.0,
-                  //         shape: RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(8)),
-                  //         primary: Colors.white),
-                  //     child: Ink(
-                  //         decoration: BoxDecoration(
-                  //             borderRadius: BorderRadius.circular(18.0)),
-                  //         child: Container(
-                  //           width: 325,
-                  //           height: 45,
-                  //           alignment: Alignment.center,
-                  //           child: Text('HAPUS PERMINTAAN',
-                  //               style: TextStyle(
-                  //                 color: Colors.red,
-                  //                 fontSize: 18.0,
-                  //                 fontWeight: FontWeight.bold,
-                  //               )),
-                  //         ))),
                 ],
               ),
             ),
@@ -831,7 +788,6 @@ class RequestModalBottom {
   }
 
   Widget _buildKomboPengguna(String pengguna1) {
-    // _controlleridpengguna = TextEditingController(text: pengguna1);
     return StatefulBuilder(builder:
         (BuildContext context, void Function(void Function()) setState) {
       return DropdownButtonHideUnderline(

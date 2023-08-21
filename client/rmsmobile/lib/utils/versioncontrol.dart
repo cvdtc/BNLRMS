@@ -1,8 +1,10 @@
 class AppVersion {
-  static double versionNumber = 2.6;
+  static double versionNumber = 2.7;
 }
 
 /**
+ * * Update v2.7 :
+ * - Update close modal navigattion ketika edit/selesai permintaan
  * Update v2.6 :
  * - Update Merek Internasinal di halaman dashboard
  * Update v2.4 :

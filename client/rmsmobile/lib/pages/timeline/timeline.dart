@@ -53,6 +53,7 @@ class _TimelinePageState extends State<TimelinePage> {
       appBar: AppBar(
         title: Text('Timeline '),
         centerTitle: true,
+        foregroundColor: Colors.black,
         backgroundColor: backgroundcolor,
       ),
       body: FutureBuilder(

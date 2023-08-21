@@ -68,10 +68,10 @@ class RequestPageSearchState extends State<RequestPageSearch> {
   // * ceking token and getting dashboard value from Shared Preferences
   cekToken() async {
     sp = await SharedPreferences.getInstance();
-    setState(() {
-      token = sp.getString('access_token')!;
-      idpengguna = sp.getString('idpengguna')!;
-    });
+    // setState(() {
+    token = sp.getString('access_token')!;
+    idpengguna = sp.getString('idpengguna')!;
+    // });
     FilterRequest data = FilterRequest(
         tanggal_awal: _tecTanggalAwal.text.toString(),
         tanggal_akhir: _tecTanggalAkhir.text.toString(),
@@ -117,12 +117,11 @@ class RequestPageSearchState extends State<RequestPageSearch> {
 
   Future refreshPage() async {
     _requestDisplay.clear();
-    // _textSearch.clear();
-    // _dropdownValueFilter = '';
-    setState(() {
-      cekToken();
-    });
-    // await Future.delayed(Duration(seconds: 2));
+    _requests.clear();
+    _textSearch.clear();
+    // setState(() {
+    cekToken();
+    // });
     Fluttertoast.showToast(
         msg: "Data Berhasil diperbarui",
         backgroundColor: Colors.black,
@@ -135,7 +134,6 @@ class RequestPageSearchState extends State<RequestPageSearch> {
         tanggal_akhir: _tecTanggalAkhir.text.toString(),
         keyword: _tecKeyword.text.toString(),
         kategori: _dropdownValueFilter.toString());
-    print(data.toString());
     await fetchPermintaan(token, data).then((value) {
       setState(() {
         _isLoading = false;
@@ -822,9 +820,9 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                           height: 15.0,
                         ),
                         ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               Navigator.pop(context);
-                              RequestModalBottom().modalKonfirmasi(
+                              await RequestModalBottom().modalKonfirmasi(
                                   context,
                                   tipe,
                                   token,
