@@ -1,7 +1,7 @@
 //Plugin
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 var fcmadmin = require('../utils/firebaseconfiguration');
 
 /**
@@ -422,6 +422,7 @@ async function ubahProgress(req, res) {
                         data: null,
                     });
                 } else {
+
                     pool.getConnection(function (error, database) {
                         if (error) {
                             return res.status(400).send({
@@ -487,23 +488,23 @@ async function ubahProgress(req, res) {
                                                                 database.release();
                                                                 // * set firebase notification message
                                                                 let notificationMessage =
+                                                                {
+                                                                    notification:
                                                                     {
-                                                                        notification:
-                                                                            {
-                                                                                title: `Update progress dari ${result[0].nama}`,
-                                                                                body:
-                                                                                    `Ada progress baru untuk ` +
-                                                                                    result[0]
-                                                                                        .permintaan,
-                                                                                sound: 'default',
-                                                                                click_action:
-                                                                                    'FCM_PLUGIN_ACTIVITY',
-                                                                            },
-                                                                        data: {
-                                                                            title: `Ada Update progress dari ${result[0].nama}`,
-                                                                            body: `Ada progress baru untuk ${result[0].permintaan}`,
-                                                                        },
-                                                                    };
+                                                                        title: `Update progress dari ${result[0].nama}`,
+                                                                        body:
+                                                                            `Ada progress baru untuk ` +
+                                                                            result[0]
+                                                                                .permintaan,
+                                                                        sound: 'default',
+                                                                        click_action:
+                                                                            'FCM_PLUGIN_ACTIVITY',
+                                                                    },
+                                                                    data: {
+                                                                        title: `Ada Update progress dari ${result[0].nama}`,
+                                                                        body: `Ada progress baru untuk ${result[0].permintaan}`,
+                                                                    },
+                                                                };
                                                                 // * sending notification topic RMSPERMINTAAN
                                                                 fcmadmin
                                                                     .messaging()

@@ -2,7 +2,7 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 /**
  * ! Pool setting up
@@ -219,7 +219,7 @@ async function getDashboard(req, res) {
                                 var filter =
                                     jwtresult.jabatan == 'Marketing'
                                         ? ' and idpengguna=' +
-                                          jwtresult.idpengguna
+                                        jwtresult.idpengguna
                                         : '';
                                 var sqlquery =
                                     "SELECT (SELECT COUNT(idpermintaan) FROM permintaan WHERE flag_selesai<>''" +

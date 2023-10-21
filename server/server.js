@@ -8,7 +8,7 @@ const swaggerJS = require('swagger-jsdoc');
 const path = require('path');
 const fs = require('fs');
 const cron = require('node-cron');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 var fcmadmin = require('./utils//firebaseconfiguration');
 const pool = mysql.createPool({
     host: process.env.DB_HOST,

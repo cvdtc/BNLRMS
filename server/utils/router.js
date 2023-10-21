@@ -1,5 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const authToken = require('../middleware/auth.js');
 const express = require('express');
 const router = express.Router();
 global.refreshTokens = [];
@@ -15,15 +16,9 @@ router.post('/newtoken', function (req, res) {
 
 // ! PENGGUNA
 var RouteToPengguna = require('../controllers/pengguna.controller');
-router.get('/pengguna', function (req, res) {
-    RouteToPengguna.getAllPengguna(req, res);
-});
-router.post('/pengguna', function (req, res) {
-    RouteToPengguna.addPengguna(req, res);
-});
-router.put('/pengguna', function (req, res) {
-    RouteToPengguna.ubahPengguna(req, res);
-});
+router.get('/pengguna', authToken, RouteToPengguna.getAllPengguna);
+router.post('/pengguna', authToken, RouteToPengguna.addPengguna);
+router.put('/pengguna/:idpengguna', authToken, RouteToPengguna.ubahPengguna);
 
 // ! PERMINTAAN / REQUEST
 var RouteToPermintaan = require('../controllers/permintaan.controller');

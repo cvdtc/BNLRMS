@@ -1,7 +1,7 @@
 //Plugin
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
-const mysql = require('mysql')
+const mysql = require('mysql2')
 
 /**
  * ! Pool setting up
@@ -93,20 +93,20 @@ async function getAllNote(req, res) {
                             })
                         } else {
                             var sqlfilter = ``
-                            if(filter == 0){
+                            if (filter == 0) {
                                 sqlfilter = `AND flag_selesai=0`
-                            }else if(filter == 1){
+                            } else if (filter == 1) {
                                 sqlfilter = `AND flag_selesai=1`
-                            }else if(filter == 2){
+                            } else if (filter == 2) {
                                 sqlfilter = ``
-                            }else{
+                            } else {
                                 return res.status(405).send({
                                     message: "Sorry,  parameters not match",
                                     error: null,
                                     data: null
                                 })
                             }
-                            var sqlquery = `SELECT * FROM note WHERE pengguna_idpengguna = ? `+sqlfilter
+                            var sqlquery = `SELECT * FROM note WHERE pengguna_idpengguna = ? ` + sqlfilter
                             database.query(sqlquery, [jwtresult.idpengguna], (error, rows) => {
                                 database.release()
                                 if (error) {

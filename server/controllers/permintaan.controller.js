@@ -1,7 +1,7 @@
 //Plugin
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 var fcmadmin = require("../utils/firebaseconfiguration");
 
 /**
@@ -435,12 +435,6 @@ async function addPermintaandanProgress(req, res) {
                         queryInsertProgress,
                         dataProgress,
                         (errorProgress, resultProgress) => {
-                          console.log(
-                            "🚀 ~ file: permintaan.controller.js:392 ~ database.query ~ errorProgress, resultProgress:",
-                            errorProgress,
-                            resultProgress
-                          );
-
                           return res.status(201).send({
                             message: "Done!,  Data has been stored!",
                             error: null,
