@@ -3,23 +3,8 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const mysql = require('mysql2');
 var fcmadmin = require('../utils/firebaseconfiguration');
-
-/**
- * ! Pool setting up
- * * pool connection limit 10
- * * queue limit 25
- */
-
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
-    connectionLimit: 10,
-    queueLimit: 25,
-    timezone: 'utc-8',
-});
+const { ProgressModel, Sequelize } = require('../models/index.js');
+const { sequelize } = require('sequelize');
 
 var nows = {
     toSqlString: function () {
@@ -78,79 +63,34 @@ var nows = {
 
 async function getAllProgress(req, res) {
     const token = req.headers.authorization;
-    if (token != null) {
-        try {
-            jwt.verify(
-                token.split(' ')[1],
-                process.env.ACCESS_SECRET,
-                (jwterror, jwtresult) => {
-                    if (!jwtresult) {
-                        return res.status(401).send(
-                            JSON.stringify({
-                                message: 'Sorry, Your token has expired!',
-                                error: jwterror,
-                                data: null,
-                            })
-                        );
-                    } else {
-                        pool.getConnection(function (error, database) {
-                            if (error) {
-                                return res.status(400).send({
-                                    message:
-                                        'Sorry, your connection has refused!',
-                                    error: error,
-                                    data: null,
-                                });
-                            } else {
-                                var sqlquery = `SELECT pr.idprogress, pr.keterangan, DATE_FORMAT(pr.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(pr.edited, "%Y-%m-%d %H:%i") as edited, pr.flag_selesai, pr.next_idpengguna as idnextuser, pr.idpengguna, pr.idpermintaan, pe.keterangan as permintaan, pe.kategori, DATE_FORMAT(pe.due_date, "%Y-%m-%d") as due_date, p.nama, pe.url_web as url_permintaan, pr.url_web as url_progress FROM permintaan pe, progress pr, pengguna p WHERE pr.idpermintaan=pe.idpermintaan AND pe.idpengguna=p.idpengguna AND pr.idpengguna = ? AND pr.flag_selesai=0`; //[1]
-                                database.query(
-                                    sqlquery,
-                                    [jwtresult.idpengguna],
-                                    (error, rows) => {
-                                        database.release();
-                                        if (error) {
-                                            return res.status(500).send({
-                                                message:
-                                                    'Sorry, query has error!',
-                                                error: error,
-                                                data: null,
-                                            });
-                                        } else {
-                                            if (rows.length <= 0) {
-                                                return res.status(200).send({
-                                                    message:
-                                                        'Sorry, data empty!',
-                                                    error: null,
-                                                    data: rows,
-                                                });
-                                            } else {
-                                                return res.status(200).send({
-                                                    message:
-                                                        'Done!, data has fetched!',
-                                                    error: null,
-                                                    data: rows,
-                                                });
-                                            }
-                                        }
-                                    }
-                                );
-                            }
-                        });
-                    }
+    try {
+        await sequelize
+            .query(
+                `SELECT pr.idprogress, pr.keterangan, DATE_FORMAT(pr.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(pr.edited, "%Y-%m-%d %H:%i") as edited, pr.flag_selesai, pr.next_idpengguna as idnextuser, pr.idpengguna, pr.idpermintaan, pe.keterangan as permintaan, pe.kategori, DATE_FORMAT(pe.due_date, "%Y-%m-%d") as due_date, p.nama, pe.url_web as url_permintaan, pr.url_web as url_progress FROM permintaan pe, progress pr, pengguna p WHERE pr.idpermintaan=pe.idpermintaan AND pe.idpengguna=p.idpengguna AND pr.idpengguna = ${req.decode.idpengguna} AND pr.flag_selesai=0`
+            )
+            .then((result) => {
+                if (!result) {
+                    throw new Error(`data tidak ditemukan`);
                 }
-            );
-        } catch (error) {
-            return res.status(403).send({
-                message: 'Forbidden.',
-                data: rows,
+                return res
+                    .status(200)
+                    .send({
+                        success: true,
+                        message: `${result.length} data ditemukan`,
+                    });
+            })
+            .catch((err) => {
+                return res
+                    .status(400)
+                    .send({ success: false, message: err.message });
             });
-        }
-    } else {
-        res.status(401).send({
-            message: 'Sorry, Need Token Validation!',
-            error: null,
-            data: null,
-        });
+    } catch (error) {
+        return res
+            .status(500)
+            .send({
+                success: false,
+                message: `Internal Error: ${error.message}`,
+            });
     }
 }
 
@@ -215,122 +155,59 @@ async function getAllProgress(req, res) {
  */
 
 async function addProgress(req, res) {
-    var keterangan = req.body.keterangan;
-    var idpermintaan = req.body.idpermintaan;
-    var idnextuser = req.body.idnextuser;
-    var tipe = req.body.tipe;
-    var url_web = req.body.url_progress; //[1]
-    var keterangan_selesai = req.body.keterangan_selesai;
-    const token = req.headers.authorization;
-    console.log('ada yang mencoba menambah progress', tipe, idnextuser);
-    // if (Object.keys(req.body).length != 5) { // [2] -->
-    //     return res.status(405).send({
-    //         message: "Sorry,  parameters not match",
-    //         error: null,
-    //         data: null
-    //     })
-    // } else { <-- [2]
+    const {
+        keterangan,
+        idpermintaan,
+        idnextuser,
+        tipe,
+        url_web,
+        keterangan_selesai,
+    } = req.body;
     try {
-        jwt.verify(
-            token.split(' ')[1],
-            process.env.ACCESS_SECRET,
-            (jwterror, jwtresult) => {
-                if (!jwtresult) {
-                    return res.status(401).send({
-                        message: 'Sorry,  Your token has expired!',
-                        error: jwterror,
-                        data: null,
-                    });
-                } else {
-                    pool.getConnection(function (error, database) {
-                        if (error) {
-                            return res.status(400).send({
-                                message: 'Sorry,  your connection has refused!',
-                                error: error,
-                                data: null,
-                            });
-                        } else {
-                            let dataprogress = {
-                                keterangan: keterangan,
-                                flag_selesai: 0,
-                                idpermintaan: idpermintaan,
-                                created: nows,
-                                url_web: url_web, //[1]
-                                next_idpengguna: 0,
-                                idpengguna: jwtresult.idpengguna,
-                            };
-                            let dataprogressnext = {
-                                keterangan:
-                                    'from:' +
-                                    jwtresult.username +
-                                    ' >>' +
-                                    keterangan_selesai,
-                                // keterangan: keterangan_selesai,
-                                flag_selesai: 0,
-                                idpermintaan: idpermintaan,
-                                created: nows,
-                                url_web: url_web, //[1]
-                                idpengguna: idnextuser,
-                            };
-                            var sqlquery = 'INSERT INTO progress SET ?';
-                            // * ketika insert tipe akan menentukan apa yang di insert, ketika tipe next user maka idpengguna akan di insert idnext user selain tipe next user, idpengguna yang di insert berasal dari jwt
-                            database.query(
-                                sqlquery,
-                                tipe == 'nextuser'
-                                    ? dataprogressnext
-                                    : dataprogress,
-                                (error, result) => {
-                                    database.release();
-                                    if (error) {
-                                        database.rollback(function () {
-                                            console.log(
-                                                dataprogress,
-                                                dataprogressnext
-                                            );
-                                            return res.status(407).send({
-                                                message: `Sorry,  query tambah progress has error! ${error}`,
-                                                error: error,
-                                                data: null,
-                                            });
-                                        });
-                                    } else {
-                                        database.commit(function (errcommit) {
-                                            if (errcommit) {
-                                                database.rollback(function () {
-                                                    return res
-                                                        .status(407)
-                                                        .send({
-                                                            message:
-                                                                'Sorry,  fail to store!',
-                                                            error: errcommit,
-                                                            data: null,
-                                                        });
-                                                });
-                                            } else {
-                                                return res.status(201).send({
-                                                    message:
-                                                        'Done!,  Data has been stored!',
-                                                    error: null,
-                                                    data: null,
-                                                });
-                                            }
-                                        });
-                                    }
-                                }
-                            );
-                        }
-                    });
+        let dataprogress = {
+            keterangan: keterangan,
+            flag_selesai: 0,
+            idpermintaan: idpermintaan,
+            created: nows,
+            url_web: url_web, //[1]
+            next_idpengguna: 0,
+            idpengguna: req.decode.idpengguna,
+        };
+        let dataprogressnext = {
+            keterangan:
+                'from:' + req.decode.username + ' >>' + keterangan_selesai,
+            flag_selesai: 0,
+            idpermintaan: idpermintaan,
+            created: nows,
+            url_web: url_web, //[1]
+            idpengguna: idnextuser,
+        };
+        let data = tipe === 'nextuser' ? dataprogressnext : dataprogress
+        console.log("🚀 ~ file: progress.controller.js:186 ~ addProgress ~ data:", data)
+        await ProgressModel
+            .create(
+                data
+            )
+            .then((result) => {
+                if (!result) {
+                    throw new Error(`data gagal ditambahkan`);
                 }
-            }
-        );
+                return res.status(200).send({
+                    success: true,
+                    message: 'data berhasil ditambahkan',
+                });
+            })
+            .catch((err) => {
+                return res
+                    .status(400)
+                    .send({ success: false, message: err.message });
+            });
     } catch (error) {
-        return res.status(403).send({
-            message: 'forbiden!',
-            error: error,
-            data: null,
+        return res.status(500).send({
+            success: false,
+            message: 'Internal Server Error ' + error.message,
         });
     }
-    // } <-- [2]
 }
 
 // * FUNCTION CHANGE DATA PROGRESS
@@ -396,192 +273,54 @@ async function addProgress(req, res) {
  * * [2] 15 Des 2021 Dihapus karena agar flutter bisa mengirim tambah ubah dalam 1 model
  */
 
-async function ubahProgress(req, res) {
-    var keterangan = req.body.keterangan;
-    var flag_selesai = req.body.flag_selesai;
-    var idnextuser = req.body.idnextuser;
-    var url_web = req.body.url_progress; // [1]
-    var idprogress = req.params.idprogress;
-    const token = req.headers.authorization;
-    // if (Object.keys(req.body).length != 4) { // [2] -->
-    //     return res.status(405).send({
-    //         message: "Sorry,  parameters not match",
-    //         error: null,
-    //         data: null
-    //     })
-    // } else { // <-- [2]
+async function ubahProgress(req, res, next) {
+    const { keterangan, flag_selesai, idnextuser, url_web } = req.body;
+    const { idprogress } = req.params;
     try {
-        jwt.verify(
-            token.split(' ')[1],
-            process.env.ACCESS_SECRET,
-            (jwterror, jwtresult) => {
-                if (!jwtresult) {
-                    return res.status(401).send({
-                        message: 'Sorry,  Your token has expired!',
-                        error: jwterror,
-                        data: null,
-                    });
-                } else {
-
-                    pool.getConnection(function (error, database) {
-                        if (error) {
-                            return res.status(400).send({
-                                message: 'Sorry,  your connection has refused!',
-                                error: error,
-                                data: null,
-                            });
-                        } else {
-                            database.beginTransaction(function (error) {
-                                let updateprogress = {
-                                    keterangan: keterangan,
-                                    flag_selesai: flag_selesai,
-                                    next_idpengguna: idnextuser,
-                                    edited: nows,
-                                    url_web: url_web, // [1]
-                                    idpengguna: jwtresult.idpengguna,
-                                };
-                                var sqlquery =
-                                    'UPDATE progress SET ? WHERE idprogress = ?';
-                                database.query(
-                                    sqlquery,
-                                    [updateprogress, idprogress],
-                                    (error, result) => {
-                                        // database.release()
-                                        if (error) {
-                                            database.rollback(function () {
-                                                console.log(
-                                                    updateprogress,
-                                                    error
-                                                );
-                                                return res.status(407).send({
-                                                    message:
-                                                        'Sorry,  query edit progress has error! ',
-                                                    error: error,
-                                                    data: null,
-                                                });
-                                            });
-                                        } else {
-                                            database.commit(function (
-                                                errcommit
-                                            ) {
-                                                if (errcommit) {
-                                                    database.rollback(
-                                                        function () {
-                                                            return res
-                                                                .status(407)
-                                                                .send({
-                                                                    message:
-                                                                        'Sorry,  fail to change data pengguna',
-                                                                    error: errcommit,
-                                                                    data: null,
-                                                                });
-                                                        }
-                                                    );
-                                                } else {
-                                                    if (flag_selesai == 1) {
-                                                        var getdatanotif =
-                                                            'SELECT p.keterangan as permintaan, pr.keterangan as progress, pe.nama FROM permintaan p, progress pr, pengguna pe WHERE p.idpermintaan=pr.idpermintaan AND pr.idpengguna=pe.idpengguna AND pr.idprogress = ?';
-                                                        database.query(
-                                                            getdatanotif,
-                                                            idprogress,
-                                                            (error, result) => {
-                                                                database.release();
-                                                                // * set firebase notification message
-                                                                let notificationMessage =
-                                                                {
-                                                                    notification:
-                                                                    {
-                                                                        title: `Update progress dari ${result[0].nama}`,
-                                                                        body:
-                                                                            `Ada progress baru untuk ` +
-                                                                            result[0]
-                                                                                .permintaan,
-                                                                        sound: 'default',
-                                                                        click_action:
-                                                                            'FCM_PLUGIN_ACTIVITY',
-                                                                    },
-                                                                    data: {
-                                                                        title: `Ada Update progress dari ${result[0].nama}`,
-                                                                        body: `Ada progress baru untuk ${result[0].permintaan}`,
-                                                                    },
-                                                                };
-                                                                // * sending notification topic RMSPERMINTAAN
-                                                                fcmadmin
-                                                                    .messaging()
-                                                                    .sendToTopic(
-                                                                        'RMSPROGRESSdebug',
-                                                                        notificationMessage
-                                                                    )
-                                                                    .then(
-                                                                        function (
-                                                                            response
-                                                                        ) {
-                                                                            return res
-                                                                                .status(
-                                                                                    200
-                                                                                )
-                                                                                .send(
-                                                                                    {
-                                                                                        message:
-                                                                                            'Done!,  Data has been stored!',
-                                                                                        error: null,
-                                                                                        data: response,
-                                                                                    }
-                                                                                );
-                                                                        }
-                                                                    )
-                                                                    .catch(
-                                                                        function (
-                                                                            error
-                                                                        ) {
-                                                                            return res
-                                                                                .status(
-                                                                                    200
-                                                                                )
-                                                                                .send(
-                                                                                    {
-                                                                                        message:
-                                                                                            'Done!,  Data has been stored!',
-                                                                                        error: error,
-                                                                                        data: null,
-                                                                                    }
-                                                                                );
-                                                                        }
-                                                                    );
-                                                            }
-                                                        );
-                                                    } else {
-                                                        return res
-                                                            .status(200)
-                                                            .send({
-                                                                message:
-                                                                    'Done!, Data has changed!',
-                                                                error: null,
-                                                                data: null,
-                                                            });
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                );
-                            });
-                        }
-                    });
+        await ProgressModel
+            .update(
+                {
+                    keterangan,
+                    flag_selesai,
+                    next_idpengguna: idnextuser,
+                    url_web,
+                    idpengguna: req.decode.idpengguna,
+                },
+                { where: { idprogress: idprogress } }
+            )
+            .then(async (result) => {
+                if (!result) {
+                    throw new Error('data gagal diperbarui');
                 }
-            }
-        );
+                if (flag_selesai === '1' && idnextuser === '0') {
+                    await ProgressModel.create({
+                        keterangan: req.decode.username + ' >> ' + keterangan,
+                        idpermintaan,
+                        flag_selesai,
+                        url_web: '',
+                        idpengguna: idnextuser,
+                    });
+                    next();
+                }
+                return res.status(200).send({
+                    success: true,
+                    message: 'data berhasil diperbarui',
+                });
+            })
+            .catch((err) => {
+                return res
+                    .status(400)
+                    .send({ success: false, message: err.message });
+            });
     } catch (error) {
-        return res.status(403).send({
-            message: 'forbiden!',
-            error: error,
-            data: null,
+        return res.status(500).send({
+            success: false,
+            message: `Internal server error ` + error.message,
         });
     }
-    //    }// <-- [2]
 }
 
-// * FUNCTION CHANGE DATA PROGRESS
+// * FUNCTION Delete DATA PROGRESS
 
 /**
  * @swagger
@@ -624,88 +363,25 @@ async function ubahProgress(req, res) {
  */
 
 async function deleteProgress(req, res) {
-    var idprogress = req.params.idprogress;
-    const token = req.headers.authorization;
+    const { idprogress } = req.params;
     try {
-        jwt.verify(
-            token.split(' ')[1],
-            process.env.ACCESS_SECRET,
-            (jwterror, jwtresult) => {
-                if (!jwtresult) {
-                    return res.status(401).send({
-                        message: 'Sorry,  Your token has expired!',
-                        error: jwterror,
-                        data: null,
-                    });
-                } else {
-                    pool.getConnection(function (error, database) {
-                        if (error) {
-                            return res.status(400).send({
-                                message: 'Sorry,  your connection has refused!',
-                                error: error,
-                                data: null,
-                            });
-                        } else {
-                            database.beginTransaction(function (error) {
-                                var sqlquery =
-                                    'DELETE FROM progress WHERE idprogress = ?';
-                                database.query(
-                                    sqlquery,
-                                    [idprogress],
-                                    (error, result) => {
-                                        database.release();
-                                        if (error) {
-                                            database.rollback(function () {
-                                                return res.status(407).send({
-                                                    message:
-                                                        'Sorry,  query has error!',
-                                                    error: error,
-                                                    data: null,
-                                                });
-                                            });
-                                        } else {
-                                            database.commit(function (
-                                                errcommit
-                                            ) {
-                                                if (errcommit) {
-                                                    database.rollback(
-                                                        function () {
-                                                            return res
-                                                                .status(407)
-                                                                .send({
-                                                                    message:
-                                                                        'Sorry,  fail to change data pengguna',
-                                                                    error: errcommit,
-                                                                    data: null,
-                                                                });
-                                                        }
-                                                    );
-                                                } else {
-                                                    return res
-                                                        .status(200)
-                                                        .send({
-                                                            message:
-                                                                'Done!,  Data has removed!',
-                                                            error: null,
-                                                            data: null,
-                                                        });
-                                                }
-                                            });
-                                        }
-                                    }
-                                );
-                            });
-                        }
-                    });
+        await ProgressModel
+            .destroy({ where: { idprogress } })
+            .then((result) => {
+                if (!result) {
+                    throw new Error(`data gagal dihapus`);
                 }
-            }
-        );
+                return res
+                    .status(200)
+                    .send({ success: true, message: `data berhasil dihapus` });
+            })
+            .catch((err) => {
+                return res
+                    .status(400)
+                    .send({ success: false, message: err.message });
+            });
     } catch (error) {
-        return res.status(403).send({
-            message: 'forbiden!',
-            error: error,
-            data: null,
-        });
+        return res.status(500).send({ success: true, message: error.message });
     }
 }
 

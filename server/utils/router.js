@@ -22,14 +22,17 @@ router.put('/pengguna/:idpengguna', authToken, RouteToPengguna.ubahPengguna);
 
 // ! PERMINTAAN / REQUEST
 var RouteToPermintaan = require('../controllers/permintaan.controller');
-router.get(
-    '/permintaan/:tanggal_awal/:tanggal_akhir/:keyword',
-    function (req, res) {
-        RouteToPermintaan.getAllPermintaan(req, res);
-    }
-);
 router.post('/permintaan', function (req, res) {
+    RouteToPermintaan.getAllPermintaan(req, res);
+});
+router.get('/permintaand', function (req, res) {
+    RouteToPermintaan.getAllPermintaanD(req, res);
+});
+router.post('/addpermintaan', function (req, res) {
     RouteToPermintaan.addPermintaan(req, res);
+});
+router.post('/addpermintaandanprogress', function (req, res) {
+    RouteToPermintaan.addPermintaandanProgress(req, res);
 });
 router.put('/permintaan/:idpermintaan', function (req, res) {
     RouteToPermintaan.ubahPermintaan(req, res);
@@ -40,18 +43,14 @@ router.delete('/permintaan/:idpermintaan', function (req, res) {
 
 // ! PROGRESS
 var RouteToProgress = require('../controllers/progress.controller');
-router.get('/progress', function (req, res) {
-    RouteToProgress.getAllProgress(req, res);
-});
-router.post('/progress', function (req, res) {
-    RouteToProgress.addProgress(req, res);
-});
-router.put('/progress/:idprogress', function (req, res) {
-    RouteToProgress.ubahProgress(req, res);
-});
-router.delete('/progress/:idprogress', function (req, res) {
-    RouteToProgress.deleteProgress(req, res);
-});
+router.get('/progress', authToken, RouteToProgress.getAllProgress);
+router.post('/progress', authToken, RouteToProgress.addProgress);
+router.put('/progress/:idprogress', authToken, RouteToProgress.ubahProgress);
+router.delete(
+    '/progress/:idprogress',
+    authToken,
+    RouteToProgress.deleteProgress
+);
 
 // ! NOTE
 var RouteToNote = require('../controllers/note.controller');
