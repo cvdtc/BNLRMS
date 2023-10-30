@@ -71,58 +71,60 @@ const pool = mysql.createPool({
 async function getAllPengguna(req, res) {
     const token = req.headers.authorization
     console.log(new Date())
-    if (token != null) {     try {
-        jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
-            if (!jwtresult) {
-                return res.status(401).send(JSON.stringify({
-                    message: "Sorry, Your token has expired!",
-                    error: jwterror,
-                    data: null
-                }))
-            } else {
-                pool.getConnection(function (error, database) {
-                    if (error) {
-                        return res.status(400).send({
-                            message: "Sorry, your connection has refused!",
-                            error: error,
-                            data: null
-                        })
-                    } else {
-                        var sqlquery = "SELECT * FROM pengguna"
-                        database.query(sqlquery, (error, rows) => {
-                            database.release()
-                            if (error) {
-                                return res.status(500).send({
-                                    message: "Sorry, query has error!",
-                                    error: error,
-                                    data: null
-                                })
-                            } else {
-                                if (rows.length <= 0) {
-                                    return res.status(204).send({
-                                        message: "Sorry, data empty!",
-                                        error: null,
-                                        data: rows
+    if (token != null) {
+        try {
+            jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
+                if (!jwtresult) {
+                    return res.status(401).send(JSON.stringify({
+                        message: "Sorry, Your token has expired!",
+                        error: jwterror,
+                        data: null
+                    }))
+                } else {
+                    pool.getConnection(function (error, database) {
+                        if (error) {
+                            return res.status(400).send({
+                                message: "Sorry, your connection has refused!",
+                                error: error,
+                                data: null
+                            })
+                        } else {
+                            var sqlquery = "SELECT * FROM pengguna Where aktif=1"
+                            database.query(sqlquery, (error, rows) => {
+                                database.release()
+                                if (error) {
+                                    return res.status(500).send({
+                                        message: "Sorry, query has error!",
+                                        error: error,
+                                        data: null
                                     })
                                 } else {
-                                    return res.status(200).send({
-                                        message: "Done!, data has fetched!",
-                                        error: null,
-                                        data: rows
-                                    })
+                                    if (rows.length <= 0) {
+                                        return res.status(204).send({
+                                            message: "Sorry, data empty!",
+                                            error: null,
+                                            data: rows
+                                        })
+                                    } else {
+                                        return res.status(200).send({
+                                            message: "Done!, data has fetched!",
+                                            error: null,
+                                            data: rows
+                                        })
+                                    }
                                 }
-                            }
-                        })
-                    }
-                })
-            }
-        })
-    } catch (error) {
-        return res.status(403).send({
-            message: "Forbidden.",
-            data: rows
-        })
-    } } else {
+                            })
+                        }
+                    })
+                }
+            })
+        } catch (error) {
+            return res.status(403).send({
+                message: "Forbidden.",
+                data: rows
+            })
+        }
+    } else {
         res.status(401).send({
             message: "Sorry, Need Token Validation!",
             error: null,
@@ -346,7 +348,7 @@ async function addPengguna(req, res) {
  *              description: kesalahan pada query sql
  */
 
- async function ubahPengguna(req, res) {
+async function ubahPengguna(req, res) {
     var nama = req.body.nama
     var username = req.body.username
     var password = req.body.password

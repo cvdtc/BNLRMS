@@ -401,7 +401,9 @@ async function ubahProgress(req, res) {
     var idnextuser = req.body.idnextuser
     var url_web = req.body.url_progress // [1]
     var idprogress = req.params.idprogress
+    var keterangan_selesai = req.body.keterangan_selesai
     const token = req.headers.authorization
+    console.log(req.body)
     try {
         jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
             if (!jwtresult) {
@@ -453,7 +455,9 @@ async function ubahProgress(req, res) {
                                         } else {
                                             var getdatanotif = "SELECT p.idpermintaan as idpermintaan, p.keterangan as permintaan, pr.keterangan as progress, pe.nama FROM permintaan p, progress pr, pengguna pe WHERE p.idpermintaan=pr.idpermintaan AND pr.idpengguna=pe.idpengguna AND pr.idprogress = ?"
                                             database.query(getdatanotif, idprogress, (error, result) => {
-                                                if (flag_selesai === 1 && !idnextuser) {
+                                                console.log("🚀 ~ file: progress.controller.js:458 ~ database.query ~ flag_selesai === 1 && !idnextuser:", flag_selesai === '1' && idnextuser.length)
+                                                if (flag_selesai === '1' && idnextuser !== '0') {
+                                                    console.log("🚀 ")
                                                     let dataprogressnext = {
                                                         keterangan: 'dari: ' + jwtresult.username + ' >> ' + keterangan_selesai,
                                                         //                            keterangan: keterangan_selesai,
