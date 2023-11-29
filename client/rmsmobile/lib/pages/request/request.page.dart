@@ -110,9 +110,12 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     'Merek - KBM',
     'Merek - Perpanjangan',
     'Merek - Lain Lain',
+    'Merek - Upaya Lain2',
     'Paten',
     'Desain Industri',
     'Hak Cipta',
+    'DI - Oposisi',
+    'DI - KO'
   ];
 
   Future refreshPage() async {
@@ -743,9 +746,12 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                             'Merek - KBM',
                                             'Merek - Perpanjangan',
                                             'Merek - Lain Lain',
+                                            'Merek - Upaya Lain2',
                                             'Paten',
                                             'Desain Industri',
-                                            'Hak Cipta'
+                                            'Hak Cipta',
+                                            'DI - Oposisi',
+                                            'DI - KO'
                                           ].map<DropdownMenuItem<String>>(
                                               (String value) {
                                             return DropdownMenuItem<String>(

@@ -11,6 +11,8 @@ import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:http/http.dart' as client;
+
+import '../webview/inappwebviewpage.dart';
 // import 'package:rmsmobile/widget/bottomnavigationbar.dart';
 
 class RequestModalBottom {
@@ -126,6 +128,17 @@ class RequestModalBottom {
                         SizedBox(
                           height: 10.0,
                         ),
+                        ElevatedButton(onPressed: (){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => WebviewPage(
+                                        data_url: 'merek.id',
+                                      )));
+                        }, child: Text('Cari di Merek.id')),
+                        SizedBox(
+                          height: 10.0,
+                        ),
                         Row(
                           children: [
                             Container(
@@ -210,9 +223,12 @@ class RequestModalBottom {
                                             'Merek - KBM',
                                             'Merek - Perpanjangan',
                                             'Merek - Lain Lain',
+                                            'Merek - Upaya Lain2',
                                             'Paten',
                                             'Desain Industri',
-                                            'Hak Cipta'
+                                            'Hak Cipta',
+                                            'DI - Oposisi',
+                                            'DI - KO'
                                           ].map<DropdownMenuItem<String>>(
                                               (String value) {
                                             return DropdownMenuItem<String>(
