@@ -389,39 +389,45 @@ class ProgressModalBottom {
             .ubahProgres(token, idprogress, dataprogress)
             .then((isSuccess) {
           if (isSuccess) {
-            ProgressModel data = ProgressModel(
-                keterangan: keterangan,
-                idpermintaan: idpermintaan,
-                idnextuser: next_idpengguna,
-                tipe: tipeinsert,
-                flag_selesai: flag_selesai,
-                keterangan_selesai: keterangan_nextuser,
-                url_progress: url_progress);
-            _apiService.addProgres(token, data).then((progressSuccess) {
-              if (progressSuccess) {
-                Fluttertoast.showToast(
-                    msg: "${_apiService.responseCode.messageApi}",
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white);
-                // ReusableClasses().modalbottomWarning(
-                //     context,
-                //     "Berhasil!",
-                //     "${_apiService.responseCode.messageApi}",
-                //     "f200",
-                //     "assets/images/congratulations.png");
-              } else {
-                Fluttertoast.showToast(
-                    msg: "${_apiService.responseCode.messageApi}",
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white);
-                // ReusableClasses().modalbottomWarning(
-                //     context,
-                //     "Gagal!",
-                //     "${_apiService.responseCode.messageApi}",
-                //     "f400",
-                //     "assets/images/sorry.png");
-              }
-            });
+            Fluttertoast.showToast(
+                msg: "${_apiService.responseCode.messageApi}",
+                backgroundColor: Colors.red,
+                textColor: Colors.white);
+
+            /// ditutup karena sudah di handle oleh api ketika insert next progres
+            // ProgressModel data = ProgressModel(
+            //     keterangan: keterangan,
+            //     idpermintaan: idpermintaan,
+            //     idnextuser: next_idpengguna,
+            //     tipe: tipeinsert,
+            //     flag_selesai: flag_selesai,
+            //     keterangan_selesai: keterangan_nextuser,
+            //     url_progress: url_progress);
+            // _apiService.addProgres(token, data).then((progressSuccess) {
+            //   if (progressSuccess) {
+            //     Fluttertoast.showToast(
+            //         msg: "${_apiService.responseCode.messageApi}",
+            //         backgroundColor: Colors.red,
+            //         textColor: Colors.white);
+            //     // ReusableClasses().modalbottomWarning(
+            //     //     context,
+            //     //     "Berhasil!",
+            //     //     "${_apiService.responseCode.messageApi}",
+            //     //     "f200",
+            //     //     "assets/images/congratulations.png");
+            //   } else {
+            //     Fluttertoast.showToast(
+            //         msg: "${_apiService.responseCode.messageApi}",
+            //         backgroundColor: Colors.red,
+            //         textColor: Colors.white);
+            //     // ReusableClasses().modalbottomWarning(
+            //     //     context,
+            //     //     "Gagal!",
+            //     //     "${_apiService.responseCode.messageApi}",
+            //     //     "f400",
+            //     //     "assets/images/sorry.png");
+            //   }
+            // });
           } else {
             Fluttertoast.showToast(
                 msg: "${_apiService.responseCode.messageApi}",

@@ -2,7 +2,24 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const { PenggunaModel } = require('../models/index.js')
+const mysql = require('mysql')
+
+/**
+ * ! Pool setting up
+ * * pool connection limit 10
+ * * queue limit 25
+ */
+
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+    connectionLimit: 10,
+    queueLimit: 25,
+    timezone: 'utc-8'
+})
 
 /**
  * @swagger
@@ -56,47 +73,106 @@ const { PenggunaModel } = require('../models/index.js')
  */
 
 async function Login(req, res) {
-    const { username, password, tipe } = req.body
-    try {
-        await PenggunaModel.findOne({ where: { username } }).then((result) => {
-            if (!result) {
-                throw new Error(`Could not find ${username}`)
-            }
-            if (result.dataValues.aktif == 0) {
-                throw new Error(`your account has disabled administrator`)
-            }
-            bcrypt.compare(password, result.dataValues.password, (error, resultPassword) => {
-                if (!resultPassword) {
-                    return res.status(401).send({ success: false, message: "Your password is incorrect" })
-                }
-                const user = {
-                    idpengguna: result.idpengguna,
-                    username: result.username,
-                    jabatan: result.jabatan,
-                    tipe: tipe
-                }
-                const access_token = jwt.sign(user, process.env.ACCESS_SECRET, {
-                    expiresIn: process.env.ACCESS_EXPIRED
-                })
-                const refresh_token = jwt.sign(user, process.env.REFRESH_SECRET, {
-                    expiresIn: process.env.REFRESH_EXPIRED
-                })
-                refreshTokens.push(refresh_token)
-                return res.status(200).send({
-                    message: 'Selamat, Anda Berhasil Login',
-                    access_token: access_token,
-                    refresh_token: refresh_token,
-                    user
-                })
-            })
-        }).catch((err) => {
-            return res.status(400).send({ success: false, message: err.message })
-        });
-    } catch (error) {
-        res.status(500).send({
-            message: "Internal Server Error",
-            error: error
+    var username = req.body.username
+    var password = req.body.password
+    var tipe = req.body.tipe
+    console.log('Ada yang mencoba masuk')
+    if (Object.keys(req.body).length != 3) {
+        return res.status(405).send({
+            message: "Sorry,  parameters not match!",
+            error: jwtresult,
+            data: null
         })
+    } else {
+        try {
+            pool.getConnection(function (error, database) {
+                if (error) {
+                    return res.status(501).send({
+                        message: "Sorry, your connection has refused",
+                        error: error,
+                        data: null
+                    })
+                } else {
+                    var sqlquery = "SELECT * FROM pengguna WHERE username = ?"
+                    database.query(sqlquery, [username], function (error, rows) {
+                        database.release()
+                        if (error) {
+                            return res.status(407).send({
+                                message: "Sorry, sql query have a problem",
+                                error: error,
+                                data: null
+                            })
+                        } else {
+                            if (!rows.length) {
+                                return res.status(400).send({
+                                    message: "Username anda tidak ditemukan!",
+                                    error: null,
+                                    data: null
+                                })
+                            } else {
+                                if (rows[0].aktif == 0) {
+                                    return res.status(200).send({
+                                        message: "Akun anda tidak aktif",
+                                        error: null,
+                                        data: null
+                                    })
+                                } else {
+                                    // * checking password from database rows with bcrypt encryption
+                                    bcrypt.compare(
+                                        password,
+                                        rows[0]['password'],
+                                        (eErr, eResult) => {
+                                            console.log(eResult)
+                                            if (eErr) {
+                                                console.log(eErr)
+                                                return res.status(401).send({
+                                                    message: 'Password anda Salah!'
+                                                })
+                                            } else if (eResult) {
+                                                console.log("Login Berhasil")
+                                                const user = {
+                                                    idpengguna: rows[0].idpengguna,
+                                                    username: rows[0].username, //tambahan untuk lempar next user
+                                                    jabatan: rows[0].jabatan,
+                                                    sales:rows[0].sales,
+                                                    tipe: tipe
+                                                }
+                                                const access_token = jwt.sign(user, process.env.ACCESS_SECRET, {
+                                                    expiresIn: process.env.ACCESS_EXPIRED
+                                                })
+                                                const refresh_token = jwt.sign(user, process.env.REFRESH_SECRET, {
+                                                    expiresIn: process.env.REFRESH_EXPIRED
+                                                })
+                                                refreshTokens.push(refresh_token)
+                                                return res.status(200).send({
+                                                    message: 'Selamat, Anda Berhasil Login',
+                                                    access_token: access_token,
+                                                    refresh_token: refresh_token,
+                                                    nama: rows[0].nama,
+                                                    username: rows[0].username,
+                                                    jabatan: rows[0].jabatan,
+							idpengguna: rows[0].idpengguna
+                                                })
+                                            } else {
+                                                return res.status(401).send({
+                                                    message: 'Username atau Password salah',
+                                                    error: null,
+                                                    data: null
+                                                })
+                                            }
+                                        })
+                                }
+                            }
+                        }
+                    })
+                }
+            })
+        } catch (error) {
+            res.status(403).send({
+                message: "Forbidden",
+                error: error
+            })
+        }
     }
 }
 
@@ -133,6 +209,7 @@ async function Login(req, res) {
 
 async function GenerateNewToken(req, res) {
     const refreshToken = req.body.refresh_token
+    console.log("refresh token di fungsi newtoken : " + refreshTokens)
     if (refreshToken == null) {
         return res.status(405).send({
             message: "Refresh token tidak kosong!",
