@@ -16,6 +16,7 @@ import 'package:rmsmobile/utils/warna.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../apiService/apiService.dart';
+import '../webview/inappwebviewpage.dart';
 
 class RequestPageSearch extends StatefulWidget {
   @override
@@ -659,6 +660,19 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                 hintText: 'Masukkan URL',
                                 suffixIcon:
                                     Icon(Icons.check_circle_outline_outlined))),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => WebviewPage(
+                                            data_url: 'https://merek.id/',
+                                          )));
+                            },
+                            child: Text('Cari di Merek.id')),
                         SizedBox(
                           height: 10.0,
                         ),

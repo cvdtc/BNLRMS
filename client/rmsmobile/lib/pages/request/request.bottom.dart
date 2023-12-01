@@ -128,17 +128,6 @@ class RequestModalBottom {
                         SizedBox(
                           height: 10.0,
                         ),
-                        ElevatedButton(onPressed: (){
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => WebviewPage(
-                                        data_url: 'merek.id',
-                                      )));
-                        }, child: Text('Cari di Merek.id')),
-                        SizedBox(
-                          height: 10.0,
-                        ),
                         Row(
                           children: [
                             Container(

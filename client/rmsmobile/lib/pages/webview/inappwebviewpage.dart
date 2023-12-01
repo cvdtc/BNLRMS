@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -17,7 +18,7 @@ class WebviewPage extends StatefulWidget {
 class _MyAppState extends State<WebviewPage> {
   String urlweb = "";
   double progress = 0;
-  String currentURL = '';
+  var currentURL;
   InAppWebViewController? _appWebViewController;
   @override
   void initState() {
@@ -41,12 +42,8 @@ class _MyAppState extends State<WebviewPage> {
           actions: [
             IconButton(
                 onPressed: () async {
-                  // print(await _appWebViewController?.toString());
-                  currentURL = await _appWebViewController!.getUrl().toString();
-                  print(currentURL);
-                  Get.snackbar('Salin', 'URL Berhasil disalin',
-                      snackPosition: SnackPosition.TOP,
-                      backgroundColor: thirdcolor);
+                  await Clipboard.setData(
+                      ClipboardData(text: currentURL.toString()));
                 },
                 icon: Icon(
                   Icons.copy_all_rounded,
@@ -64,7 +61,7 @@ class _MyAppState extends State<WebviewPage> {
                     color: primarycolor,
                   )
                 : Text(
-                    urlweb,
+                    currentURL.toString(),
                     style: TextStyle(fontSize: 8.0),
                   ),
           ),
@@ -87,7 +84,11 @@ class _MyAppState extends State<WebviewPage> {
                     (InAppWebViewController controller, int progress) {
                   setState(() {
                     this.progress = progress / 100;
+                    print(controller.getUrl());
                   });
+                },
+                onLoadStop: (controller, url) async {
+                  currentURL = url;
                 },
               ),
             ),
