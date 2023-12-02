@@ -45,17 +45,7 @@ class _DashboardMerekInternasionalState
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _apiService
-          .getListDashboardMerekInternasional(token.toString())
-          .onError((error, stackTrace) {
-        ReusableClasses().clearSharedPreferences();
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Loginscreen(
-                      tipe: 'sesiberakhir',
-                    )));
-      }),
+      future: _apiService.getListDashboardMerekInternasional(token.toString()),
       builder: (context,
           AsyncSnapshot<List<DataDashboardMerekInternasionalModel>?> snapshot) {
         if (snapshot.hasError) {

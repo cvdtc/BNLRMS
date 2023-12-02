@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('pengguna', {
+
+const PenggunaModel = (sequelize, DataTypes) => {
+  const penggunaField = sequelize.define('pengguna', {
     idpengguna: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -31,31 +31,24 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    created: {
+    last_login: {
       type: DataTypes.DATE,
       allowNull: false
+    },
+    created: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
     edited: {
       type: DataTypes.DATE,
       allowNull: true
     },
-    last_login: {
-      type: DataTypes.DATE,
-      allowNull: false
+    sales: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
-  }, {
-    sequelize,
-    tableName: 'pengguna',
-    timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "idpengguna" },
-        ]
-      },
-    ]
   });
+  return penggunaField
 };
+
+module.exports = PenggunaModel

@@ -28,7 +28,7 @@ class _DetailListMerekInternasionalState
           bottom: TabBar(
               indicatorColor: darkgreen,
               labelColor: darkgreen,
-              unselectedLabelColor: Colors.white,
+              // unselectedLabelColor: Colors.white,
               tabs: [
                 Tab(
                   icon: Icon(
@@ -43,6 +43,13 @@ class _DetailListMerekInternasionalState
                     color: darkgreen,
                   ),
                   text: 'History',
+                ),
+                Tab(
+                  icon: Icon(
+                    Icons.history_rounded,
+                    color: darkgreen,
+                  ),
+                  text: 'Last Status',
                 )
               ]),
           title: Text(
@@ -54,6 +61,9 @@ class _DetailListMerekInternasionalState
         body: TabBarView(children: [
           ComponentDetailMerekInternasional(
               merekInternasional: widget.merekInternasional),
+          TimelineMerekInternasional(
+            kode: widget.merekInternasional.kODE.toString(),
+          ),
           TimelineMerekInternasional(
             kode: widget.merekInternasional.kODE.toString(),
           )

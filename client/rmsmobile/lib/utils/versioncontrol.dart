@@ -1,8 +1,14 @@
 class AppVersion {
-  static double versionNumber = 2.6;
+  static double versionNumber = 2.8;
 }
 
 /**
+ * * Update v2.8:
+ * - Update filter permintaan
+ * - Update Shortcut Tombol Webview ke merek.id di modal add permintaan
+ * - Add tombol copy url di webview
+ * * Update v2.7 :
+ * - Update close modal navigattion ketika edit/selesai permintaan
  * Update v2.6 :
  * - Update Merek Internasinal di halaman dashboard
  * Update v2.4 :

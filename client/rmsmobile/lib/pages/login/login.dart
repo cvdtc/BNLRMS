@@ -221,7 +221,7 @@ class _LoginscreenState extends State<Loginscreen> {
       ReusableClasses().modalbottomWarning(
           context,
           'Koneksi Bermasalah!',
-          'Pastikan Koneksi anda stabil terlebih dahulu, apabila masih terkendala hubungi IT. ${error}',
+          'Pastikan Koneksi anda stabil terlebih dahulu, apabila masih terkendala hubungi IT.',
           'f500',
           'assets/images/sorry.png');
     });

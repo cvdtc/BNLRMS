@@ -1,8 +1,8 @@
 //Plugin
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const mysql = require("mysql");
+require('dotenv').config()
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const mysql = require('mysql')
 
 /**
  * ! Pool setting up
@@ -11,15 +11,15 @@ const mysql = require("mysql");
  */
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-  connectionLimit: 10,
-  queueLimit: 25,
-  timezone: "utc-8",
-});
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+    connectionLimit: 10,
+    queueLimit: 25,
+    timezone: 'utc-8'
+})
 
 /**
  * @swagger
@@ -69,74 +69,68 @@ const pool = mysql.createPool({
  */
 
 async function getAllPengguna(req, res) {
-  const token = req.headers.authorization;
-  console.log(new Date());
-  if (token != null) {
-    try {
-      jwt.verify(
-        token.split(" ")[1],
-        process.env.ACCESS_SECRET,
-        (jwterror, jwtresult) => {
-          if (!jwtresult) {
-            return res.status(401).send(
-              JSON.stringify({
-                message: "Sorry, Your token has expired!",
-                error: jwterror,
-                data: null,
-              })
-            );
-          } else {
-            pool.getConnection(function (error, database) {
-              if (error) {
-                return res.status(400).send({
-                  message: "Sorry, your connection has refused!",
-                  error: error,
-                  data: null,
-                });
-              } else {
-                var sqlquery = "SELECT * FROM pengguna";
-                database.query(sqlquery, (error, rows) => {
-                  database.release();
-                  if (error) {
-                    return res.status(500).send({
-                      message: "Sorry, query has error!",
-                      error: error,
-                      data: null,
-                    });
-                  } else {
-                    if (rows.length <= 0) {
-                      return res.status(204).send({
-                        message: "Sorry, data empty!",
-                        error: null,
-                        data: rows,
-                      });
-                    } else {
-                      return res.status(200).send({
-                        message: "Done!, data has fetched!",
-                        error: null,
-                        data: rows,
-                      });
-                    }
-                  }
-                });
-              }
-            });
-          }
+    const token = req.headers.authorization
+    console.log(new Date())
+    if (token != null) {
+        try {
+            jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
+                if (!jwtresult) {
+                    return res.status(401).send(JSON.stringify({
+                        message: "Sorry, Your token has expired!",
+                        error: jwterror,
+                        data: null
+                    }))
+                } else {
+                    pool.getConnection(function (error, database) {
+                        if (error) {
+                            return res.status(400).send({
+                                message: "Sorry, your connection has refused!",
+                                error: error,
+                                data: null
+                            })
+                        } else {
+                            var sqlquery = "SELECT * FROM pengguna Where aktif=1"
+                            database.query(sqlquery, (error, rows) => {
+                                database.release()
+                                if (error) {
+                                    return res.status(500).send({
+                                        message: "Sorry, query has error!",
+                                        error: error,
+                                        data: null
+                                    })
+                                } else {
+                                    if (rows.length <= 0) {
+                                        return res.status(204).send({
+                                            message: "Sorry, data empty!",
+                                            error: null,
+                                            data: rows
+                                        })
+                                    } else {
+                                        return res.status(200).send({
+                                            message: "Done!, data has fetched!",
+                                            error: null,
+                                            data: rows
+                                        })
+                                    }
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        } catch (error) {
+            return res.status(403).send({
+                message: "Forbidden.",
+                data: rows
+            })
         }
-      );
-    } catch (error) {
-      return res.status(403).send({
-        message: "Forbidden.",
-        data: rows,
-      });
+    } else {
+        res.status(401).send({
+            message: "Sorry, Need Token Validation!",
+            error: null,
+            data: null
+        })
     }
-  } else {
-    res.status(401).send({
-      message: "Sorry, Need Token Validation!",
-      error: null,
-      data: null,
-    });
-  }
 }
 
 // * FUNCTION ADD DATA PENGGUNA
@@ -162,7 +156,7 @@ async function getAllPengguna(req, res) {
  *            name: Parameter
  *            schema:
  *              properties:
- *                  nama:
+ *                  nama: 
  *                      type: string
  *                      description: nama pengguna
  *                  username:
@@ -192,123 +186,108 @@ async function getAllPengguna(req, res) {
  *          405:
  *              description: parameter yang dikirim tidak sesuai
  *          407:
- *              description: gagal generate encrypt password
+ *              description: gagal generate encrypt password 
  *          500:
  *              description: kesalahan pada query sql
  */
 
 async function addPengguna(req, res) {
-  var nama = req.body.nama;
-  var username = req.body.username;
-  var password = req.body.password;
-  var jabatan = req.body.jabatan;
-  var notification_token = req.body.notification_token;
-  var aktif = req.body.aktif;
-  const token = req.headers.authorization;
-  if (Object.keys(req.body).length != 6) {
-    return res.status(405).send({
-      message: "Sorry,  parameters not match",
-      error: jwtresult,
-      data: null,
-    });
-  } else {
-    try {
-      jwt.verify(
-        token.split(" ")[1],
-        process.env.ACCESS_SECRET,
-        (jwterror, jwtresult) => {
-          if (!jwtresult) {
-            return res.status(401).send({
-              message: "Sorry,  Your token has expired!",
-              error: jwterror,
-              data: null,
-            });
-          } else {
-            pool.getConnection(function (error, database) {
-              if (error) {
-                return res.status(400).send({
-                  message: "Sorry,  your connection has refused!",
-                  error: error,
-                  data: null,
-                });
-              } else {
-                database.beginTransaction(function (error) {
-                  bcrypt.hash(password, 10, (errorencrypt, encrypt) => {
-                    if (errorencrypt) {
-                      return res.status(407).send({
-                        message: "Sorry,  password fail to generate!",
-                        error: errorencrypt,
-                        data: null,
-                      });
-                    } else {
-                      let datapengguna = {
-                        nama: nama,
-                        username: username,
-                        password: encrypt,
-                        jabatan: jabatan,
-                        aktif: aktif,
-                        notification_token: notification_token,
-                        created: new Date()
-                          .toISOString()
-                          .replace("T", " ")
-                          .substring(0, 19),
-                        last_login: new Date()
-                          .toISOString()
-                          .replace("T", " ")
-                          .substring(0, 19),
-                      };
-                      var sqlquery = "INSERT INTO pengguna SET ?";
-                      database.query(
-                        sqlquery,
-                        datapengguna,
-                        (error, result) => {
-                          database.release();
-                          if (error) {
-                            database.rollback(function () {
-                              return res.status(407).send({
-                                message: "Sorry,  query has error!",
+    var nama = req.body.nama
+    var username = req.body.username
+    var password = req.body.password
+    var jabatan = req.body.jabatan
+    var notification_token = req.body.notification_token
+    var aktif = req.body.aktif
+    const token = req.headers.authorization
+    if (Object.keys(req.body).length != 6) {
+        return res.status(405).send({
+            message: "Sorry,  parameters not match",
+            error: jwtresult,
+            data: null
+        })
+    } else {
+        try {
+            jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
+                if (!jwtresult) {
+                    return res.status(401).send({
+                        message: "Sorry,  Your token has expired!",
+                        error: jwterror,
+                        data: null
+                    })
+                } else {
+                    pool.getConnection(function (error, database) {
+                        if (error) {
+                            return res.status(400).send({
+                                message: "Sorry,  your connection has refused!",
                                 error: error,
-                                data: null,
-                              });
-                            });
-                          } else {
-                            database.commit(function (errcommit) {
-                              if (errcommit) {
-                                database.rollback(function () {
-                                  return res.status(407).send({
-                                    message:
-                                      "Sorry,  fail to store data pengguna",
-                                    error: errcommit,
-                                    data: null,
-                                  });
-                                });
-                              } else {
-                                return res.status(200).send({
-                                  message: "Done!,  Data has been stored!",
-                                  error: null,
-                                  data: null,
-                                });
-                              }
-                            });
-                          }
+                                data: null
+                            })
+                        } else {
+                            database.beginTransaction(function (error) {
+                                bcrypt.hash(password, 10, (errorencrypt, encrypt) => {
+                                    if (errorencrypt) {
+                                        return res.status(407).send({
+                                            message: "Sorry,  password fail to generate!",
+                                            error: errorencrypt,
+                                            data: null
+                                        })
+                                    } else {
+                                        let datapengguna = {
+                                            nama: nama,
+                                            username: username,
+                                            password: encrypt,
+                                            jabatan: jabatan,
+                                            aktif: aktif,
+                                            notification_token: notification_token,
+                                            created: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                                            last_login: new Date().toISOString().replace('T', ' ').substring(0, 19)
+                                        }
+                                        var sqlquery = "INSERT INTO pengguna SET ?"
+                                        database.query(sqlquery, datapengguna, (error, result) => {
+                                            database.release()
+                                            if (error) {
+                                                database.rollback(function () {
+                                                    return res.status(407).send({
+                                                        message: "Sorry,  query has error!",
+                                                        error: error,
+                                                        data: null
+                                                    })
+                                                })
+                                            } else {
+                                                database.commit(function (errcommit) {
+                                                    if (errcommit) {
+                                                        database.rollback(function () {
+                                                            return res.status(407).send({
+                                                                message: "Sorry,  fail to store data pengguna",
+                                                                error: errcommit,
+                                                                data: null
+                                                            })
+                                                        })
+                                                    } else {
+                                                        return res.status(200).send({
+                                                            message: "Done!,  Data has been stored!",
+                                                            error: null,
+                                                            data: null
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            })
                         }
-                      );
-                    }
-                  });
-                });
-              }
-            });
-          }
+                    })
+                }
+            })
+        } catch (error) {
+            return res.status(403).send({
+                message: "forbiden!",
+                error: error,
+                data: null
+            })
         }
-      );
-    } catch (error) {
-      return res.status(403).send({
-        message: "forbiden!",
-        error: error,
-        data: null,
-      });
     }
-  }
 }
 
 // * FUNCTION CHANGE DATA PENGGUNA
@@ -334,7 +313,7 @@ async function addPengguna(req, res) {
  *            name: Parameter
  *            schema:
  *              properties:
- *                  nama:
+ *                  nama: 
  *                      type: string
  *                      description: nama pengguna
  *                  username:
@@ -364,128 +343,112 @@ async function addPengguna(req, res) {
  *          405:
  *              description: parameter yang dikirim tidak sesuai
  *          407:
- *              description: gagal generate encrypt password
+ *              description: gagal generate encrypt password 
  *          500:
  *              description: kesalahan pada query sql
  */
 
 async function ubahPengguna(req, res) {
-  var nama = req.body.nama;
-  var username = req.body.username;
-  var password = req.body.password;
-  var jabatan = req.body.jabatan;
-  var notification_token = req.body.notification_token;
-  var aktif = req.body.aktif;
-  const token = req.headers.authorization;
-  if (Object.keys(req.body).length != 6) {
-    return res.status(405).send({
-      message: "Sorry,  parameters not match",
-      error: jwtresult,
-      data: null,
-    });
-  } else {
-    try {
-      jwt.verify(
-        token.split(" ")[1],
-        process.env.ACCESS_SECRET,
-        (jwterror, jwtresult) => {
-          if (!jwtresult) {
-            return res.status(401).send({
-              message: "Sorry,  Your token has expired!",
-              error: jwterror,
-              data: null,
-            });
-          } else {
-            pool.getConnection(function (error, database) {
-              if (error) {
-                return res.status(400).send({
-                  message: "Sorry,  your connection has refused!",
-                  error: error,
-                  data: null,
-                });
-              } else {
-                database.beginTransaction(function (error) {
-                  bcrypt.hash(password, 10, (errorencrypt, encrypt) => {
-                    if (errorencrypt) {
-                      return res.status(407).send({
-                        message: "Sorry,  password fail to generate!",
-                        error: errorencrypt,
-                        data: null,
-                      });
-                    } else {
-                      let datapengguna = {
-                        nama: nama,
-                        username: username,
-                        password: encrypt,
-                        jabatan: jabatan,
-                        aktif: aktif,
-                        notification_token: notification_token,
-                        edited: new Date()
-                          .toISOString()
-                          .replace("T", " ")
-                          .substring(0, 19),
-                        last_login: new Date()
-                          .toISOString()
-                          .replace("T", " ")
-                          .substring(0, 19),
-                      };
-                      var sqlquery =
-                        "UPDATE pengguna SET ? WHERE idpengguna = ?";
-                      database.query(
-                        sqlquery,
-                        [datapengguna, jwtresult.idpengguna],
-                        (error, result) => {
-                          database.release();
-                          if (error) {
-                            database.rollback(function () {
-                              return res.status(407).send({
-                                message: "Sorry,  query has error!",
+    var nama = req.body.nama
+    var username = req.body.username
+    var password = req.body.password
+    var jabatan = req.body.jabatan
+    var notification_token = req.body.notification_token
+    var aktif = req.body.aktif
+    const token = req.headers.authorization
+    if (Object.keys(req.body).length != 6) {
+        return res.status(405).send({
+            message: "Sorry,  parameters not match",
+            error: jwtresult,
+            data: null
+        })
+    } else {
+        try {
+            jwt.verify(token.split(' ')[1], process.env.ACCESS_SECRET, (jwterror, jwtresult) => {
+                if (!jwtresult) {
+                    return res.status(401).send({
+                        message: "Sorry,  Your token has expired!",
+                        error: jwterror,
+                        data: null
+                    })
+                } else {
+                    pool.getConnection(function (error, database) {
+                        if (error) {
+                            return res.status(400).send({
+                                message: "Sorry,  your connection has refused!",
                                 error: error,
-                                data: null,
-                              });
-                            });
-                          } else {
-                            database.commit(function (errcommit) {
-                              if (errcommit) {
-                                database.rollback(function () {
-                                  return res.status(407).send({
-                                    message:
-                                      "Sorry,  fail to change data pengguna",
-                                    error: errcommit,
-                                    data: null,
-                                  });
-                                });
-                              } else {
-                                return res.status(200).send({
-                                  message: "Done!,  Data has changed!",
-                                  error: null,
-                                  data: null,
-                                });
-                              }
-                            });
-                          }
+                                data: null
+                            })
+                        } else {
+                            database.beginTransaction(function (error) {
+                                bcrypt.hash(password, 10, (errorencrypt, encrypt) => {
+                                    if (errorencrypt) {
+                                        return res.status(407).send({
+                                            message: "Sorry,  password fail to generate!",
+                                            error: errorencrypt,
+                                            data: null
+                                        })
+                                    } else {
+                                        let datapengguna = {
+                                            nama: nama,
+                                            username: username,
+                                            password: encrypt,
+                                            jabatan: jabatan,
+                                            aktif: aktif,
+                                            notification_token: notification_token,
+                                            edited: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                                            last_login: new Date().toISOString().replace('T', ' ').substring(0, 19)
+                                        }
+                                        var sqlquery = "UPDATE pengguna SET ? WHERE idpengguna = ?"
+                                        database.query(sqlquery, [datapengguna, jwtresult.idpengguna], (error, result) => {
+                                            database.release()
+                                            if (error) {
+                                                database.rollback(function () {
+                                                    return res.status(407).send({
+                                                        message: "Sorry,  query has error!",
+                                                        error: error,
+                                                        data: null
+                                                    })
+                                                })
+                                            } else {
+                                                database.commit(function (errcommit) {
+                                                    if (errcommit) {
+                                                        database.rollback(function () {
+                                                            return res.status(407).send({
+                                                                message: "Sorry,  fail to change data pengguna",
+                                                                error: errcommit,
+                                                                data: null
+                                                            })
+                                                        })
+                                                    } else {
+                                                        return res.status(200).send({
+                                                            message: "Done!,  Data has changed!",
+                                                            error: null,
+                                                            data: null
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            })
                         }
-                      );
-                    }
-                  });
-                });
-              }
-            });
-          }
+                    })
+                }
+            })
+        } catch (error) {
+            return res.status(403).send({
+                message: "forbiden!",
+                error: error,
+                data: null
+            })
         }
-      );
-    } catch (error) {
-      return res.status(403).send({
-        message: "forbiden!",
-        error: error,
-        data: null,
-      });
     }
-  }
 }
 
 module.exports = {
-  getAllPengguna,
-  addPengguna,
-  ubahPengguna,
-};
+    getAllPengguna,
+    addPengguna,
+    ubahPengguna
+}

@@ -76,18 +76,16 @@ async function Login(req, res) {
     var username = req.body.username
     var password = req.body.password
     var tipe = req.body.tipe
-    // console.log('Ada yang mencoba masuk')
-    // if (Object.keys(req.body).length != 3) {
-    //     return res.status(405).send({
-    //         message: "Sorry,  parameters not match!",
-    //         error: jwtresult,
-    //         data: null
-    //     })
-    // } else {
-        console.log("Ada yang mencoba masuk...")
+    console.log('Ada yang mencoba masuk')
+    if (Object.keys(req.body).length != 3) {
+        return res.status(405).send({
+            message: "Sorry,  parameters not match!",
+            error: jwtresult,
+            data: null
+        })
+    } else {
         try {
             pool.getConnection(function (error, database) {
-                console.log("🚀 ~ file: login.controller.js:90 ~ error, database", error, database)
                 if (error) {
                     return res.status(501).send({
                         message: "Sorry, your connection has refused",
@@ -98,7 +96,6 @@ async function Login(req, res) {
                     var sqlquery = "SELECT * FROM pengguna WHERE username = ?"
                     database.query(sqlquery, [username], function (error, rows) {
                         database.release()
-                        console.log(error, rows);
                         if (error) {
                             return res.status(407).send({
                                 message: "Sorry, sql query have a problem",
@@ -135,8 +132,9 @@ async function Login(req, res) {
                                                 console.log("Login Berhasil")
                                                 const user = {
                                                     idpengguna: rows[0].idpengguna,
-                                                    username: rows[0].username,
+                                                    username: rows[0].username, //tambahan untuk lempar next user
                                                     jabatan: rows[0].jabatan,
+                                                    sales:rows[0].sales,
                                                     tipe: tipe
                                                 }
                                                 const access_token = jwt.sign(user, process.env.ACCESS_SECRET, {
@@ -152,7 +150,8 @@ async function Login(req, res) {
                                                     refresh_token: refresh_token,
                                                     nama: rows[0].nama,
                                                     username: rows[0].username,
-                                                    jabatan: rows[0].jabatan
+                                                    jabatan: rows[0].jabatan,
+							idpengguna: rows[0].idpengguna
                                                 })
                                             } else {
                                                 return res.status(401).send({
@@ -174,7 +173,7 @@ async function Login(req, res) {
                 error: error
             })
         }
-    // }
+    }
 }
 
 /**

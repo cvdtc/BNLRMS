@@ -14,6 +14,7 @@ List<RequestModel> parsePermintaan(String responseBody) {
 
 Future<List<RequestModel>> fetchPermintaan(
     String token, FilterRequest data) async {
+  print('xxxx' + data.toString());
   var url = Uri.parse(_apiService + 'permintaan');
   var response = await http.post(url,
       headers: {

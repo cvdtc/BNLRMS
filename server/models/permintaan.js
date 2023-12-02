@@ -1,5 +1,4 @@
-const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('permintaan', {
     idpermintaan: {
       autoIncrement: true,
@@ -19,14 +18,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATEONLY,
       allowNull: false
     },
-    created: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    edited: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
     flag_selesai: {
       type: DataTypes.INTEGER,
       allowNull: false
@@ -34,11 +25,7 @@ module.exports = function(sequelize, DataTypes) {
     idpengguna: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
-      references: {
-        model: 'pengguna',
-        key: 'idpengguna'
-      }
+      primaryKey: true
     },
     keterangan_selesai: {
       type: DataTypes.STRING(1028),
@@ -47,28 +34,18 @@ module.exports = function(sequelize, DataTypes) {
     idpengguna_close_permintaan: {
       type: DataTypes.INTEGER,
       allowNull: true
-    }
-  }, {
-    sequelize,
-    tableName: 'permintaan',
-    timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "idpermintaan" },
-          { name: "idpengguna" },
-        ]
-      },
-      {
-        name: "fk_permintaan_pengguna_idx",
-        using: "BTREE",
-        fields: [
-          { name: "idpengguna" },
-        ]
-      },
-    ]
+    },
+    url_web: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    created: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    edited: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
   });
 };

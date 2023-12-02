@@ -1,37 +1,33 @@
 'use strict';
+const { Sequelize } = require('sequelize')
+const connectToDB = require('../config/index.js')
+const PermintaanModel = require('../models/permintaan.js');
+const ProgressModel = require('../models/progress.js')
+const PenggunaModel = require('../models/pengguna.js')
+const NoteModel = require('../models/note.js')
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config.json')[env];
-const db = {};
+const db = {}
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
 
-fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
-  });
+db.Sequelize = Sequelize
+db.connectToDB = connectToDB
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
+db.PenggunaModel = PenggunaModel(connectToDB, Sequelize)
+db.NoteModel = NoteModel(connectToDB, Sequelize)
+db.PermintaanModel = PermintaanModel(connectToDB, Sequelize)
+db.ProgressModel = ProgressModel(connectToDB, Sequelize)
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+// Association
+// Permintaan to Progress
+db.PermintaanModel.hasMany(db.ProgressModel, { foreignKey: 'idpermintaan' })
+db.ProgressModel.belongsTo(db.PermintaanModel, { foreignKey: 'idpermintaan' })
+//Pengguna to Permintaan
+db.PenggunaModel.hasMany(db.PermintaanModel, { foreignKey: 'idpengguna' })
+db.PermintaanModel.belongsTo(db.PenggunaModel, { foreignKey: 'idpengguna' })
+//Pengguna to Progress
+db.PenggunaModel.hasMany(db.ProgressModel, { foreignKey: 'idpengguna' })
+db.ProgressModel.belongsTo(db.PenggunaModel, { foreignKey: 'idpengguna' })
+
+db.connectToDB.sync({ force: false, alter: true })
 
 module.exports = db;

@@ -53,6 +53,7 @@ class _TimelinePageState extends State<TimelinePage> {
       appBar: AppBar(
         title: Text('Timeline '),
         centerTitle: true,
+        foregroundColor: Colors.black,
         backgroundColor: backgroundcolor,
       ),
       body: FutureBuilder(
@@ -157,7 +158,9 @@ class _TimelinePageState extends State<TimelinePage> {
                           dataTimeline.nama_request,
                           dataTimeline.nama_progress,
                           dataTimeline.nama_close_permintaan,
-                          dataTimeline.date_selesai,
+                          dataTimeline.date_selesai == null
+                              ? ''
+                              : dataTimeline.date_selesai,
                           dataTimeline.url_permintaan,
                           dataTimeline.url_progress != null
                               ? dataTimeline.url_progress

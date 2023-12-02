@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:rmsmobile/utils/warna.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class WebviewPage extends StatefulWidget {
   String data_url;
@@ -15,13 +18,15 @@ class WebviewPage extends StatefulWidget {
 class _MyAppState extends State<WebviewPage> {
   String urlweb = "";
   double progress = 0;
-
+  var currentURL;
+  InAppWebViewController? _appWebViewController;
   @override
   void initState() {
     // TODO: implement initState
 
     urlweb = widget.data_url;
     final _key = UniqueKey();
+
     // if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
     super.initState();
   }
@@ -34,14 +39,20 @@ class _MyAppState extends State<WebviewPage> {
         appBar: AppBar(
           title: Text(urlweb),
           backgroundColor: backgroundcolor,
+          actions: [
+            IconButton(
+                onPressed: () async {
+                  await Clipboard.setData(
+                      ClipboardData(text: currentURL.toString()));
+                },
+                icon: Icon(
+                  Icons.copy_all_rounded,
+                  color: Colors.black87,
+                )),
+          ],
         ),
         body: Container(
             child: Column(children: <Widget>[
-          // Container(
-          //   padding: EdgeInsets.all(20.0),
-          //   child: Text(
-          //       "CURRENT URL\n${(urlweb.length > 50) ? urlweb.substring(0, 50) + "..." : urlweb}"),
-          // ),
           Container(
             padding: EdgeInsets.all(10.0),
             child: progress < 1.0
@@ -50,11 +61,10 @@ class _MyAppState extends State<WebviewPage> {
                     color: primarycolor,
                   )
                 : Text(
-                    urlweb,
+                    currentURL.toString(),
                     style: TextStyle(fontSize: 8.0),
                   ),
           ),
-
           Expanded(
             child: Container(
               margin: const EdgeInsets.all(10.0),
@@ -74,7 +84,11 @@ class _MyAppState extends State<WebviewPage> {
                     (InAppWebViewController controller, int progress) {
                   setState(() {
                     this.progress = progress / 100;
+                    print(controller.getUrl());
                   });
+                },
+                onLoadStop: (controller, url) async {
+                  currentURL = url;
                 },
               ),
             ),
