@@ -110,19 +110,25 @@ async function getAllPermintaan(req, res) {
                                         : ''; //[1]
                                 /// cek filter tanggal dan keyword [06122022]
                                 let filtertanggal = '';
-                                if (
-                                    tanggal_awal != '' ||
-                                    tanggal_akhir != '' ||
-                                    keyword != '' ||
-                                    kategori != ''
-                                ) {
-                                    filtertanggal = `and date(p.created) between '${tanggal_awal}' and '${tanggal_akhir}' and p.keterangan like '%${keyword}%' and p.kategori like '%${kategori}%'`;
+                                let filterKeyword = '';
+                                let filterKategori = '';
+                                if (tanggal_awal != '' || tanggal_akhir != '') {
+                                    filtertanggal = ` and date(p.created) between '${tanggal_awal}' and '${tanggal_akhir} '`;
                                 } else {
-                                    filtertanggal = '';
+                                    filtertanggal =
+                                        ' date(p.created) between date(curdate()) - INTERVAL 6 MONTH AND DATE(CURDATE()) ';
+                                }
+                                if (keyword != '') {
+                                    filterKeyword = ` and p.keterangan like '%${keyword}%' `;
+                                }
+                                if (kategori != '') {
+                                    filterKategori = ` and p.kategori like '%${kategori}%' `;
                                 }
                                 var sqlquery =
                                     `select a.*, ifnull(b.jml,0) as jmlprogress from (SELECT idpermintaan, keterangan, kategori, DATE_FORMAT(due_date, "%Y-%m-%d") as due_date, DATE_FORMAT(p.created, "%Y-%m-%d %H:%i") as created, DATE_FORMAT(p.edited, "%Y-%m-%d %H:%i") as edited, flag_selesai, keterangan_selesai, pg.nama as nama_request, p.idpengguna, url_web as url_permintaan FROM permintaan p, pengguna pg WHERE p.idpengguna=pg.idpengguna ` +
                                     filtertanggal +
+                                    filterKeyword +
+                                    filterKategori +
                                     `)a left join (select idpermintaan, count(*) as jml from progress GROUP BY idpermintaan)b ON a.idpermintaan=b.idpermintaan ` +
                                     filter +
                                     ` ORDER BY flag_selesai ASC, due_date ASC`;
