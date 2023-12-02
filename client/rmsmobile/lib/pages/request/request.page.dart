@@ -74,11 +74,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     idpengguna = sp.getString('idpengguna')!;
     // });
     FilterRequest data = FilterRequest(
-        tanggal_awal: _tecTanggalAwal.text.toString(),
-        tanggal_akhir: _tecTanggalAkhir.text.toString(),
-        keyword: _tecKeyword.text.toString(),
-        kategori: _dropdownValueFilter.toString());
-    print(data.toString());
+        tanggal_awal: '', tanggal_akhir: '', keyword: '', kategori: '');
     await fetchPermintaan(token, data).then((value) {
       setState(() {
         _isLoading = false;
@@ -90,42 +86,14 @@ class RequestPageSearchState extends State<RequestPageSearch> {
       _pngguna(token);
     }).onError((error, stackTrace) {
       print(error.toString() + ' -- ' + stackTrace.toString());
-      // ReusableClasses().clearSharedPreferences();
-      // Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => Loginscreen(
-      //               tipe: 'sesiberakhir',
-      //             )));
     });
   }
-
-  var kategoriItems = [
-    '',
-    'Merek',
-    'Merek - QC',
-    'Merek - Permohonan',
-    'Merek - Oposisi',
-    'Merek - KO',
-    'Merek - Sanggahan',
-    'Merek - KBM',
-    'Merek - Perpanjangan',
-    'Merek - Lain Lain',
-    'Merek - Upaya Lain2',
-    'Paten',
-    'Desain Industri',
-    'Hak Cipta',
-    'DI - Oposisi',
-    'DI - KO'
-  ];
 
   Future refreshPage() async {
     _requestDisplay.clear();
     _requests.clear();
     _textSearch.clear();
-    // setState(() {
     cekToken();
-    // });
     Fluttertoast.showToast(
         msg: "Data Berhasil diperbarui",
         backgroundColor: Colors.black,
@@ -159,11 +127,6 @@ class RequestPageSearchState extends State<RequestPageSearch> {
     var url = Uri.parse(_apiService.baseUrl + 'pengguna');
     final response = await client
         .get(url, headers: {"Authorization": "BEARER ${token_pengguna}"});
-    // .then((value) => print("Pengguna?" + value.toString()))
-    // .onError((error, stackTrace) {
-    //   ReusableClasses().modalbottomWarning(context, "Pengguna ",
-    //       'Pengguna tidak ke load', 'f404', 'assets/images/sorry');
-    // });
     var dataz = json.decode(response.body);
     setState(() {
       print('Data Pengguna?' + dataz.toString());
@@ -386,37 +349,72 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                               height: 10,
                             ),
                             Row(
-                              children: [
-                                Text(
-                                  'Kategori : ',
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                DropdownButton(
-                                    dropdownColor: Colors.white,
-                                    value: _dropdownValueFilter,
-                                    items: kategoriItems.map((String items) {
-                                      return DropdownMenuItem(
-                                          child: Text(items), value: items);
-                                    }).toList(),
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        print(value);
-                                        _dropdownValueFilter = value!;
-                                      });
-                                    }),
-                              ],
-                            ),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    child: Row(
+                                      children: [
+                                        Text('Pilih Kategori '),
+                                        SizedBox(
+                                          width: 10.0,
+                                        ),
+                                        StatefulBuilder(
+                                          builder: (BuildContext context,
+                                              void Function(void Function())
+                                                  setState) {
+                                            return DropdownButton(
+                                              dropdownColor: Colors.white,
+                                              value: _dropdownValueFilter,
+                                              icon: Icon(Icons.arrow_drop_down),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  print(value);
+                                                  _dropdownValueFilter = value!;
+                                                });
+                                              },
+                                              items: <String>[
+                                                '',
+                                                'Merek',
+                                                'Merek - QC',
+                                                'Merek - Permohonan',
+                                                'Merek - Oposisi',
+                                                'Merek - KO',
+                                                'Merek - Sanggahan',
+                                                'Merek - KBM',
+                                                'Merek - Perpanjangan',
+                                                'Merek - Lain Lain',
+                                                'Merek - Upaya Lain2',
+                                                'Paten',
+                                                'Desain Industri',
+                                                'Hak Cipta',
+                                                'DI - Oposisi',
+                                                'DI - KO'
+                                              ].map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                                return DropdownMenuItem<String>(
+                                                    value: value,
+                                                    child: Text(value));
+                                              }).toList(),
+                                            );
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ]),
                             SizedBox(
                               height: 20,
                             ),
                             ElevatedButton.icon(
                                 onPressed: () async {
-                                  await refreshPage();
+                                  await filterData();
+
+                                  _dropdownValueFilter = '';
+                                  _tecTanggalAwal.clear();
+                                  _tecTanggalAkhir.clear();
+                                  _tecKeyword.clear();
+                                  // await refreshPage();
                                   Navigator.pop(context);
                                 },
                                 icon: Icon(Icons.search),
@@ -676,53 +674,47 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                         SizedBox(
                           height: 10.0,
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width / 1.4,
-                              child: TextFormField(
-                                  enabled: false,
-                                  controller: _tecDueDate,
-                                  textCapitalization: TextCapitalization.words,
-                                  onSaved: (String? val) {
-                                    tanggal = val.toString();
-                                  },
-                                  decoration: InputDecoration(
-                                      icon: Icon(Icons.date_range_rounded),
-                                      labelText: 'Pilih Tanggal Tenggat',
-                                      hintText: 'Pilih Tanggal',
-                                      suffixIcon: Icon(Icons
-                                          .check_circle_outline_outlined))),
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  showDatePicker(
-                                      context: context,
-                                      initialDate: selectedDate,
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2900),
-                                      builder: (context, picker) {
-                                        return Theme(
-                                            data: ThemeData.dark().copyWith(
-                                                colorScheme: ColorScheme.dark(
-                                                    primary: Colors.deepOrange,
-                                                    onPrimary: Colors.white,
-                                                    surface: Colors.white70,
-                                                    onSurface: Colors.green),
-                                                dialogBackgroundColor:
-                                                    Colors.white),
-                                            child: picker!);
-                                      }).then((value) {
-                                    if (value != null) {
-                                      selectedDate = value;
-                                      _tecDueDate.text =
-                                          DateFormat('yyyy-MM-dd')
-                                              .format(selectedDate);
-                                    }
-                                  });
-                                },
-                                child: Text('Pilih Tgl'))
-                          ],
+                        Container(
+                          // width: MediaQuery.of(context).size.width / 1.4,
+                          child: TextFormField(
+                            readOnly: true,
+                            controller: _tecDueDate,
+                            textCapitalization: TextCapitalization.words,
+                            onSaved: (String? val) {
+                              tanggal = val.toString();
+                            },
+                            decoration: InputDecoration(
+                                icon: Icon(Icons.date_range_rounded),
+                                labelText: 'Pilih Tanggal Tenggat',
+                                hintText: 'Pilih Tanggal',
+                                suffixIcon:
+                                    Icon(Icons.check_circle_outline_outlined)),
+                            onTap: () {
+                              showDatePicker(
+                                  context: context,
+                                  initialDate: selectedDate,
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2900),
+                                  builder: (context, picker) {
+                                    return Theme(
+                                        data: ThemeData.light().copyWith(
+                                            colorScheme: ColorScheme.dark(
+                                                primary: Colors.deepOrange,
+                                                onPrimary: Colors.white,
+                                                surface: Colors.white,
+                                                onSurface: Colors.green),
+                                            dialogBackgroundColor:
+                                                Colors.white),
+                                        child: picker!);
+                                  }).then((value) {
+                                if (value != null) {
+                                  selectedDate = value;
+                                  _tecDueDate.text = DateFormat('yyyy-MM-dd')
+                                      .format(selectedDate);
+                                }
+                              });
+                            },
+                          ),
                         ),
                         SizedBox(
                           height: 10.0,
