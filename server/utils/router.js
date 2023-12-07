@@ -97,6 +97,9 @@ router.get('/merekinternasional', function (req, res) {
 router.get('/timelinemerekinternasional/:kode', function (req, res) {
     RouteToReport.getTimelineMerekInternasional(req, res);
 });
+router.get('/laststatusmerekinternasional/:kode', function (req, res) {
+    RouteToReport.getLastStatusMerekInternasional(req, res);
+});
 
 
 module.exports = router

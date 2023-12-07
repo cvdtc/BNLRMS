@@ -524,6 +524,79 @@ async function getTimelineMerekInternasional(req, res) {
     }
 }
 
+async function getLastStatusMerekInternasional(req, res) {
+    const token = req.headers.authorization;
+    const { kode } = req.params;
+    if (!token) {
+        return res
+            .status(401)
+            .send({ message: 'Sorry, Need Token Validation!' });
+    }
+    try {
+        jwt.verify(
+            token.split(' ')[1],
+            process.env.ACCESS_SECRET,
+            (jwterror, jwtresult) => {
+                if (!jwtresult) {
+                    return res.status(401).send(
+                        JSON.stringify({
+                            message: 'Sorry, Your token has expired!',
+                            error: jwterror,
+                            data: null,
+                        })
+                    );
+                } else {
+                    pool1.getConnection(function (error, database) {
+                        if (error) {
+                            return res.status(400).send({
+                                message: 'Sorry, your connection has refused!',
+                                error: error,
+                                data: null,
+                            });
+                        } else {
+                            var sqlquery = `select m.KODE, m.DESKRIPSI, m.kelas, m.KET_KELAS, n.DESKRIPSI as ngr, s.DESKRIPSI as statusd, DATE_FORMAT(dm.TANGGAL, '%d %M %Y') as tgldoc, dm.KODE1 as nodoc, dm.DESKRIPSI as ketd  from merek m, dokumenmerek dm, dokumenmerekln dmln, negara n, status s where m.KODE=dm.MEREK and dm.KODE=dmln.KODE and dmln.NEGARA_KODE=n.KODE and dm.JENIS=s.KODE and m.KODE='${kode}' ORDER BY dm.tanggal ASC;`;
+                            database.query(
+                                sqlquery,
+                                [jwtresult.idpengguna],
+                                (error, rows) => {
+                                    database.release();
+                                    if (error) {
+                                        return res.status(500).send({
+                                            message: 'Sorry, query has error!',
+                                            error: error,
+                                            data: null,
+                                        });
+                                    } else {
+                                        if (rows.length <= 0) {
+                                            return res.status(200).send({
+                                                message: 'Sorry, data empty!',
+                                                error: null,
+                                                data: rows,
+                                            });
+                                        } else {
+                                            return res.status(200).send({
+                                                message:
+                                                    'Done!, data has fetched!',
+                                                error: null,
+                                                data: rows,
+                                            });
+                                        }
+                                    }
+                                }
+                            );
+                        }
+                    });
+                }
+            }
+        );
+    } catch (error) {
+        return res.status(403).send({
+            message: 'Forbidden.',
+            data: error,
+        });
+    }
+}
+
 module.exports = {
     getTimeline,
     getDashboard,
@@ -531,4 +604,5 @@ module.exports = {
     getMerekInternasionalDashboard,
     getMerekInternasional,
     getTimelineMerekInternasional,
+    getLastStatusMerekInternasional
 }
