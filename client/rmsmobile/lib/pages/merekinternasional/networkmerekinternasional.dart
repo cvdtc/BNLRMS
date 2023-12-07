@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:rmsmobile/model/merekinternasional/laststatus.merekinternasional.dart';
 import 'package:rmsmobile/model/merekinternasional/merekinternasional.dart';
 import 'package:rmsmobile/model/merekinternasional/timeline.merekinternasional.dart';
 import '../../../apiService/apiService.dart';
@@ -46,6 +47,29 @@ Future<List<DataTimelineMerekInternasionalModel>>
   });
   if (response.statusCode == 200) {
     return compute(parseTimelineMerekInternasional, response.body);
+  } else {
+    return throw Exception(response.statusCode);
+  }
+}
+
+List<DataLastStatusMerekInternasionalModel> parseLastStatusMerekInternasional(
+    String responseBody) {
+  var listLastStatus = json.decode(responseBody)['data'] as List<dynamic>;
+  return listLastStatus
+      .map((e) => DataLastStatusMerekInternasionalModel.fromJson(e))
+      .toList();
+}
+
+Future<List<DataLastStatusMerekInternasionalModel>>
+    fetchLastStatusMerekInternasional(String kode, String token) async {
+  var url = Uri.parse(_apiService + 'laststatusmerekinternasional/' + kode);
+  var response = await http.get(url, headers: {
+    'content-type': 'application/json',
+    // ++ fyi : sending token with BEARER
+    'Authorization': 'Bearer ' + token
+  });
+  if (response.statusCode == 200) {
+    return compute(parseLastStatusMerekInternasional, response.body);
   } else {
     return throw Exception(response.statusCode);
   }

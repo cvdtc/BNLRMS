@@ -32,6 +32,7 @@ class RequestModalBottom {
   // * for edit progress
   bool flagswitchnextuser = false;
 
+  DateTime? due_date;
   List? pnggunaList;
   String? _mypengguna;
 
@@ -128,53 +129,34 @@ class RequestModalBottom {
                         SizedBox(
                           height: 10.0,
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width / 1.4,
-                              child: TextFormField(
-                                  enabled: false,
-                                  controller: _tecDueDate,
-                                  textCapitalization: TextCapitalization.words,
-                                  onSaved: (String? val) {
-                                    tanggal = val.toString();
-                                  },
-                                  decoration: InputDecoration(
-                                      icon: Icon(Icons.date_range_rounded),
-                                      labelText: 'Pilih Tanggal Tenggat',
-                                      hintText: 'Pilih Tanggal',
-                                      suffixIcon: Icon(Icons
-                                          .check_circle_outline_outlined))),
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  showDatePicker(
-                                      context: context,
-                                      initialDate: selectedDate,
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2900),
-                                      builder: (context, picker) {
-                                        return Theme(
-                                            data: ThemeData.dark().copyWith(
-                                                colorScheme: ColorScheme.dark(
-                                                    primary: Colors.deepOrange,
-                                                    onPrimary: Colors.white,
-                                                    surface: Colors.white70,
-                                                    onSurface: Colors.green),
-                                                dialogBackgroundColor:
-                                                    Colors.white),
-                                            child: picker!);
-                                      }).then((value) {
-                                    if (value != null) {
-                                      selectedDate = value;
-                                      _tecDueDate.text =
-                                          DateFormat('yyyy-MM-dd')
-                                              .format(selectedDate);
-                                    }
-                                  });
-                                },
-                                child: Text('Pilih Tgl'))
-                          ],
+                        Container(
+                          width: MediaQuery.of(context).size.width / 1.4,
+                          child: TextFormField(
+                            controller: _tecDueDate,
+                            textCapitalization: TextCapitalization.words,
+                            onSaved: (String? val) {
+                              tanggal = val.toString();
+                            },
+                            decoration: InputDecoration(
+                                icon: Icon(Icons.date_range_rounded),
+                                labelText: 'Pilih Tanggal Tenggat',
+                                hintText: 'Pilih Tanggal',
+                                suffixIcon:
+                                    Icon(Icons.check_circle_outline_outlined)),
+                            readOnly: true,
+                            onTap: () async {
+                              due_date = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2015),
+                                  lastDate: DateTime(2030));
+                              setState(() {
+                                _tecDueDate.text = DateFormat('yyyy-MM-dd')
+                                    .format(due_date!)
+                                    .toString();
+                              });
+                            },
+                          ),
                         ),
                         SizedBox(
                           height: 10.0,

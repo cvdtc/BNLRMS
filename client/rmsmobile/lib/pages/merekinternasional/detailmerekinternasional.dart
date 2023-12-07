@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rmsmobile/model/merekinternasional/merekinternasional.dart';
 import 'package:rmsmobile/pages/merekinternasional/detailmerekinternasional.component.dart';
+import 'package:rmsmobile/pages/merekinternasional/laststatusmerekinternasional.dart';
 import 'package:rmsmobile/pages/merekinternasional/timelinemerekinternasional.dart';
 import 'package:rmsmobile/utils/warna.dart';
 
@@ -64,7 +65,7 @@ class _DetailListMerekInternasionalState
           TimelineMerekInternasional(
             kode: widget.merekInternasional.kODE.toString(),
           ),
-          TimelineMerekInternasional(
+          LastStatusMerekInternasional(
             kode: widget.merekInternasional.kODE.toString(),
           )
         ]),

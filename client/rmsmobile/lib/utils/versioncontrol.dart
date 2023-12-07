@@ -1,8 +1,11 @@
 class AppVersion {
-  static double versionNumber = 2.8;
+  static double versionNumber = 2.9;
 }
 
 /**
+ * * Update v2.9
+ * - Update Last status untuk halaman merek internasional
+ * - perbaikan edit permintaan bagian due date
  * * Update v2.8:
  * - Update filter permintaan
  * - Update Shortcut Tombol Webview ke merek.id di modal add permintaan
