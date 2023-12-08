@@ -17,6 +17,11 @@ class LastStatusMerekInternasionalTile extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        laststatusmerekInternasional.ngr.toString(),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -28,8 +33,6 @@ class LastStatusMerekInternasionalTile extends StatelessWidget {
                       Divider(),
                       Text('No. Doc : ' +
                           laststatusmerekInternasional.nodoc.toString()),
-                      Text('Negara : ' +
-                          laststatusmerekInternasional.ngr.toString()),
                       Text('Keterangan : ' +
                           laststatusmerekInternasional.ketd.toString()),
                     ],

@@ -17,6 +17,11 @@ class TimelineMerekInternasionalTile extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        timelinemerekInternasional.ngr.toString(),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -28,8 +33,6 @@ class TimelineMerekInternasionalTile extends StatelessWidget {
                       Divider(),
                       Text('No. Doc : ' +
                           timelinemerekInternasional.nodoc.toString()),
-                      Text('Negara : ' +
-                          timelinemerekInternasional.ngr.toString()),
                       Text('Keterangan : ' +
                           timelinemerekInternasional.ketd.toString()),
                     ],
