@@ -331,12 +331,7 @@ class _DahsboardState extends State<Dahsboard> {
                             size: 16.0,
                             color: Colors.white,
                           ),
-                        )
-                        // Text(
-                        //   'Selengkapnya...',
-                        //   style: TextStyle(color: darkgreen),
-                        // )
-                        )
+                        ))
                   ],
                 ),
                 SizedBox(

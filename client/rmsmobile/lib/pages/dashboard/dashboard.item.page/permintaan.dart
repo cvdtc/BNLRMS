@@ -117,7 +117,6 @@ class _PermintaanListState extends State<PermintaanList> {
   Widget _listRequest(List<RequestModel>? dataIndex1, int tipelist) {
     List<RequestModel>? dataIndex;
     if (tipelist == 2) {
-      print("masuk 2");
       dataIndex = dataIndex1!
           .where((element) => element.flag_selesai == tipelist)
           .toList();
@@ -127,6 +126,11 @@ class _PermintaanListState extends State<PermintaanList> {
           .where((element) => element.flag_selesai == tipelist)
           .toList();
       dataIndex.sort((b, a) => a.date_selesai.compareTo(b.date_selesai));
+    } else if (tipelist == 0) {
+      dataIndex = dataIndex1!
+          .where((element) => element.flag_selesai == tipelist)
+          .toList();
+      dataIndex.sort((b, a) => b.due_date.compareTo(a.due_date));
     } else {
       dataIndex = dataIndex1;
     }

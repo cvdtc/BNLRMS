@@ -102,23 +102,6 @@ class PerpanjanganPageSearchState extends State<PerpanjanganPageSearch> {
         centerTitle: true,
         backgroundColor: backgroundcolor,
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      // Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => BottomNav(
-      //               numberOfpage: 2,
-      //             )));
-      //     RequestModalBottom().modalAddRequest(
-      //         context, 'tambah', token, "", "", "", "", "", "", "");
-      //   },
-      //   backgroundColor: thirdcolor,
-      //   child: Icon(
-      //     Icons.add,
-      //     color: Colors.white,
-      //   ),
-      // ),
       body: RefreshIndicator(
         onRefresh: refreshPage,
         child: SafeArea(
