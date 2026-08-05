@@ -148,7 +148,7 @@ class ProgressModalBottom {
                             _tecUrlProgress.text.toString());
                       },
                       style: ElevatedButton.styleFrom(
-                          elevation: 0.0, primary: thirdcolor),
+                          elevation: 0.0, backgroundColor: thirdcolor),
                       child: Ink(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18.0)),
@@ -255,7 +255,7 @@ class ProgressModalBottom {
                             },
                             style: ElevatedButton.styleFrom(
                               elevation: 0.0,
-                              primary: Colors.red,
+                              backgroundColor: Colors.red,
                             ),
                             child: Ink(
                               decoration: BoxDecoration(
@@ -289,7 +289,7 @@ class ProgressModalBottom {
                             },
                             style: ElevatedButton.styleFrom(
                               elevation: 0.0,
-                              primary: Colors.white,
+                              backgroundColor: Colors.white,
                             ),
                             child: Ink(
                               decoration: BoxDecoration(

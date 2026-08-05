@@ -375,7 +375,7 @@ class _ProgressTileState extends State<ProgressTile> {
                           elevation: 0.0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8)),
-                          primary: Colors.white),
+                          backgroundColor: Colors.white),
                       child: Ink(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18.0)),
@@ -407,7 +407,7 @@ class _ProgressTileState extends State<ProgressTile> {
                           elevation: 0.0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8)),
-                          primary: Colors.white),
+                          backgroundColor: Colors.white),
                       child: Ink(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18.0)),

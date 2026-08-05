@@ -112,7 +112,7 @@ class _LoginscreenState extends State<Loginscreen> {
                     loginClick();
                   },
                   style: ElevatedButton.styleFrom(
-                      elevation: 0.0, primary: darkgreen),
+                      elevation: 0.0, backgroundColor: darkgreen),
                   child: Ink(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(18.0)),

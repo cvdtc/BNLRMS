@@ -32,6 +32,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 // * allow image access for public
 app.use('/images', express.static(path.join(__dirname, '/images')))
+app.use('/public', express.static(path.join(__dirname, '/public')))
 // * base url for api
 app.use('/api/v1', router)
 // * swagger documentation
@@ -65,7 +66,7 @@ app.use('/secret-docs-api', docAuth({
 }), swaggerUI.serve, swaggerUI.setup(specs))
 
 // ! starting node with port 
-app.listen(process.env.API_PORT, () => console.log('Success running api CMMS on ', process.env.TYPE_OF_DEPLOYMENT, 'in PORT ', process.env.API_PORT, 'Version', process.env.API_VERSION))
+app.listen(process.env.API_PORT, () => console.log('Success running api BNLRMS on ', process.env.TYPE_OF_DEPLOYMENT, 'in PORT ', process.env.API_PORT, 'Version', process.env.API_VERSION))
 
 // ! make cron to close overdue request
 cron.schedule('1 0 * * *', (req, res) => {
@@ -99,7 +100,7 @@ cron.schedule('1 0 * * *', (req, res) => {
         console.log('Error: ' + err);
     }
 });
-
+// TODO : check and test cron job notif 
 // ! make cron to send notif every 7 am to user with due date -1 day
 cron.schedule('0 4,12,20 * * *', () => {
     console.log('cron has started 1')

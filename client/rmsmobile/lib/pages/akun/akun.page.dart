@@ -329,7 +329,7 @@ class _AkunPageState extends State<AkunPage> {
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0.0,
-                            primary: Colors.red,
+                            backgroundColor: Colors.red,
                           ),
                           child: Ink(
                             decoration: BoxDecoration(
@@ -351,7 +351,7 @@ class _AkunPageState extends State<AkunPage> {
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0.0,
-                            primary: Colors.white,
+                            backgroundColor: Colors.white,
                           ),
                           child: Ink(
                             decoration: BoxDecoration(

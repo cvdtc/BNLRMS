@@ -1,7 +1,7 @@
 //Plugin
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
-const mysql = require('mysql2')
+const mysql = require('mysql')
 
 /**
  * ! Pool setting up

@@ -452,7 +452,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(15)),
-                                        primary: Colors.white),
+                                        backgroundColor: Colors.white),
                                     child: Ink(
                                         decoration: BoxDecoration(
                                             borderRadius:
@@ -493,7 +493,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(15)),
-                                        primary: Colors.white),
+                                        backgroundColor: Colors.white),
                                     child: Ink(
                                         decoration: BoxDecoration(
                                             borderRadius:
@@ -534,7 +534,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(15)),
-                                        primary: Colors.white),
+                                        backgroundColor: Colors.white),
                                     child: Ink(
                                         decoration: BoxDecoration(
                                             borderRadius:
@@ -575,7 +575,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(15)),
-                                        primary: Colors.white),
+                                        backgroundColor: Colors.white),
                                     child: Ink(
                                         decoration: BoxDecoration(
                                             borderRadius:
@@ -863,7 +863,7 @@ class RequestPageSearchState extends State<RequestPageSearch> {
                               _tecKeteranganNext.clear();
                             },
                             style: ElevatedButton.styleFrom(
-                                elevation: 0.0, primary: thirdcolor),
+                                elevation: 0.0, backgroundColor: thirdcolor),
                             child: Ink(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(18.0)),

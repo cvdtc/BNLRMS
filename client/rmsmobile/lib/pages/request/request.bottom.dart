@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:rmsmobile/apiService/apiService.dart';
 import 'package:rmsmobile/model/request/request.model.dart';
@@ -10,10 +7,9 @@ import 'package:rmsmobile/pages/progres/progress.bottom.dart';
 import 'package:rmsmobile/pages/timeline/timeline.dart';
 import 'package:rmsmobile/utils/ReusableClasses.dart';
 import 'package:rmsmobile/utils/warna.dart';
-import 'package:http/http.dart' as client;
 
-import '../webview/inappwebviewpage.dart';
 // import 'package:rmsmobile/widget/bottomnavigationbar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RequestModalBottom {
   ApiService _apiService = new ApiService();
@@ -294,7 +290,7 @@ class RequestModalBottom {
                                   'tanpa progress');
                             },
                             style: ElevatedButton.styleFrom(
-                                elevation: 0.0, primary: thirdcolor),
+                                elevation: 0.0, backgroundColor: thirdcolor),
                             child: Ink(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(18.0)),
@@ -393,7 +389,7 @@ class RequestModalBottom {
                             },
                             style: ElevatedButton.styleFrom(
                               elevation: 0.0,
-                              primary: Colors.red,
+                              backgroundColor: Colors.red,
                             ),
                             child: Ink(
                               decoration: BoxDecoration(
@@ -430,7 +426,7 @@ class RequestModalBottom {
                               },
                               style: ElevatedButton.styleFrom(
                                 elevation: 0.0,
-                                primary: Colors.white,
+                                backgroundColor: Colors.white,
                               ),
                               child: Ink(
                                 decoration: BoxDecoration(
@@ -666,7 +662,7 @@ class RequestModalBottom {
                               elevation: 0.0,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8)),
-                              primary: Colors.white),
+                              backgroundColor: Colors.white),
                           child: Ink(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(18.0)),
@@ -700,7 +696,7 @@ class RequestModalBottom {
                           elevation: 0.0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8)),
-                          primary: Colors.white),
+                          backgroundColor: Colors.white),
                       child: Ink(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18.0)),
@@ -746,7 +742,7 @@ class RequestModalBottom {
                               elevation: 0.0,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8)),
-                              primary: Colors.white),
+                              backgroundColor: Colors.white),
                           child: Ink(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(18.0)),
